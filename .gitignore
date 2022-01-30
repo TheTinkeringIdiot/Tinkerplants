@@ -1,0 +1,6 @@
+*.pyc
+*.db
+*.sqlite3
+__pycache__
+*.json
+*.xml

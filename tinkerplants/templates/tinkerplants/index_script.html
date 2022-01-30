@@ -1,0 +1,179 @@
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        fetch('update_display', {
+            method: 'post',
+            body: JSON.stringify({}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_data(data)
+        })
+    })
+
+    var selectElements = Array.from(document.getElementsByTagName('select'))
+    selectElements.forEach(function(elem) {
+        elem.addEventListener('change', update_imps);
+    })
+
+    var qlElements = Array.from(document.querySelectorAll("input[type='number'][id$=ql]"))
+    qlElements.forEach(function(elem) {
+        elem.addEventListener('change', update_ql);
+    })
+
+    function update_imps(evt) {
+        id = evt.srcElement.id
+        val = evt.srcElement.value
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        
+        fetch('update_imps', {
+            method: 'post',
+            body: JSON.stringify({'slot' : id, 'value' : val}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_data(data)
+        })
+    }
+
+    function update_ql(evt) {
+        id = evt.srcElement.id
+        val = evt.srcElement.value
+
+        if (val < 1) { val = 1; }
+        if (val > 300) { val = 300; }
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch('update_ql', {
+            method: 'post',
+            body: JSON.stringify({'slot' : id, 'value' : val}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_data(data)
+        })
+    }
+
+    function clear_table(results) {
+        while(results.lastChild) {
+            results.removeChild(results.lastChild)
+        }
+    }
+
+    function update_data(data) {
+        if (data.next) {
+            document.location = data.next;
+        }
+
+        results = document.getElementById('result-table')
+        clear_table(results)
+
+        for (let slot in data.implants) {
+            implant = data.implants[slot]
+
+            //Update the build tab
+            var shiny_id = slot + '-Shiny'
+            var shiny_elem = document.getElementById(shiny_id)
+            shiny_elem.value = implant.Shiny
+
+            var bright_id = slot + '-Bright'
+            var bright_elem = document.getElementById(bright_id)
+            bright_elem.value = implant.Bright
+
+            var faded_id = slot + '-Faded'
+            var faded_elem = document.getElementById(faded_id)
+            faded_elem.value = implant.Faded
+
+            var ql_id = slot + '-ql'
+            var ql_elem = document.getElementById(ql_id)
+            ql_elem.value = implant.ql
+
+            //Update the results tab
+            if( ! (implant.Shiny == 'Empty' && implant.Bright == 'Empty' && implant.Faded == 'Empty')) {
+                imp_row = document.createElement('tr')
+
+                name_col = document.createElement('td')
+                name_p = document.createElement('p')
+                name_p.className = 'fw-bold'
+                name_p.textContent = slot
+
+                name_col.appendChild(name_p)
+                imp_row.appendChild(name_col)
+
+                ql_col = document.createElement('td')
+                ql_p = document.createElement('p')
+                ql_p.textContent = implant.ql
+                ql_col.appendChild(ql_p)
+                imp_row.appendChild(ql_col)
+
+                bene_col = document.createElement('td')
+
+                if(implant.Shiny != 'Empty') {
+                    bene_shiny_p = document.createElement('p')
+                    bene_shiny_p.textContent = `${implant.Shiny}: ${implant.shiny_benefit}`
+                    bene_col.appendChild(bene_shiny_p)
+                }
+
+                if(implant.Bright != 'Empty') {
+                    bene_bright_p = document.createElement('p')
+                    bene_bright_p.textContent = `${implant.Bright}: ${implant.bright_benefit}`
+                    bene_col.appendChild(bene_bright_p)
+                }
+
+                if(implant.Faded != 'Empty') {
+                    bene_faded_p = document.createElement('p')
+                    bene_faded_p.textContent = `${implant.Faded}: ${implant.faded_benefit}`
+                    bene_col.appendChild(bene_faded_p)
+                }
+                imp_row.appendChild(bene_col)
+
+                equip_col = document.createElement('td')
+                equip_treat = document.createElement('p')
+                equip_treat.textContent = `Treatment: ${implant.treatment_value}`
+                equip_col.appendChild(equip_treat)
+                equip_attrib = document.createElement('p')
+                equip_attrib.textContent = `${implant.attrib_name}: ${implant.attrib_value}`
+                equip_col.appendChild(equip_attrib)
+
+                if(implant.tl != 1) {
+                    equip_tl = document.createElement('p')
+                    equip_tl.textContent = `Title level: ${implant.tl}`
+                    equip_col.appendChild(equip_tl)
+                }
+                
+                imp_row.appendChild(equip_col)
+
+                build_col = document.createElement('td')
+                build_np = document.createElement('p')
+                build_np.textContent = `Nanoprogramming: ${implant.np_req}`
+                build_col.appendChild(build_np)
+
+                var jobe_reqs = implant.jobe_reqs
+                if(Object.keys(jobe_reqs).length > 0) {
+                    for(key in jobe_reqs) {
+                        build_jobe = document.createElement('p')
+                        build_jobe.textContent = `${key}: ${jobe_reqs[key]}`
+                        build_col.appendChild(build_jobe)
+                    }
+                }
+                imp_row.appendChild(build_col)
+                results.appendChild(imp_row)
+            }
+        }
+    }
+
+</script>
