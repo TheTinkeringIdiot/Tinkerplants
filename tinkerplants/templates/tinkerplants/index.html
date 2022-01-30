@@ -1,0 +1,709 @@
+{% extends "tinkerplants/base.html" %}
+
+{% block content %}
+<div class="container">
+    {% csrf_token %}
+    <ul class="nav nav-tabs nav-fill">
+        <li class="nav-item">
+            <a class="nav-link active" href="#build" data-bs-toggle="tab">Build</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#results" data-bs-toggle="tab">Results</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane border border-top-0 rounded-bottom fade show active" id="build">
+            <div class="container">
+                <div class="row" id="spacer_row">&nbsp</div>
+                <div class="row" id="title_row">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Implant</p>
+                    </div>
+                    <div class="col">
+                        <p class="fw-bold">Shiny</p>
+                    </div>
+                    <div class="col">
+                        <p class="fw-bold">Bright</p>
+                    </div>
+                    <div class="col">
+                        <p class="fw-bold">Faded</p>
+                    </div>
+                    <div class="col col-md-1">
+                        <p class="fw-bold">QL</p>
+                    </div>
+                </div>
+                <div class="row border" id="row1">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Eye</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Eye-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Aimed Shot">Aimed Shot</option>
+                            <option value="Elec. Engi">Elec. Engi</option>
+                            <option value="Map Navig">Map Navig</option>
+                            <option value="RangeInc. Weapon">RangeInc. Weapon</option>
+                            <option value="Rifle">Rifle</option>
+                            <option value="Tutoring">Tutoring</option>
+                            <option value="Vehicle Air">Vehicle Air</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Eye-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Comp. Liter">Comp. Liter</option>
+                            <option value="Grenade">Grenade</option>
+                            <option value="Heavy Weapons">Heavy Weapons</option>
+                            <option value="Intelligence">Intelligence</option>
+                            <option value="Mech. Engi">Mech. Engi</option>
+                            <option value="Mult. Melee">Mult. Melee</option>
+                            <option value="Nano Progra">Nano Progra</option>
+                            <option value="NanoC. Init">NanoC. Init</option>
+                            <option value="Perception">Perception</option>
+                            <option value="Pharma Tech">Pharma Tech</option>
+                            <option value="Psycho Modi">Psycho Modi</option>
+                            <option value="Quantum FT">Quantum FT</option>
+                            <option value="Ranged Ener">Ranged Ener</option>
+                            <option value="Sensory Impr">Sensory Impr</option>
+                            <option value="Treatment">Treatment</option>
+                            <option value="Vehicle Grnd">Vehicle Grnd</option>
+                            <option value="Vehicle Hydr">Vehicle Hydr</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Eye-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="Assault Rif">Assault Rif</option>
+                            <option value="Bow">Bow</option>
+                            <option value="Concealment">Concealment</option>
+                            <option value="Matter Crea">Matter Crea</option>
+                            <option value="Multi Ranged">Multi Ranged</option>
+                            <option value="Pistol">Pistol</option>
+                            <option value="Psychology">Psychology</option>
+                            <option value="Sharp Obj">Sharp Obj</option>
+                            <option value="Sneak Atck">Sneak Atck</option>
+                            <option value="Time & Space">Time & Space</option>
+                            <option value="Weapon Smt">Weapon Smt</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Eye-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row2">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Head</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Head-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Bio.Metamor">Bio.Metamor</option>
+                            <option value="Bow Spc Att">Bow Spc Att</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Comp. Liter">Comp. Liter</option>
+                            <option value="Disease AC">Disease AC</option>
+                            <option value="First Aid">First Aid</option>
+                            <option value="Intelligence">Intelligence</option>
+                            <option value="Matt.Metam">Matt.Metam</option>
+                            <option value="Matter Crea">Matter Crea</option>
+                            <option value="Max Nano">Max Nano</option>
+                            <option value="Mech. Engi">Mech. Engi</option>
+                            <option value="Melee Ener">Melee Ener</option>
+                            <option value="Nano Progra">Nano Progra</option>
+                            <option value="Nano Resist">Nano Resist</option>
+                            <option value="NanoC. Init">NanoC. Init</option>
+                            <option value="Pharma Tech">Pharma Tech</option>
+                            <option value="Psychic">Psychic</option>
+                            <option value="Psycho Modi">Psycho Modi</option>
+                            <option value="Psychology">Psychology</option>
+                            <option value="Quantum FT">Quantum FT</option>
+                            <option value="Ranged Ener">Ranged Ener</option>
+                            <option value="Sensory Impr">Sensory Impr</option>
+                            <option value="Time & Space">Time & Space</option>
+                            <option value="Treatment">Treatment</option>
+                            <option value="Vehicle Grnd">Vehicle Grnd</option>
+                            <option value="Vehicle Hydr">Vehicle Hydr</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Head-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Dimach">Dimach</option>
+                            <option value="Elec. Engi">Elec. Engi</option>
+                            <option value="Map Navig">Map Navig</option>
+                            <option value="Nano Pool">Nano Pool</option>
+                            <option value="Ranged. Init">Ranged. Init</option>
+                            <option value="Weapon Smt">Weapon Smt</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Head-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="Perception">Perception</option>
+                            <option value="Sense">Sense</option>
+                            <option value="Trap Disarm">Trap Disarm</option>
+                            <option value="Tutoring">Tutoring</option>
+                            <option value="Vehicle Air">Vehicle Air</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Head-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row3">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Ear</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Ear-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Add. Xp">Add. Xp</option>
+                            <option value="Max NCU">Max NCU</option>
+                            <option value="Perception">Perception</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Ear-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Concealment">Concealment</option>
+                            <option value="Nano Point Cost Modifier">Nano Point Cost Modifier</option>
+                            <option value="Psychology">Psychology</option>
+                            <option value="Tutoring">Tutoring</option>
+                            <option value="Vehicle Air">Vehicle Air</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Ear-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="Intelligence">Intelligence</option>
+                            <option value="Map Navig">Map Navig</option>
+                            <option value="Psychic">Psychic</option>
+                            <option value="Psycho Modi">Psycho Modi</option>
+                            <option value="Vehicle Grnd">Vehicle Grnd</option>
+                            <option value="Vehicle Hydr">Vehicle Hydr</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Ear-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row4">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Right Arm</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Right-Arm-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="1h Blunt">1h Blunt</option>
+                            <option value="1h Edged Weapon">1h Edged Weapon</option>
+                            <option value="2h Blunt">2h Blunt</option>
+                            <option value="2h Edged">2h Edged</option>
+                            <option value="Assault Rif">Assault Rif</option>
+                            <option value="Bow">Bow</option>
+                            <option value="Break & Entry">Break & Entry</option>
+                            <option value="Burst">Burst</option>
+                            <option value="Fling Shot">Fling Shot</option>
+                            <option value="Full Auto">Full Auto</option>
+                            <option value="Grenade">Grenade</option>
+                            <option value="Heavy Weapons">Heavy Weapons</option>
+                            <option value="MG / SMG">MG / SMG</option>
+                            <option value="Piercing">Piercing</option>
+                            <option value="Shotgun">Shotgun</option>
+                            <option value="Strength">Strength</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Right-Arm-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Add All Def.">Add All Def.</option>
+                            <option value="Add All Off">Add All Off</option>
+                            <option value="Brawling">Brawling</option>
+                            <option value="Chemical AC">Chemical AC</option>
+                            <option value="Nano Delta">Nano Delta</option>
+                            <option value="Physic. Init">Physic. Init</option>
+                            <option value="Swimming">Swimming</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Right-Arm-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="Fast Attack">Fast Attack</option>
+                            <option value="Mech. Engi">Mech. Engi</option>
+                            <option value="Parry">Parry</option>
+                            <option value="Radiation AC">Radiation AC</option>
+                            <option value="RangeInc. NF">RangeInc. NF</option>
+                            <option value="RangeInc. Weapon">RangeInc. Weapon</option>
+                            <option value="Riposte">Riposte</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Right-Arm-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row5">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Chest</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Chest-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Body Dev">Body Dev</option>
+                            <option value="Dimach">Dimach</option>
+                            <option value="Energy AC">Energy AC</option>
+                            <option value="Max Health">Max Health</option>
+                            <option value="Melee/Ma AC">Melee/Ma AC</option>
+                            <option value="Nano Pool">Nano Pool</option>
+                            <option value="Sense">Sense</option>
+                            <option value="Stamina">Stamina</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Chest-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Bio.Metamor">Bio.Metamor</option>
+                            <option value="Imp/Proj AC">Imp/Proj AC</option>
+                            <option value="Matt.Metam">Matt.Metam</option>
+                            <option value="Psychic">Psychic</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Chest-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="2h Blunt">2h Blunt</option>
+                            <option value="Adventuring">Adventuring</option>
+                            <option value="Break & Entry">Break & Entry</option>
+                            <option value="Disease AC">Disease AC</option>
+                            <option value="MG / SMG">MG / SMG</option>
+                            <option value="Max Nano">Max Nano</option>
+                            <option value="Nano Formula Interrupt Modifier">Nano Formula Interrupt Modifier</option>
+                            <option value="NanoC. Init">NanoC. Init</option>
+                            <option value="Sensory Impr">Sensory Impr</option>
+                            <option value="Skill Time Lock Modifier">Skill Time Lock Modifier</option>
+                            <option value="Strength">Strength</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Chest-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row6">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Left Arm</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Left-Arm-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Add All Def.">Add All Def.</option>
+                            <option value="Add All Off">Add All Off</option>
+                            <option value="Brawling">Brawling</option>
+                            <option value="Heal Delta">Heal Delta</option>
+                            <option value="RangeInc. NF">RangeInc. NF</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Left-Arm-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="2h Blunt">2h Blunt</option>
+                            <option value="2h Edged">2h Edged</option>
+                            <option value="Bow">Bow</option>
+                            <option value="Break & Entry">Break & Entry</option>
+                            <option value="Piercing">Piercing</option>
+                            <option value="Radiation AC">Radiation AC</option>
+                            <option value="Strength">Strength</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Left-Arm-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="Chemical AC">Chemical AC</option>
+                            <option value="Matt.Metam">Matt.Metam</option>
+                            <option value="Nano Point Cost Modifier">Nano Point Cost Modifier</option>
+                            <option value="Physic. Init">Physic. Init</option>
+                            <option value="Swimming">Swimming</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Left-Arm-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row7">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Right Wrist</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Right-Wrist-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Nano Delta">Nano Delta</option>
+                            <option value="Parry">Parry</option>
+                            <option value="Pistol">Pistol</option>
+                            <option value="Ranged. Init">Ranged. Init</option>
+                            <option value="Riposte">Riposte</option>
+                            <option value="Run Speed">Run Speed</option>
+                            <option value="Sharp Obj">Sharp Obj</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Right-Wrist-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="1h Blunt">1h Blunt</option>
+                            <option value="1h Edged Weapon">1h Edged Weapon</option>
+                            <option value="Aimed Shot">Aimed Shot</option>
+                            <option value="Burst">Burst</option>
+                            <option value="Full Auto">Full Auto</option>
+                            <option value="Max NCU">Max NCU</option>
+                            <option value="Multi Ranged">Multi Ranged</option>
+                            <option value="Nano Resist">Nano Resist</option>
+                            <option value="Rifle">Rifle</option>
+                            <option value="Sneak Atck">Sneak Atck</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Right-Wrist-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="Add. Chem. Dam.">Add. Chem. Dam.</option>
+                            <option value="Add. Energy Dam.">Add. Energy Dam.</option>
+                            <option value="Add. Fire Dam.">Add. Fire Dam.</option>
+                            <option value="Add. Melee Dam.">Add. Melee Dam.</option>
+                            <option value="Add. Poison Dam.">Add. Poison Dam.</option>
+                            <option value="Add. Proj. Dam.">Add. Proj. Dam.</option>
+                            <option value="Add.Rad. Dam.">Add.Rad. Dam.</option>
+                            <option value="Bow Spc Att">Bow Spc Att</option>
+                            <option value="Fling Shot">Fling Shot</option>
+                            <option value="Melee Ener">Melee Ener</option>
+                            <option value="Mult. Melee">Mult. Melee</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Right-Wrist-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row8">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Waist</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Waist-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Chemical AC">Chemical AC</option>
+                            <option value="Cold AC">Cold AC</option>
+                            <option value="Fire AC">Fire AC</option>
+                            <option value="Nano Point Cost Modifier">Nano Point Cost Modifier</option>
+                            <option value="Radiation AC">Radiation AC</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Waist-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Adventuring">Adventuring</option>
+                            <option value="Body Dev">Body Dev</option>
+                            <option value="Duck-Exp">Duck-Exp</option>
+                            <option value="Max Health">Max Health</option>
+                            <option value="Max Nano">Max Nano</option>
+                            <option value="Melee/Ma AC">Melee/Ma AC</option>
+                            <option value="Sense">Sense</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Waist-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="2h Edged">2h Edged</option>
+                            <option value="Agility">Agility</option>
+                            <option value="Bio.Metamor">Bio.Metamor</option>
+                            <option value="Brawling">Brawling</option>
+                            <option value="Dimach">Dimach</option>
+                            <option value="Dodge-Rng">Dodge-Rng</option>
+                            <option value="Energy AC">Energy AC</option>
+                            <option value="Evade-ClsC">Evade-ClsC</option>
+                            <option value="Full Auto">Full Auto</option>
+                            <option value="Imp/Proj AC">Imp/Proj AC</option>
+                            <option value="Melee. Init">Melee. Init</option>
+                            <option value="Nano Pool">Nano Pool</option>
+                            <option value="Piercing">Piercing</option>
+                            <option value="Shotgun">Shotgun</option>
+                            <option value="Stamina">Stamina</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Waist-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row9">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Left Wrist</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Left-Wrist-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Mult. Melee">Mult. Melee</option>
+                            <option value="Multi Ranged">Multi Ranged</option>
+                            <option value="Shield Energy AC">Shield Energy AC</option>
+                            <option value="Shield Fire AC">Shield Fire AC</option>
+                            <option value="Shield Projectile AC">Shield Projectile AC</option>
+                            <option value="Shield Radiation AC">Shield Radiation AC</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Left-Wrist-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Add. Chem. Dam.">Add. Chem. Dam.</option>
+                            <option value="Add. Energy Dam.">Add. Energy Dam.</option>
+                            <option value="Add. Fire Dam.">Add. Fire Dam.</option>
+                            <option value="Add. Melee Dam.">Add. Melee Dam.</option>
+                            <option value="Add. Poison Dam.">Add. Poison Dam.</option>
+                            <option value="Add. Proj. Dam.">Add. Proj. Dam.</option>
+                            <option value="Add.Rad. Dam.">Add.Rad. Dam.</option>
+                            <option value="Melee Ener">Melee Ener</option>
+                            <option value="Parry">Parry</option>
+                            <option value="Riposte">Riposte</option>
+                            <option value="Run Speed">Run Speed</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Left-Wrist-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="Nano Resist">Nano Resist</option>
+                            <option value="Rifle">Rifle</option>
+                            <option value="Shield Chemical AC">Shield Chemical AC</option>
+                            <option value="Shield Cold AC">Shield Cold AC</option>
+                            <option value="Shield Melee AC">Shield Melee AC</option>
+                            <option value="Shield Poison AC">Shield Poison AC</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Left-Wrist-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row10">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Right Hand</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Right-Hand-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Add. Chem. Dam.">Add. Chem. Dam.</option>
+                            <option value="Add. Energy Dam.">Add. Energy Dam.</option>
+                            <option value="Add. Fire Dam.">Add. Fire Dam.</option>
+                            <option value="Add. Melee Dam.">Add. Melee Dam.</option>
+                            <option value="Add. Poison Dam.">Add. Poison Dam.</option>
+                            <option value="Add. Proj. Dam.">Add. Proj. Dam.</option>
+                            <option value="Add.Rad. Dam.">Add.Rad. Dam.</option>
+                            <option value="Martial Arts">Martial Arts</option>
+                            <option value="Trap Disarm">Trap Disarm</option>
+                            <option value="Weapon Smt">Weapon Smt</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Right-Hand-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Assault Rif">Assault Rif</option>
+                            <option value="Bow Spc Att">Bow Spc Att</option>
+                            <option value="Cold AC">Cold AC</option>
+                            <option value="Fast Attack">Fast Attack</option>
+                            <option value="First Aid">First Aid</option>
+                            <option value="Fling Shot">Fling Shot</option>
+                            <option value="MG / SMG">MG / SMG</option>
+                            <option value="Matter Crea">Matter Crea</option>
+                            <option value="Pistol">Pistol</option>
+                            <option value="Sharp Obj">Sharp Obj</option>
+                            <option value="Shotgun">Shotgun</option>
+                            <option value="Time & Space">Time & Space</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Right-Hand-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="1h Blunt">1h Blunt</option>
+                            <option value="1h Edged Weapon">1h Edged Weapon</option>
+                            <option value="Aimed Shot">Aimed Shot</option>
+                            <option value="Burst">Burst</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Comp. Liter">Comp. Liter</option>
+                            <option value="Elec. Engi">Elec. Engi</option>
+                            <option value="Fire AC">Fire AC</option>
+                            <option value="Grenade">Grenade</option>
+                            <option value="Heavy Weapons">Heavy Weapons</option>
+                            <option value="Nano Progra">Nano Progra</option>
+                            <option value="Pharma Tech">Pharma Tech</option>
+                            <option value="Quantum FT">Quantum FT</option>
+                            <option value="Ranged. Init">Ranged. Init</option>
+                            <option value="Treatment">Treatment</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Right-Hand-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row11">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Leg</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Leg-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Adventuring">Adventuring</option>
+                            <option value="Agility">Agility</option>
+                            <option value="Dodge-Rng">Dodge-Rng</option>
+                            <option value="Duck-Exp">Duck-Exp</option>
+                            <option value="Imp/Proj AC">Imp/Proj AC</option>
+                            <option value="Nano Formula Interrupt Modifier">Nano Formula Interrupt Modifier</option>
+                            <option value="Skill Time Lock Modifier">Skill Time Lock Modifier</option>
+                            <option value="Swimming">Swimming</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Leg-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Disease AC">Disease AC</option>
+                            <option value="Energy AC">Energy AC</option>
+                            <option value="Evade-ClsC">Evade-ClsC</option>
+                            <option value="Melee. Init">Melee. Init</option>
+                            <option value="Stamina">Stamina</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Leg-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="Add. Xp">Add. Xp</option>
+                            <option value="Body Dev">Body Dev</option>
+                            <option value="Heal Delta">Heal Delta</option>
+                            <option value="Max Health">Max Health</option>
+                            <option value="Max NCU">Max NCU</option>
+                            <option value="Melee/Ma AC">Melee/Ma AC</option>
+                            <option value="Run Speed">Run Speed</option>
+                            <option value="Shield Energy AC">Shield Energy AC</option>
+                            <option value="Shield Fire AC">Shield Fire AC</option>
+                            <option value="Shield Projectile AC">Shield Projectile AC</option>
+                            <option value="Shield Radiation AC">Shield Radiation AC</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Leg-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row12">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Left Hand</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Left-Hand-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Fast Attack">Fast Attack</option>
+                            <option value="Shield Chemical AC">Shield Chemical AC</option>
+                            <option value="Shield Cold AC">Shield Cold AC</option>
+                            <option value="Shield Melee AC">Shield Melee AC</option>
+                            <option value="Shield Poison AC">Shield Poison AC</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Left-Hand-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Fire AC">Fire AC</option>
+                            <option value="Nano Formula Interrupt Modifier">Nano Formula Interrupt Modifier</option>
+                            <option value="RangeInc. NF">RangeInc. NF</option>
+                            <option value="Shield Energy AC">Shield Energy AC</option>
+                            <option value="Shield Fire AC">Shield Fire AC</option>
+                            <option value="Shield Projectile AC">Shield Projectile AC</option>
+                            <option value="Shield Radiation AC">Shield Radiation AC</option>
+                            <option value="Skill Time Lock Modifier">Skill Time Lock Modifier</option>
+                            <option value="Trap Disarm">Trap Disarm</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Left-Hand-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="Cold AC">Cold AC</option>
+                            <option value="First Aid">First Aid</option>
+                            <option value="Martial Arts">Martial Arts</option>
+                            <option value="Ranged Ener">Ranged Ener</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Left-Hand-ql" value="1">
+                    </div>
+                </div>
+                <div class="row border" id="row13">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Feet</p>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Feet-Shiny">
+                            <option value="Empty">Empty</option>
+                            <option value="Concealment">Concealment</option>
+                            <option value="Evade-ClsC">Evade-ClsC</option>
+                            <option value="Melee. Init">Melee. Init</option>
+                            <option value="Physic. Init">Physic. Init</option>
+                            <option value="Sneak Atck">Sneak Atck</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Feet-Bright">
+                            <option value="Empty">Empty</option>
+                            <option value="Add. Xp">Add. Xp</option>
+                            <option value="Agility">Agility</option>
+                            <option value="Dodge-Rng">Dodge-Rng</option>
+                            <option value="Heal Delta">Heal Delta</option>
+                            <option value="Martial Arts">Martial Arts</option>
+                            <option value="RangeInc. Weapon">RangeInc. Weapon</option>
+                            <option value="Shield Chemical AC">Shield Chemical AC</option>
+                            <option value="Shield Cold AC">Shield Cold AC</option>
+                            <option value="Shield Melee AC">Shield Melee AC</option>
+                            <option value="Shield Poison AC">Shield Poison AC</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" id="Feet-Faded">
+                            <option value="Empty">Empty</option>
+                            <option value="Add All Def.">Add All Def.</option>
+                            <option value="Add All Off">Add All Off</option>
+                            <option value="Duck-Exp">Duck-Exp</option>
+                            <option value="Nano Delta">Nano Delta</option>
+                        </select>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="Feet-ql" value="1">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane border border-top-0 rounded-bottom fade" id="results">
+            <div class="container" id="result-container">
+                <div class="row" id="spacer_row">&nbsp</div>
+                <!-- <div class="row" id="result-title-row">
+                    <div class="col col-md-2">
+                        <p class="fw-bold">Implant</p>
+                    </div>
+                    <div class="col">
+                        <p class="fw-bold">QL</p>
+                    </div>
+                    <div class="col">
+                        <p class="fw-bold">Benefits</p>
+                    </div>
+                    <div class="col">
+                        <p class="fw-bold">Equip Reqs</p>
+                    </div>
+                    <div class="col">
+                        <p class="fw-bold">Build Reqs</p>
+                    </div>
+                </div> -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Implant</th>
+                            <th>QL</th>
+                            <th>Benefits</th>
+                            <th>Equip Reqs</th>
+                            <th>Build Reqs</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-table">
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'tinkerplants/index_script.html' %}
+{% endblock content %}
