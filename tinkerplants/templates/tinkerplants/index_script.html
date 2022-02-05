@@ -147,55 +147,68 @@
                 imp_row.appendChild(ql_col)
 
                 bene_col = document.createElement('td')
+                bene_list = document.createElement('ul')
+                bene_list.classList.add('list-unstyled')
 
                 if(implant.Shiny != 'Empty') {
-                    bene_shiny_p = document.createElement('p')
+                    bene_shiny_p = document.createElement('li')
                     bene_shiny_p.textContent = `${implant.Shiny}: ${implant.shiny_benefit}`
-                    bene_col.appendChild(bene_shiny_p)
+                    bene_list.appendChild(bene_shiny_p)
                 }
 
                 if(implant.Bright != 'Empty') {
-                    bene_bright_p = document.createElement('p')
+                    bene_bright_p = document.createElement('li')
                     bene_bright_p.textContent = `${implant.Bright}: ${implant.bright_benefit}`
-                    bene_col.appendChild(bene_bright_p)
+                    bene_list.appendChild(bene_bright_p)
                 }
 
                 if(implant.Faded != 'Empty') {
-                    bene_faded_p = document.createElement('p')
+                    bene_faded_p = document.createElement('li')
                     bene_faded_p.textContent = `${implant.Faded}: ${implant.faded_benefit}`
-                    bene_col.appendChild(bene_faded_p)
+                    bene_list.appendChild(bene_faded_p)
                 }
+                bene_col.appendChild(bene_list)
                 imp_row.appendChild(bene_col)
 
                 equip_col = document.createElement('td')
-                equip_treat = document.createElement('p')
+
+                equip_list = document.createElement('ul')
+                equip_list.classList.add('list-unstyled')
+
+                equip_treat = document.createElement('li')
                 equip_treat.textContent = `Treatment: ${implant.treatment_value}`
-                equip_col.appendChild(equip_treat)
-                equip_attrib = document.createElement('p')
+                equip_list.appendChild(equip_treat)
+                equip_attrib = document.createElement('li')
                 equip_attrib.textContent = `${implant.attrib_name}: ${implant.attrib_value}`
-                equip_col.appendChild(equip_attrib)
+                equip_list.appendChild(equip_attrib)
 
                 if(implant.tl != 1) {
-                    equip_tl = document.createElement('p')
+                    equip_tl = document.createElement('li')
                     equip_tl.textContent = `Title level: ${implant.tl}`
-                    equip_col.appendChild(equip_tl)
+                    equip_list.appendChild(equip_tl)
                 }
                 
+                equip_col.appendChild(equip_list)
                 imp_row.appendChild(equip_col)
 
                 build_col = document.createElement('td')
-                build_np = document.createElement('p')
+
+                build_list = document.createElement('ul')
+                build_list.classList.add('list-unstyled')
+
+                build_np = document.createElement('li')
                 build_np.textContent = `Nanoprogramming: ${implant.np_req}`
-                build_col.appendChild(build_np)
+                build_list.appendChild(build_np)
 
                 var jobe_reqs = implant.jobe_reqs
                 if(Object.keys(jobe_reqs).length > 0) {
                     for(key in jobe_reqs) {
-                        build_jobe = document.createElement('p')
+                        build_jobe = document.createElement('li')
                         build_jobe.textContent = `${key}: ${jobe_reqs[key]}`
-                        build_col.appendChild(build_jobe)
+                        build_list.appendChild(build_jobe)
                     }
                 }
+                build_col.appendChild(build_list)
                 imp_row.appendChild(build_col)
                 results.appendChild(imp_row)
             }
