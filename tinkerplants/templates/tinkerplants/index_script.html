@@ -15,6 +15,12 @@
         })
     })
 
+    document.getElementById('load-dropdown').addEventListener('click', function(evt) {
+        document.getElementById('load-dropdown-menu').classList.toggle('show')
+    })
+
+    document.getElementById('upload-button').addEventListener('click', upload_file)
+
     var selectElements = Array.from(document.getElementsByTagName('select'))
     selectElements.forEach(function(elem) {
         elem.addEventListener('change', update_imps);
@@ -24,6 +30,26 @@
     qlElements.forEach(function(elem) {
         elem.addEventListener('change', update_ql);
     })
+
+    function upload_file() {
+        var input_file = document.getElementById('upload-file')
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        var fd = new FormData()
+        fd.append('upload_file', input_file.files[0])
+
+        fetch('load_profile', {
+            method: 'POST',
+            body: fd,
+            headers: {
+                'X-CSRFToken': csrftoken
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            update_data(data)
+        })
+    }
 
     function update_imps(evt) {
         id = evt.srcElement.id
