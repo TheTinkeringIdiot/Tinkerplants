@@ -129,6 +129,9 @@
             var ql_elem = document.getElementById(ql_id)
             ql_elem.value = implant.ql
 
+            var attrib_req = document.getElementById(slot + '-attrib')
+            attrib_req.textContent = `${implant.attrib_name}`
+
             //Update the results tab
             if( ! (implant.Shiny == 'Empty' && implant.Bright == 'Empty' && implant.Faded == 'Empty')) {
                 imp_row = document.createElement('tr')
