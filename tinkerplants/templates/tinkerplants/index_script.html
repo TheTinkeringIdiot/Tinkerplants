@@ -32,6 +32,7 @@
     })
 
     function upload_file() {
+        document.getElementById('load-dropdown-menu').classList.toggle('show')
         var input_file = document.getElementById('upload-file')
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
 
