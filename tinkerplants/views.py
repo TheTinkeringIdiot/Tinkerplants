@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse, HttpResponseRedirect
 
 from tinkerplants.models import *
 from tinkerplants.utils import *
 from aobase.settings import *
 
-import json
+import json, mimetypes
 
 def index(request):
     if request.session.get('implants') is None:
@@ -96,6 +96,55 @@ def update_ql(request):
             import traceback
             traceback.print_exc()
         return JsonResponse({'success': False, 'message': 'Quit tinkering, that''s my job'})
+
+def save_profile(request):
+    response = HttpResponse(json.dumps(request.session['implants']), content_type='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename="implant_profile.json"'
+
+    return response
+
+def load_profile(request):
+    try:
+        data = json.loads(request.FILES['upload_file'].read())
+    except:
+        return JsonResponse({'success': False, 'message': 'Not a valid implant profile'})
+
+    implants = request.session.get('implants')
+    if implants is None:
+        return HttpResponseRedirect('tinkerplants')
+
+    for key, val in data.items():
+        if not key in IMP_SLOTS:
+            return JsonResponse({'success': False, 'message': 'Invalid implant profile'})
+
+        shiny = val.get('Shiny')
+        if shiny is not None and shiny in IMP_SKILLS[key]['Shiny']:
+            implants[key]['Shiny'] = shiny
+        else:
+            implants[key]['Shiny'] = 'Empty'
+
+        bright = val.get('Bright')
+        if bright is not None and bright in IMP_SKILLS[key]['Bright']:
+            implants[key]['Bright'] = bright
+        else:
+            implants[key]['Bright'] = 'Empty'
+
+        faded = val.get('Faded')
+        if faded is not None and faded in IMP_SKILLS[key]['Faded']:
+            implants[key]['Faded'] = faded
+        else:
+            implants[key]['Faded'] = 'Empty'
+
+        ql = val.get('ql')
+        if ql is not None and ql >= 1 and ql <= 300:
+            implants[key]['ql'] = ql
+        else:
+            implants[key]['ql'] = 1
+
+        if not calc_implants(request, key):
+            return JsonResponse({'success': False, 'message': 'Unable to procecss {}'.format(key)})
+
+    return JsonResponse({'success': True, 'implants' : request.session.get('implants')})
 
 def calc_implants(request, imp_slot):
     key = imp_slot
