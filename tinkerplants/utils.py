@@ -166,3 +166,45 @@ def initial_implants():
     
     return implants
 
+def rk_cluster_np(skill, slot, ql):
+    slot_mod = 1.0
+    if slot == 'Shiny':
+        slot_mod = 2.0
+    elif slot == 'Bright':
+        slot_mod = 1.5
+    elif slot == 'Faded':
+        slot_mod = 1.0
+
+    return round(NP_MODS[skill] * ql * slot_mod)
+
+def rk_ql_bump(np_skill, skill, slot, ql):
+    np_req = rk_cluster_np(skill, slot, ql)
+    if np_skill < np_req:
+        return False, 0
+    bumps = 0
+    if slot == 'Shiny':
+        over_factor = 300
+    elif slot == 'Bright':
+        over_factor = 200
+    elif slot == 'Faded':
+        over_factor = 100
+    else:
+        return False, 0
+
+    bumps = int((np_skill - np_req) / over_factor)
+
+    if ql in range(1, 50):
+        bumps = 0
+    elif ql in range(50, 100):
+        bumps = 1 if bumps >= 1 else bumps
+    elif ql in range(100, 150):
+        bumps = 2 if bumps >= 2 else bumps
+    elif ql in range(150, 200):
+        bumps = 3 if bumps >= 3 else bumps
+    elif ql in range(200, 250):
+        bumps = 4 if bumps >= 4 else bumps
+    elif ql in range(250, 300):
+        bumps = 5 if bumps >= 5 else bumps
+
+    return True, bumps
+

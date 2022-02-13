@@ -95,9 +95,9 @@
         })
     }
 
-    function clear_table(results) {
-        while(results.lastChild) {
-            results.removeChild(results.lastChild)
+    function clear_table(tbl) {
+        while(tbl.lastChild) {
+            tbl.removeChild(tbl.lastChild)
         }
     }
 
@@ -108,6 +108,9 @@
 
         results = document.getElementById('result-table')
         clear_table(results)
+
+        construct = document.getElementById('construct-table')
+        clear_table(construct)
 
         for (let slot in data.implants) {
             implant = data.implants[slot]
@@ -137,15 +140,24 @@
                 imp_row = document.createElement('tr')
 
                 name_col = document.createElement('td')
-                name_p = document.createElement('p')
+                name_p = document.createElement('span')
                 name_p.className = 'fw-bold'
                 name_p.textContent = slot
 
                 name_col.appendChild(name_p)
                 imp_row.appendChild(name_col)
 
+                //add this row to the construction table too
+
+                con_imp_row = document.createElement('tr')
+                con_imp_row.addEventListener('click', construct_imp)
+                con_name_col = document.createElement('td')
+                con_name_col.textContent = slot
+                con_imp_row.appendChild(con_name_col)
+                construct.appendChild(con_imp_row)
+
                 ql_col = document.createElement('td')
-                ql_p = document.createElement('p')
+                ql_p = document.createElement('span')
                 ql_p.textContent = implant.ql
                 ql_col.appendChild(ql_p)
                 imp_row.appendChild(ql_col)
@@ -216,6 +228,52 @@
                 imp_row.appendChild(build_col)
                 results.appendChild(imp_row)
             }
+
+            //update the construction tab
+
+
+        }
+    }
+
+    function construct_imp(evt) {
+        tbl = document.getElementById('construct-table')
+        elem = evt.srcElement
+        row = elem.parentElement
+
+        for(var i = 0; i < tbl.rows.length; i++) {
+            tbl.rows[i].style.backgroundColor = ''
+        }
+        row.style.backgroundColor = 'teal'
+
+        slot = elem.textContent
+        np_skill = document.getElementById('np-skill').value
+        be_skill = document.getElementById('be-skill').value
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        
+        fetch('construct_imp', {
+            method: 'post',
+            body: JSON.stringify({'slot' : slot, 'np_skill' : np_skill, 'be_skill' : be_skill}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_steps(JSON.parse(data.steps))
+        })
+    }
+
+    function update_steps(data) {
+        instructions = document.getElementById('instructions')
+        instructions.innerHTML = ''
+
+
+        for(idx in data) {
+            new_li = document.createElement('li')
+            new_li.textContent = data[idx]
+            instructions.appendChild(new_li)
         }
     }
 

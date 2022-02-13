@@ -5,7 +5,7 @@ from tinkerplants.models import *
 from tinkerplants.utils import *
 from aobase.settings import *
 
-import json, mimetypes
+import json, mimetypes, math
 
 def index(request):
     if request.session.get('implants') is None:
@@ -145,6 +145,141 @@ def load_profile(request):
             return JsonResponse({'success': False, 'message': 'Unable to procecss {}'.format(key)})
 
     return JsonResponse({'success': True, 'implants' : request.session.get('implants')})
+
+def construct_imp(request):
+    if request.method == 'POST':
+        try:
+            if request.session.get('implants') is None:
+                return JsonResponse({'success': False, 'message': 'Session timed out', 'next': ''})
+
+            ret_msg = []
+
+            data = json.loads(request.body)
+            slot = data.get('slot')
+            if slot is None:
+                return JsonResponse({'success': False, 'message': 'Implant slot is missing'})
+
+            np_skill = int(data.get('np_skill'))
+            if np_skill is None:
+                return JsonResponse({'success': False, 'message': 'NP skill is missing'})
+
+            be_skill = int(data.get('be_skill'))
+            if be_skill is None:
+                return JsonResponse({'success': False, 'message': 'BE skill is missing'})
+
+            implant = request.session['implants'][slot]
+            target_ql = implant.get('ql')
+
+            # Refined imps can't go under ql200
+            min_ql = 1
+            if target_ql > 200:
+                min_ql = 200
+            elif target_ql >= 50:
+                min_ql = 50
+
+            cur_ql = target_ql
+
+            shiny_skill = implant.get('Shiny')
+            if shiny_skill != 'Empty':
+                if NP_MODS.get(shiny_skill) is not None:
+                    # RK cluster
+                    
+                    start_ql = cur_ql
+                    enuf_skill, shiny_bumps = rk_ql_bump(np_skill, shiny_skill, 'Shiny', target_ql)
+                    if not enuf_skill:
+                        ret_msg = ['Your nanoprogramming is too low to build this implant.']
+                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
+
+                    temp_ql = target_ql - shiny_bumps
+                    enuf_skill, check_bumps = rk_ql_bump(np_skill, shiny_skill, 'Shiny', temp_ql)
+                    cur_ql = target_ql - check_bumps
+
+                    if cur_ql < min_ql or temp_ql < min_ql:
+                        ret_msg = ['Your skill is too high to build this implant.']
+                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
+
+                    cluster_ql = math.ceil(0.86 * cur_ql)
+
+                    msg_add = 'Add a QL {}+ shiny {} cluster. The result is QL {}.'.format(cluster_ql, shiny_skill, start_ql)
+                    ret_msg.append(msg_add)
+
+                elif JOBE_SKILL.get(shiny_skill) is not None:
+                    # jobe cluster
+                    pass
+
+            bright_skill = implant.get('Bright')
+            if bright_skill != 'Empty':
+                if NP_MODS.get(bright_skill) is not None:
+                    # RK cluster
+                    
+                    start_ql = cur_ql
+                    enuf_skill, bright_bumps = rk_ql_bump(np_skill, shiny_skill, 'Bright', target_ql)
+                    if not enuf_skill:
+                        ret_msg = ['Your nanoprogramming is too low to build this implant.']
+                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
+
+                    temp_ql = cur_ql - bright_bumps
+                    enuf_skill, check_bumps = rk_ql_bump(np_skill, shiny_skill, 'Bright', temp_ql)
+                    cur_ql = cur_ql - check_bumps
+
+                    if cur_ql < min_ql or temp_ql < min_ql:
+                        ret_msg = ['Your skill is too high to build this implant.']
+                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
+
+                    cluster_ql = math.ceil(0.84 * cur_ql)
+
+                    msg_add = 'Add a QL {}+ bright {} cluster. The result is QL {}.'.format(cluster_ql, bright_skill, start_ql)
+                    ret_msg.append(msg_add)
+
+                elif JOBE_SKILL.get(bright_skill) is not None:
+                    # jobe cluster
+                    pass
+
+            faded_skill = implant.get('Faded')
+            if faded_skill != 'Empty':
+                if NP_MODS.get(faded_skill) is not None:
+                    # RK cluster
+                    
+                    start_ql = cur_ql
+                    enuf_skill, faded_bumps = rk_ql_bump(np_skill, shiny_skill, 'Faded', target_ql)
+                    if not enuf_skill:
+                        ret_msg = ['Your nanoprogramming is too low to build this implant.']
+                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
+                        
+                    temp_ql = cur_ql - faded_bumps
+                    enuf_skill, check_bumps = rk_ql_bump(np_skill, shiny_skill, 'Faded', temp_ql)
+                    cur_ql = cur_ql - check_bumps
+
+                    if cur_ql < min_ql or temp_ql < min_ql:
+                        ret_msg = ['Your skill is too high to build this implant.']
+                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
+
+                    cluster_ql = math.ceil(0.82 * cur_ql)
+
+                    msg_add = 'Add a QL {}+ faded {} cluster. The result is QL {}.'.format(cluster_ql, faded_skill, start_ql)
+                    ret_msg.append(msg_add)
+
+                elif JOBE_SKILL.get(faded_skill) is not None:
+                    # jobe cluster
+                    pass
+
+            msg_add = 'Start with a QL {} Basic {} Implant'.format(cur_ql, slot)
+            ret_msg.append(msg_add)
+
+            ret_msg.reverse()
+
+            return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
+        except:
+            if DEBUG:
+                import traceback
+                traceback.print_exc()
+            return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+
+    else:
+        if DEBUG:
+            import traceback
+            traceback.print_exc()
+        return JsonResponse({'success': False, 'message': 'Quit tinkering, that''s my job'})
 
 def calc_implants(request, imp_slot):
     key = imp_slot
