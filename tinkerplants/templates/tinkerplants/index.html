@@ -14,6 +14,9 @@
         <li class="nav-item">
             <a class="nav-link" href="#results" data-bs-toggle="tab">Results</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#construct" data-bs-toggle="tab">Construction</a>
+        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane border border-top-0 rounded-bottom fade show active" id="build">
@@ -700,6 +703,54 @@
                         
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="tab-pane border border-top-0 rounded-bottom fade" id="construct">
+            <div class="container" id="construct-container">
+                <div class="row" id="spacer_row">&nbsp</div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <span class="fw-bold">Skills</span>
+                    </div>
+                    <div class="col col-md-3">
+                        <span class="fw-bold">Implant</span>
+                    </div>
+                    <div class="col col-md-6">
+                        <span class="fw-bold">Instructions</span>
+                    </div>
+                </div>
+                <div class="row">&nbsp</div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <div class="row">
+                            <div class="col col-md-7">
+                                <span>Nanoprogramming: </span>
+                            </div>
+                            <div class="col col-md-4">
+                                <input type="number" id="np-skill" class="form-control" value="1">
+                            </div>
+                        </div>
+                        <div class="row">&nbsp</div>
+                        <div class="row">
+                            <div class="col col-md-7">
+                                <span>Breaking & Entering: </span>
+                            </div>
+                            <div class="col col-md-4">
+                                <input type="number" id="be-skill" class="form-control" value="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3">
+                        <table class="table table-striped">
+                            <tbody id="construct-table">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col col-md-6">
+                        <ol id="instructions"></ol>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
