@@ -1,6 +1,7 @@
 #from models import *
 
 import xml.etree.ElementTree as ET
+import math
 
 
 NP_MODS = {'1h Blunt' : 1.8, '1h Edged Weapon' : 1.9, '2h Blunt' : 1.8, '2h Edged' : 1.9, 'Adventuring' : 1.5, 'Agility' : 2.25, 
@@ -144,6 +145,12 @@ CLUSTER_SLOTS = {
     'Faded' : 2
 }
 
+CLUSTER_MIN_QL = {
+    'Shiny' : 0.86,
+    'Bright' : 0.84,
+    'Faded' : 0.82  
+}
+
 def initial_implants():
     implants = {}
     for slot in IMP_SLOTS:
@@ -207,4 +214,29 @@ def rk_ql_bump(np_skill, skill, slot, ql):
         bumps = 5 if bumps >= 5 else bumps
 
     return True, bumps
+
+def rk_cluster_ql_bump(slot, skill, np_skill, cur_ql):
+    start_ql = cur_ql
+
+    # Refined imps can't go under ql200
+    min_ql = 1
+    if start_ql > 200:
+        min_ql = 200
+    elif start_ql >= 50:
+        min_ql = 50
+
+    enuf_skill, shiny_bumps = rk_ql_bump(np_skill, skill, slot, start_ql)
+    if not enuf_skill:
+        return ['Your nanoprogramming is too low to build this implant.'], start_ql
+
+    temp_ql = start_ql - shiny_bumps
+    enuf_skill, check_bumps = rk_ql_bump(np_skill, skill, slot, temp_ql)
+    cur_ql = start_ql - check_bumps
+
+    if cur_ql < min_ql or temp_ql < min_ql:
+        return ['Your skill is too high to build this implant.'], start_ql
+
+    cluster_ql = math.ceil(CLUSTER_MIN_QL[slot] * cur_ql)
+
+    return 'Add a QL {}+ {} {} cluster. The result is QL {}.'.format(cluster_ql, slot, skill, start_ql), cur_ql
 
