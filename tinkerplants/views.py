@@ -5,7 +5,7 @@ from tinkerplants.models import *
 from tinkerplants.utils import *
 from aobase.settings import *
 
-import json, mimetypes, math
+import json, mimetypes
 
 def index(request):
     if request.session.get('implants') is None:
@@ -150,22 +150,17 @@ def construct_imp(request):
     if request.method == 'POST':
         try:
             if request.session.get('implants') is None:
-                return JsonResponse({'success': False, 'message': 'Session timed out', 'next': ''})
+                return HttpResponseRedirect('')
 
-            ret_msg = []
+            basic_steps = []
+            ft_steps = []
 
             data = json.loads(request.body)
             slot = data.get('slot')
             if slot is None:
                 return JsonResponse({'success': False, 'message': 'Implant slot is missing'})
 
-            np_skill = int(data.get('np_skill'))
-            if np_skill is None:
-                return JsonResponse({'success': False, 'message': 'NP skill is missing'})
-
-            be_skill = int(data.get('be_skill'))
-            if be_skill is None:
-                return JsonResponse({'success': False, 'message': 'BE skill is missing'})
+            combine_skills = data.get('skills')
 
             implant = request.session['implants'][slot]
             target_ql = implant.get('ql')
@@ -183,92 +178,132 @@ def construct_imp(request):
             if shiny_skill != 'Empty':
                 if NP_MODS.get(shiny_skill) is not None:
                     # RK cluster
+
+                    msg_add, cur_ql, possible = rk_cluster_ql_bump('Shiny', shiny_skill, combine_skills, cur_ql, min_ql)
+                    if not possible:
+                        basic_steps = msg_add
+                        ft_steps = msg_add
+                        return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
                     
-                    start_ql = cur_ql
-                    enuf_skill, shiny_bumps = rk_ql_bump(np_skill, shiny_skill, 'Shiny', target_ql)
-                    if not enuf_skill:
-                        ret_msg = ['Your nanoprogramming is too low to build this implant.']
-                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
-
-                    temp_ql = target_ql - shiny_bumps
-                    enuf_skill, check_bumps = rk_ql_bump(np_skill, shiny_skill, 'Shiny', temp_ql)
-                    cur_ql = target_ql - check_bumps
-
-                    if cur_ql < min_ql or temp_ql < min_ql:
-                        ret_msg = ['Your skill is too high to build this implant.']
-                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
-
-                    cluster_ql = math.ceil(0.86 * cur_ql)
-
-                    msg_add = 'Add a QL {}+ shiny {} cluster. The result is QL {}.'.format(cluster_ql, shiny_skill, start_ql)
-                    ret_msg.append(msg_add)
+                    basic_steps.append(msg_add)
+                    ft_steps.append(msg_add)
 
                 elif JOBE_SKILL.get(shiny_skill) is not None:
                     # jobe cluster
-                    pass
+
+                    if cur_ql < 99:
+                        basic_steps = ['JOBE clusters cannot be combined under QL99']
+                        ft_steps = ['JOBE clusters cannot be combined under QL99']
+                        return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
+
+                    msg_add, cur_ql, possible = jobe_cluster_ql_bump('Shiny', shiny_skill, combine_skills, cur_ql, min_ql)
+                    if not possible:
+                        basic_steps = msg_add
+                        ft_steps = msg_add
+                        return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
+
+                    basic_steps.append(msg_add)
+                    ft_steps.append(msg_add)
 
             bright_skill = implant.get('Bright')
             if bright_skill != 'Empty':
                 if NP_MODS.get(bright_skill) is not None:
                     # RK cluster
+
+                    msg_add, cur_ql, possible = rk_cluster_ql_bump('Bright', bright_skill, combine_skills, cur_ql, min_ql)
+                    if not possible:
+                        basic_steps = msg_add
+                        ft_steps = msg_add
+                        return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
                     
-                    start_ql = cur_ql
-                    enuf_skill, bright_bumps = rk_ql_bump(np_skill, shiny_skill, 'Bright', target_ql)
-                    if not enuf_skill:
-                        ret_msg = ['Your nanoprogramming is too low to build this implant.']
-                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
-
-                    temp_ql = cur_ql - bright_bumps
-                    enuf_skill, check_bumps = rk_ql_bump(np_skill, shiny_skill, 'Bright', temp_ql)
-                    cur_ql = cur_ql - check_bumps
-
-                    if cur_ql < min_ql or temp_ql < min_ql:
-                        ret_msg = ['Your skill is too high to build this implant.']
-                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
-
-                    cluster_ql = math.ceil(0.84 * cur_ql)
-
-                    msg_add = 'Add a QL {}+ bright {} cluster. The result is QL {}.'.format(cluster_ql, bright_skill, start_ql)
-                    ret_msg.append(msg_add)
+                    basic_steps.append(msg_add)
+                    ft_steps.append(msg_add)
 
                 elif JOBE_SKILL.get(bright_skill) is not None:
                     # jobe cluster
-                    pass
+
+                    if cur_ql < 99:
+                        basic_steps = ['JOBE clusters cannot be combined under QL99']
+                        ft_steps = ['JOBE clusters cannot be combined under QL99']
+                        return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
+
+                    msg_add, cur_ql, possible = jobe_cluster_ql_bump('Bright', bright_skill, combine_skills, cur_ql, min_ql)
+                    if not possible:
+                        basic_steps = msg_add
+                        ft_steps = msg_add
+                        return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
+
+                    basic_steps.append(msg_add)
+                    ft_steps.append(msg_add)
+                    
 
             faded_skill = implant.get('Faded')
             if faded_skill != 'Empty':
                 if NP_MODS.get(faded_skill) is not None:
                     # RK cluster
+
+                    msg_add, cur_ql, possible = rk_cluster_ql_bump('Faded', faded_skill, combine_skills, cur_ql, min_ql)
+                    if not possible:
+                        basic_steps = msg_add
+                        ft_steps = msg_add
+                        return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
                     
-                    start_ql = cur_ql
-                    enuf_skill, faded_bumps = rk_ql_bump(np_skill, shiny_skill, 'Faded', target_ql)
-                    if not enuf_skill:
-                        ret_msg = ['Your nanoprogramming is too low to build this implant.']
-                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
-                        
-                    temp_ql = cur_ql - faded_bumps
-                    enuf_skill, check_bumps = rk_ql_bump(np_skill, shiny_skill, 'Faded', temp_ql)
-                    cur_ql = cur_ql - check_bumps
-
-                    if cur_ql < min_ql or temp_ql < min_ql:
-                        ret_msg = ['Your skill is too high to build this implant.']
-                        return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
-
-                    cluster_ql = math.ceil(0.82 * cur_ql)
-
-                    msg_add = 'Add a QL {}+ faded {} cluster. The result is QL {}.'.format(cluster_ql, faded_skill, start_ql)
-                    ret_msg.append(msg_add)
+                    basic_steps.append(msg_add)
+                    ft_steps.append(msg_add)
 
                 elif JOBE_SKILL.get(faded_skill) is not None:
                     # jobe cluster
-                    pass
+                    
+                    if cur_ql < 99:
+                        basic_steps = ['JOBE clusters cannot be combined under QL99']
+                        ft_steps = ['JOBE clusters cannot be combined under QL99']
+                        return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
+
+                    msg_add, cur_ql, possible = jobe_cluster_ql_bump('Faded', faded_skill, combine_skills, cur_ql, min_ql)
+                    if not possible:
+                        basic_steps = msg_add
+                        ft_steps = msg_add
+                        return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
+
+                    basic_steps.append(msg_add)
+                    ft_steps.append(msg_add)
 
             msg_add = 'Start with a QL {} Basic {} Implant'.format(cur_ql, slot)
-            ret_msg.append(msg_add)
+            basic_steps.append(msg_add)
+            
+            if faded_skill == 'Empty':
+                faded_skill = pick_faded_cluster(slot)
 
-            ret_msg.reverse()
+            be_skill = int(combine_skills.get('Break & Entry'))
+            np_skill = int(combine_skills.get('Nanoprogramming'))
+            while not cur_ql % 10 == 0:
 
-            return JsonResponse({'success': True, 'steps' : json.dumps(ret_msg)})
+                if cur_ql > 200:
+                    ft_steps = ['Refined implants cannot be cleaned for QL bumping']
+                    break
+
+                be_req = round(cur_ql * 4.75)
+                if be_skill >= be_req and np_skill >= cur_ql:
+                    ft_steps.append('Clean the implant')
+                else:
+                    ft_steps = ['You need at least {} B&E skill to QL bump this implant'.format(be_req)]
+                    break
+
+                msg_add, cur_ql, possible = rk_cluster_ql_bump('Faded', faded_skill, combine_skills, cur_ql, min_ql)
+                if not possible:
+                    basic_steps = msg_add
+                    ft_steps = msg_add
+                    return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
+
+                ft_steps.append(msg_add)
+
+            if len(ft_steps) > 1:
+                ft_steps.append('Start with a QL {} Basic {} Implant'.format(cur_ql, slot))
+
+            basic_steps.reverse()
+            ft_steps.reverse()
+
+            return JsonResponse({'success': True, 'basic_steps' : json.dumps(basic_steps), 'ft_steps' : json.dumps(ft_steps)})
         except:
             if DEBUG:
                 import traceback
