@@ -248,12 +248,27 @@
         slot = elem.textContent
         np_skill = document.getElementById('np-skill').value
         be_skill = document.getElementById('be-skill').value
+        psy_skill = document.getElementById('psy-skill').value
+        qft_skill = document.getElementById('qft-skill').value
+        pt_skill = document.getElementById('pt-skill').value
+        ws_skill = document.getElementById('ws-skill').value
+        cl_skill = document.getElementById('cl-skill').value
+
+        skills = {
+            'Nanoprogramming' : np_skill,
+            'Break & Entry' : be_skill,
+            'Psychology' : psy_skill,
+            'Quantum FT' : qft_skill,
+            'Pharma Tech' : pt_skill,
+            'Weaponsmithing' : ws_skill,
+            'Computer Literacy' : cl_skill
+        }
 
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
         
         fetch('construct_imp', {
             method: 'post',
-            body: JSON.stringify({'slot' : slot, 'np_skill' : np_skill, 'be_skill' : be_skill}),
+            body: JSON.stringify({'slot' : slot, 'skills' : skills}),
             headers: {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json',
@@ -261,19 +276,30 @@
             }
         }).then(response => response.json())
         .then(data => {
-            update_steps(JSON.parse(data.steps))
+            update_basic_steps(JSON.parse(data.basic_steps))
+            update_ft_steps(JSON.parse(data.ft_steps))
         })
     }
 
-    function update_steps(data) {
-        instructions = document.getElementById('instructions')
-        instructions.innerHTML = ''
-
+    function update_basic_steps(data) {
+        basic_steps = document.getElementById('basic-steps')
+        basic_steps.innerHTML = ''
 
         for(idx in data) {
             new_li = document.createElement('li')
             new_li.textContent = data[idx]
-            instructions.appendChild(new_li)
+            basic_steps.appendChild(new_li)
+        }
+    }
+
+    function update_ft_steps(data) {
+        ft_steps = document.getElementById('ft-steps')
+        ft_steps.innerHTML = ''
+
+        for(idx in data) {
+            new_li = document.createElement('li')
+            new_li.textContent = data[idx]
+            ft_steps.appendChild(new_li)
         }
     }
 

@@ -173,6 +173,23 @@ def initial_implants():
     
     return implants
 
+def pick_faded_cluster(slot):
+    skills = list(IMP_SKILLS[slot]['Faded'])
+    skills.remove('Empty')
+
+    chosen = ''
+    chosen_val = 0.0
+
+    for skill in skills:
+        try:
+            if NP_MODS[skill] > chosen_val:
+                chosen = skill
+                chosen_val = NP_MODS[skill]
+        except:
+            pass # JOBE clusters can't be cleaned, so don't select them
+
+    return chosen
+
 def rk_cluster_np(skill, slot, ql):
     slot_mod = 1.0
     if slot == 'Shiny':
@@ -183,6 +200,26 @@ def rk_cluster_np(skill, slot, ql):
         slot_mod = 1.0
 
     return round(NP_MODS[skill] * ql * slot_mod)
+
+def jobe_cluster_skill(skill, slot, ql):
+    slot_mod = 1.0
+    if skill != 'Nano Delta':
+        if slot == 'Shiny':
+            slot_mod = 6.25
+        elif slot == 'Bright':
+            slot_mod = 4.75
+        elif slot == 'Faded':
+            slot_mod = 3.25
+
+    else:
+        if slot == 'Shiny':
+            slot_mod = 5.25
+        elif slot == 'Bright':
+            slot_mod = 4.0
+        elif slot == 'Faded':
+            slot_mod = 2.75
+
+    return round(ql * slot_mod)
 
 def rk_ql_bump(np_skill, skill, slot, ql):
     np_req = rk_cluster_np(skill, slot, ql)
@@ -215,28 +252,76 @@ def rk_ql_bump(np_skill, skill, slot, ql):
 
     return True, bumps
 
-def rk_cluster_ql_bump(slot, skill, np_skill, cur_ql):
+def jobe_ql_bump(combine_skill, skill, slot, ql):
+    skill_req = jobe_cluster_skill(skill, slot, ql)
+    if combine_skill < skill_req:
+        return False, 0
+    bumps = 0
+    if slot == 'Shiny':
+        over_factor = 400
+    elif slot == 'Bright':
+        over_factor = 300
+    elif slot == 'Faded':
+        over_factor = 200
+    else:
+        return False, 0
+
+    bumps = int((combine_skill - skill_req) / over_factor)
+
+    if ql in range(1, 99):
+        bumps = 0
+    elif ql == 99:
+        bumps = 1 if bumps >= 1 else bumps
+    elif ql in range(100, 150):
+        bumps = 2 if bumps >= 2 else bumps
+    elif ql in range(150, 200):
+        bumps = 3 if bumps >= 3 else bumps
+    elif ql in range(200, 250):
+        bumps = 4 if bumps >= 4 else bumps
+    elif ql in range(250, 300):
+        bumps = 5 if bumps >= 5 else bumps
+
+    return True, bumps
+
+def rk_cluster_ql_bump(slot, skill, combine_skills, cur_ql, min_ql):
     start_ql = cur_ql
 
-    # Refined imps can't go under ql200
-    min_ql = 1
-    if start_ql > 200:
-        min_ql = 200
-    elif start_ql >= 50:
-        min_ql = 50
+    np_skill = int(combine_skills.get('Nanoprogramming'))
 
-    enuf_skill, shiny_bumps = rk_ql_bump(np_skill, skill, slot, start_ql)
+    enuf_skill, bumps = rk_ql_bump(np_skill, skill, slot, start_ql)
     if not enuf_skill:
-        return ['Your nanoprogramming is too low to build this implant.'], start_ql
+        return ['Your nanoprogramming is too low to build this implant.'], start_ql, False
 
-    temp_ql = start_ql - shiny_bumps
+    temp_ql = start_ql - bumps
     enuf_skill, check_bumps = rk_ql_bump(np_skill, skill, slot, temp_ql)
     cur_ql = start_ql - check_bumps
 
     if cur_ql < min_ql or temp_ql < min_ql:
-        return ['Your skill is too high to build this implant.'], start_ql
+        return ['Your skill is too high to build this implant.'], start_ql, False
 
     cluster_ql = math.ceil(CLUSTER_MIN_QL[slot] * cur_ql)
 
-    return 'Add a QL {}+ {} {} cluster. The result is QL {}.'.format(cluster_ql, slot, skill, start_ql), cur_ql
+    return 'Add a QL {}+ {} {} cluster. The result is QL {}.'.format(cluster_ql, slot, skill, start_ql), cur_ql, True
+
+def jobe_cluster_ql_bump(slot, skill, combine_skills, cur_ql, min_ql):
+    start_ql = cur_ql
+
+    req_skill = JOBE_SKILL[skill]
+
+    combine_skill = int(combine_skills.get(req_skill))
+
+    enuf_skill, bumps = jobe_ql_bump(combine_skill, skill, slot, start_ql)
+    if not enuf_skill:
+        return ['Your {} is too low to build this implant.'.format(req_skill)], start_ql, False
+
+    temp_ql = start_ql - bumps
+    enuf_skill, check_bumps = jobe_ql_bump(combine_skill, skill, slot, temp_ql)
+    cur_ql = start_ql - check_bumps
+
+    if cur_ql < min_ql or temp_ql < min_ql:
+        return ['Your {} skill is too high to build this implant.'.format(req_skill)], start_ql, False
+
+    cluster_ql = math.ceil(CLUSTER_MIN_QL[slot] * cur_ql)
+
+    return 'Add a QL {}+ {} {} cluster. The result is QL {}.'.format(cluster_ql, slot, skill, start_ql), cur_ql, True
 
