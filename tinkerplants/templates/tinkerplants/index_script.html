@@ -31,6 +31,8 @@
         elem.addEventListener('change', update_ql);
     })
 
+    document.getElementById('update-all').addEventListener('change', update_all_ql)
+
     function upload_file() {
         document.getElementById('load-dropdown-menu').classList.toggle('show')
         var input_file = document.getElementById('upload-file')
@@ -84,6 +86,28 @@
         fetch('update_ql', {
             method: 'post',
             body: JSON.stringify({'slot' : id, 'value' : val}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_data(data)
+        })
+    }
+
+    function update_all_ql(evt) {
+        val = evt.srcElement.value
+
+        if (val < 1) { val = 1; }
+        if (val > 300) { val = 300; }
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch('update_all_ql', {
+            method: 'post',
+            body: JSON.stringify({'value' : val}),
             headers: {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json',

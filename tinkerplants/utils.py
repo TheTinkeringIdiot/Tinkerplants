@@ -290,14 +290,14 @@ def rk_cluster_ql_bump(slot, skill, combine_skills, cur_ql, min_ql):
 
     enuf_skill, bumps = rk_ql_bump(np_skill, skill, slot, start_ql)
     if not enuf_skill:
-        return ['Your nanoprogramming is too low to build this implant.'], start_ql, False
+        return ['Your nanoprogramming skill is too low to build this implant.'], start_ql, False
 
     temp_ql = start_ql - bumps
     enuf_skill, check_bumps = rk_ql_bump(np_skill, skill, slot, temp_ql)
     cur_ql = start_ql - check_bumps
 
     if cur_ql < min_ql or temp_ql < min_ql:
-        return ['Your skill is too high to build this implant.'], start_ql, False
+        return ['Your nanoprogramming skill is too high to build this implant.'], start_ql, False
 
     cluster_ql = math.ceil(CLUSTER_MIN_QL[slot] * cur_ql)
 
