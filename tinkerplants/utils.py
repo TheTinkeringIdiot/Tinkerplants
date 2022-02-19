@@ -6,7 +6,7 @@ import math
 
 NP_MODS = {'1h Blunt' : 1.8, '1h Edged Weapon' : 1.9, '2h Blunt' : 1.8, '2h Edged' : 1.9, 'Adventuring' : 1.5, 'Agility' : 2.25, 
 'Aimed Shot' : 2.1, 'Assault Rif' : 2.25, 'Bio.Metamor' : 2.4, 'Body Dev' : 2.0, 'Bow' : 2.0, 'Bow Spc Att' : 2.0, 'Brawling' : 1.65, 
-'Break & Entry' : 2.0, 'Burst' : 2.1, 'Chemical AC' : 2.0, 'Chemistry' : 2.0, 'Cold AC' : 2.0, 'Comp Lit' : 2.0, 'Concealment' : 1.8, 
+'Break & Entry' : 2.0, 'Burst' : 2.1, 'Chemical AC' : 2.0, 'Chemistry' : 2.0, 'Cold AC' : 2.0, 'Comp. Liter' : 2.0, 'Concealment' : 1.8, 
 'Dimach' : 2.25, 'Disease AC' : 1.75, 'Dodge-Rng' : 2.0, 'Duck-Exp' : 2.0, 'Elec. Engi' : 2.0, 'Energy AC' : 2.25, 'Evade-ClsC' : 2.0, 
 'Fast Attack' : 1.9, 'Fire AC' : 2.0, 'First Aid' : 1.8, 'Fling Shot' : 1.8, 'Full Auto' : 2.25, 'Grenade' : 1.9, 'Heavy Weapons' : 1.0, 
 'Imp/Proj AC' : 2.25, 'Intelligence' : 2.25, 'Map Nav' : 1.25, 'Martial Arts' : 2.5, 'Matter Crea' : 2.4, 'Matt.Metam' : 2.4, 'Max Health' : 2.5, 
