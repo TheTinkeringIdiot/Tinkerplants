@@ -368,7 +368,7 @@ def calc_implants(request, imp_slot):
     implants = Implant.objects.filter(shiny=val['Shiny'], bright=val['Bright'], faded=val['Faded'])
     if len(implants) <= 0:
         print('IMPLANT NOT FOUND:\nImplant: {}\nShiny: {}\nBright: {}\nFaded: {}'.format(key, val['Shiny'], val['Bright'], val['Faded']))
-        breakpoint()
+        #breakpoint()
         return False
     target_ql = val['ql']
 
