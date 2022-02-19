@@ -684,6 +684,15 @@
                         <input type="number" min="1" max="300" class="form-control" id="Feet-ql" value="1">
                     </div>
                 </div>
+                <div class="row border">
+                    <div class="col col-md-9">&nbsp;</div>
+                    <div class="col col-md-2 float-start">
+                        <div class="float-end">Set all QL to:</div>
+                    </div>
+                    <div class="col col-md-1">
+                        <input type="number" min="1" max="300" class="form-control" id="update-all" value="1">
+                    </div>
+                </div>
             </div>
         </div>
         <div class="tab-pane border border-top-0 rounded-bottom fade" id="results">
@@ -811,6 +820,6 @@
         </div>
     </div>
 </div>
-
+{% include 'tinkerplants/modals.html' %}
 {% include 'tinkerplants/index_script.html' %}
 {% endblock content %}
