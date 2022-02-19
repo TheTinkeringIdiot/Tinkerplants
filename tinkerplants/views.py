@@ -97,6 +97,41 @@ def update_ql(request):
             traceback.print_exc()
         return JsonResponse({'success': False, 'message': 'Quit tinkering, that''s my job'})
 
+def update_all_ql(request):
+    if request.method == 'POST':
+        try:
+            if request.session.get('implants') is None:
+                return JsonResponse({'success': False, 'message': 'Session timed out', 'next': ''})
+
+            data = json.loads(request.body)
+
+            try:
+                ql = int(data.get('value'))
+            except:
+                return JsonResponse({'success': False, 'message': 'Not a valid QL'})
+
+            if ql < 1 or ql > 300:
+                return JsonResponse({'success': False, 'message': 'Not a valid QL'})
+
+            for imp_slot, imp in request.session['implants'].items():
+                imp['ql'] = ql
+
+                if not calc_implants(request, imp_slot):
+                    return JsonResponse({'success': False, 'message': 'Unable to update ql'})
+
+            return JsonResponse({'success': True, 'implants' : request.session.get('implants')})
+        except:
+            if DEBUG:
+                import traceback
+                traceback.print_exc()
+            return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+
+    else:
+        if DEBUG:
+            import traceback
+            traceback.print_exc()
+        return JsonResponse({'success': False, 'message': 'Quit tinkering, that''s my job'})
+
 def save_profile(request):
     response = HttpResponse(json.dumps(request.session['implants']), content_type='application/force-download')
     response['Content-Disposition'] = 'attachment; filename="implant_profile.json"'
@@ -277,6 +312,8 @@ def construct_imp(request):
             be_skill = int(combine_skills.get('Break & Entry'))
             np_skill = int(combine_skills.get('Nanoprogramming'))
             while not cur_ql % 10 == 0:
+                if NP_MODS.get(faded_skill) is None:
+                    break
 
                 if cur_ql > 200:
                     ft_steps = ['Refined implants cannot be cleaned for QL bumping']
