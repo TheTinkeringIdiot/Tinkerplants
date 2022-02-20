@@ -1,4 +1,13 @@
 <script type="text/javascript">
+    var attribs = {
+        'Strength' : 'STR',
+        'Stamina' : 'STA',
+        'Sense' : 'SEN',
+        'Agility' : 'AGI',
+        'Intelligence' : 'INT',
+        'Psychic' : 'PSY'
+    }
+
     window.addEventListener('load', function () {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
         fetch('update_display', {
@@ -157,7 +166,7 @@
             ql_elem.value = implant.ql
 
             var attrib_req = document.getElementById(slot + '-attrib')
-            attrib_req.textContent = `${implant.attrib_name}`
+            attrib_req.textContent = attribs[`${implant.attrib_name}`]
 
             //Update the results tab
             if( ! (implant.Shiny == 'Empty' && implant.Bright == 'Empty' && implant.Faded == 'Empty')) {
@@ -252,10 +261,6 @@
                 imp_row.appendChild(build_col)
                 results.appendChild(imp_row)
             }
-
-            //update the construction tab
-
-
         }
     }
 
