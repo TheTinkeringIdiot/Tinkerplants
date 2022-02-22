@@ -478,6 +478,6 @@ def get_cluster_info(skill, ql, slot):
     jobe_skill_req = round(ql * jobe_mod)
 
     bene_per_ql = (cluster.hival - cluster.loval) / level_range
-    benefit = round(((ql - 1) * bene_per_ql) + cluster.loval)
+    benefit = round(((ql - target_ql) * bene_per_ql) + cluster.loval)
 
     return np_req, jobe_skill, jobe_skill_req, benefit
