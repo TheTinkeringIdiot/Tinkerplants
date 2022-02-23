@@ -201,8 +201,13 @@
             ql_elem.value = implant.ql
 
             var attrib_req = document.getElementById(slot + '-attrib')
-            attrib_req.textContent = attribs[`${implant.attrib_name}`]
-
+            if(implant.attrib_name == '') {
+                attrib_req.textContent = ''
+            }
+            else {
+                attrib_req.textContent = attribs[`${implant.attrib_name}`]
+            }
+            
             //Update the results tab
             if( ! (implant.Shiny == 'Empty' && implant.Bright == 'Empty' && implant.Faded == 'Empty')) {
                 imp_row = document.createElement('tr')

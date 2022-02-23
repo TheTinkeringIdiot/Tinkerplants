@@ -395,6 +395,7 @@ def calc_implants(request, imp_slot):
         request.session['implants'][key]['np_req'] = 1
         request.session['implants'][key]['jobe_skill'] = ''
         request.session['implants'][key]['jobe_skill_req'] = 1
+        request.session['implants'][key]['attrib_name'] = ''
         return True
 
     implants = Implant.objects.filter(shiny=val['Shiny'], bright=val['Bright'], faded=val['Faded'])
