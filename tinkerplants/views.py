@@ -132,6 +132,38 @@ def update_all_ql(request):
             traceback.print_exc()
         return JsonResponse({'success': False, 'message': 'Quit tinkering, that''s my job'})
 
+def lookup_cluster(request):
+    if request.method == 'POST':
+        try:
+            if request.session.get('implants') is None:
+                return JsonResponse({'success': False, 'message': 'Session timed out', 'next': ''})
+
+            data = json.loads(request.body)
+
+            try:
+                cluster = data.get('value')
+            except:
+                return JsonResponse({'success': False, 'message': 'Not a valid cluster'})
+
+            loc_results = []
+            for imp_slot, val in IMP_SKILLS.items():
+                for cluster_slot, skill_list in val.items():
+                    if cluster in IMP_SKILLS[imp_slot][cluster_slot]:
+                        loc_results.append('{}-{}'.format(imp_slot, cluster_slot))
+
+            return JsonResponse({'success': True, 'found' : json.dumps(loc_results)})
+        except:
+            if DEBUG:
+                import traceback
+                traceback.print_exc()
+            return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+
+    else:
+        if DEBUG:
+            import traceback
+            traceback.print_exc()
+        return JsonResponse({'success': False, 'message': 'Quit tinkering, that''s my job'})
+
 def save_profile(request):
     response = HttpResponse(json.dumps(request.session['implants']), content_type='application/force-download')
     response['Content-Disposition'] = 'attachment; filename="implant_profile.json"'
