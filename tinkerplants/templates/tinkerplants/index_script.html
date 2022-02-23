@@ -32,7 +32,9 @@
 
     var selectElements = Array.from(document.getElementsByTagName('select'))
     selectElements.forEach(function(elem) {
-        elem.addEventListener('change', update_imps);
+        if (elem.id != 'cluster-lookup') {
+            elem.addEventListener('change', update_imps);
+        }
     })
 
     var qlElements = Array.from(document.querySelectorAll("input[type='number'][id$=ql]"))
@@ -41,6 +43,8 @@
     })
 
     document.getElementById('update-all').addEventListener('change', update_all_ql)
+
+    document.getElementById('cluster-lookup').addEventListener('change', lookup_cluster)
 
     function upload_file() {
         document.getElementById('load-dropdown-menu').classList.toggle('show')
@@ -128,6 +132,37 @@
         })
     }
 
+    function lookup_cluster(evt) {
+        val = evt.srcElement.value
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch('lookup_cluster', {
+            method: 'post',
+            body: JSON.stringify({'value' : val}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            highlight_slots(data)
+        })
+    }
+
+    function highlight_slots(data) {
+        selects = Array.from(document.getElementsByTagName('select'))
+        selects.forEach(function(elem) {
+            elem.classList.remove('btn-success')
+        })
+
+        locations = JSON.parse(data.found)
+        for (let loc in locations) {
+            document.getElementById(locations[loc]).classList.toggle('btn-success')
+        }
+    }
+
     function clear_table(tbl) {
         while(tbl.lastChild) {
             tbl.removeChild(tbl.lastChild)
@@ -166,8 +201,13 @@
             ql_elem.value = implant.ql
 
             var attrib_req = document.getElementById(slot + '-attrib')
-            attrib_req.textContent = attribs[`${implant.attrib_name}`]
-
+            if(implant.attrib_name == '') {
+                attrib_req.textContent = ''
+            }
+            else {
+                attrib_req.textContent = attribs[`${implant.attrib_name}`]
+            }
+            
             //Update the results tab
             if( ! (implant.Shiny == 'Empty' && implant.Bright == 'Empty' && implant.Faded == 'Empty')) {
                 imp_row = document.createElement('tr')
