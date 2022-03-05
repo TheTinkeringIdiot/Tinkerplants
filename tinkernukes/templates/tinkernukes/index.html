@@ -200,6 +200,30 @@
                         </li>
                     </div>
                 </div>
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#target">Target</button>
+                    <div id="target" class="accordion-collapse collapse" data-bs-parent="#nuke-accordion">
+                        <li>
+                            <span class="fw-bold">Target AC:</span>
+                            <input type="number" id="target-ac" min=0 class="form-control" value="0">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Damage Type:</span>
+                            <select class="form-select" id="dmg-type">
+                                <option selected value="0">All</option>
+                                <option value="1">Chemical</option>
+                                <option value="2">Cold</option>
+                                <option value="3">Energy</option>
+                                <option value="4">Fire</option>
+                                <option value="5">Melee</option>
+                                <option value="6">Poison</option>
+                                <option value="7">Projectile</option>
+                                <option value="8">Radiation</option>
+                            </select>
+                        </li>
+                        
+                    </div>
+                </div>
                 
             </div>
             <ul class="nav nav-pills flex-column mb-auto">

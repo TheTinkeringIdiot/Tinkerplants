@@ -88,7 +88,7 @@ def update_stats(request):
                 request.session['stats']['he'] = he
 
             crunchcom = int(data.get('crunchcom'))
-            if crunchcom is not None and crunchcom >= 0 and crunchcom <= 6:
+            if crunchcom is not None and crunchcom >= 0 and crunchcom <= 7:
                 request.session['stats']['crunchcom'] = crunchcom
 
             ns = int(data.get('ns'))
@@ -107,14 +107,22 @@ def update_stats(request):
             if AM is not None and AM >= 0 and AM <= 10:
                 request.session['stats']['AM'] = AM
 
+            target_ac = int(data.get('target_ac'))
+            if target_ac is not None and target_ac >= 0:
+                request.session['stats']['target_ac'] = target_ac
+
+            dmg_type = int(data.get('dmg_type'))
+            if dmg_type is not None and dmg_type >= 0 and dmg_type <= 9:
+                request.session['stats']['dmg_type'] = dmg_type
+
             nano_list = get_nano_list(request.session.get('stats'))
 
             return JsonResponse({'success': True, 'stats': json.dumps(request.session['stats']), 'nukes' : json.dumps(nano_list)})
 
         except Exception as e:
-            if DEBUG:
-                import traceback
-                traceback.print_exc()
+            #if DEBUG:
+            import traceback
+            traceback.print_exc()
 
             return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
 
@@ -158,6 +166,10 @@ def get_nano_list(stats):
         else:
             nano.append(db_nano.spec)
 
+        if stats['dmg_type'] != 0:
+            if db_nano.ac != DAMAGE_TYPES[stats['dmg_type']]:
+                continue
+
         nano_cost = round(db_nano.cost * (1 - cost_pct / 100))
         nano.append(nano_cost)
 
@@ -169,9 +181,15 @@ def get_nano_list(stats):
 
         nano.append(atk_rch) # atk/recharge
 
+        ac_reduce = 0
+        if stats['target_ac'] > 0:
+            ac_reduce = round(stats['target_ac'] / 10)
+
         dmg_multiplier = 1 + (pct_dmg / 100)
         low_dmg = round(db_nano.low_dmg * dmg_multiplier)
-        high_dmg = round(db_nano.high_dmg * dmg_multiplier)
+        high_dmg = round(db_nano.high_dmg * dmg_multiplier) - ac_reduce
+        if high_dmg < low_dmg:
+            high_dmg = low_dmg
         avg_dmg = round((low_dmg + high_dmg) / 2)
 
         nano.append(low_dmg)
@@ -190,7 +208,7 @@ def get_nano_list(stats):
         nps = round(nano_cost / cast_time)
         nano.append(nps)
 
-        if nano_regen > nps:
+        if nano_regen >= nps:
             nano.append('∞')
         else:
             nano.append('{}s'.format(round(stats['max_nano'] / (nps - nano_regen))))

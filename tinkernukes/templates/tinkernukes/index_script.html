@@ -54,6 +54,8 @@
         body_dev = document.getElementById('body_dev').value
         psychic = document.getElementById('psychic').value
         nano_delta = document.getElementById('nano_delta').value
+        target_ac = document.getElementById('target-ac').value
+        dmg_type = document.getElementById('dmg-type').value
 
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
         
@@ -78,7 +80,9 @@
                 'cost_pct' : cost_pct,
                 'body_dev' : body_dev,
                 'psychic' : psychic,
-                'nano_delta' : nano_delta
+                'nano_delta' : nano_delta,
+                'target_ac' : target_ac,
+                'dmg_type' : dmg_type
             }),
             headers: {
                 'Accept' : 'application/json',
