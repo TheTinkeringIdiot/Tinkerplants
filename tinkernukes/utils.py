@@ -83,7 +83,17 @@ ANCIENT_MATRIX = {
     10 : 3
 }
 
-
+DAMAGE_TYPES = {
+    0 : 'All',
+    1 : 'Chemical',
+    2 : 'Cold',
+    3 : 'Energy',
+    4 : 'Fire',
+    5 : 'Melee',
+    6 : 'Poison',
+    7 : 'Projectile',
+    8 : 'Radiation'
+}
 
 def initial_nukes():
     return {
