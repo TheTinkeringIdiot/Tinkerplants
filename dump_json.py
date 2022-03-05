@@ -130,19 +130,20 @@ SKILL_NAMES = {
  'life' : 'Max Health',
 }
 
-def write_json(clusters, implants, out_name):
-    writeme = {'data' : {'clusters' : clusters, 'implants' : implants}}
+def write_json(clusters, implants, nanos, out_name):
+    writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nanos' : nanos}}
 
     with open(out_name, 'w') as fd:
         fd.write(json.dumps(writeme))
 
-def parse_xml(in_name, out_name):
+def parse_xml(in_name):
     tree = ET.parse(in_name)
 
     root = tree.getroot()
 
     implants = {}
     clusters = {}
+    crystals = {}
 
     for item in root.findall('item'):
         name = item.find('name').text
@@ -280,25 +281,135 @@ def parse_xml(in_name, out_name):
             except:
                 pass
 
-    return implants, clusters
+        elif item_type == 0 and ("Crystal" in name or 'Nano Cube' in name): # Item is a nano crystal, grab the QL
+            ql = int(item.find('ql').text)
+
+            requires = item.find('requirements')
+
+            # if 'Izgimmer\'s Cataclysm' in name:
+            #     breakpoint()
+
+            if requires is not None:
+                for req in requires:
+                    attrib = req.get('attribute')
+                    value = req.get('value')
+                    if attrib == 'Visual profession' or attrib == 'Profession':
+                        if value == '11':
+                            effects = item.find('effects')
+                            for eff in effects:
+                                if eff.get('action') == 'Upload':
+                                    val = eff.get('value')
+                                    crystals[val] = ql
+
+    return implants, clusters, crystals
+
+def parse_nanos(in_name, crystals):
+    tree = ET.parse(in_name)
+
+    root = tree.getroot()
+
+    nanos = {}
+
+    for item in root.findall('item'):
+        aoid = item.get('aoid')
+        nano = {}
+        nano['name'] = item.find('name').text
+
+        nt_nano = False
+
+        nanoclass = item.find('nanoclass')
+        if nanoclass is None:
+            continue
+        if nanoclass.get('school') != 'Combat':
+            continue
+
+        requires = item.find('requirements')
+        if requires is not None:
+            for req in requires:
+                attrib = req.get('attribute')
+                if attrib == 'Profession' or attrib == 'Visual profession':
+                    if req.get('value') == '11':
+                        nt_nano = True
+                        try:
+                            nano['ql'] = crystals[aoid]
+                        except:
+                            if 'Izgimmer\'s Cataclysm' in nano['name']:
+                                nano['ql'] = 219
+                            elif 'Garuk\'s Improved Viral Assault' in nano['name']:
+                                nano['ql'] = 215
+                            else:
+                                breakpoint()
+
+                elif attrib == 'Level':
+                    nano['level_req'] = int(req.get('value'))
+                
+                elif attrib == 'Matter creation':
+                    nano['mc'] = int(req.get('value'))
+
+                elif attrib == 'Specialization':
+                    nano['spec'] = int(req.get('value'))
+
+                elif attrib == 'Cyberdeck':
+                    nano['deck'] = int(req.get('value'))
+
+        times = item.find('times')
+        nano['attack'] = int(times.get('attack'))
+        nano['recharge'] = int(times.get('recharge'))
+        nano['cost'] = int(item.find('nanodata').get('nanocost'))
+
+        effects = item.find('effects')
+        if effects is not None:
+            for eff in effects:
+                if eff.find('requirements') is None and eff.get('action') == 'Hit':
+                    vals = eff.get('value').split()
+                    if len(vals) >= 4:
+                        nano['low_dmg'] = abs(int(vals[0]))
+                        nano['high_dmg'] = abs(int(vals[2]))
+                        nano['ac'] = vals[3]
+
+        if nano.get('low_dmg') is None: # not a nuke, skip it
+            nt_nano = False
+            continue
+
+        skillmaps = item.findall('skillmap')
+        for sm in skillmaps:
+            if sm.get('type') == 'defense':
+                nano['nr_pct'] = int(sm.find('skill').get('percentage'))
+
+        other = item.find('other')
+        if other is not None:
+            for attrib in other:
+                if attrib.get('key') == 'Attack time cap':
+                    nano['atk_cap'] = int(attrib.get('value'))
+
+        if nt_nano:
+            nanos[aoid] = nano
+
+    return nanos
 
 def remove_old(out_name):
     if os.path.exists(out_name):
         os.remove(out_name)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser('dump_json.py -f <xml input> -o <json output>\n')
-    parser.add_argument('-f', '--file', type=str, required=True)
+    parser = argparse.ArgumentParser('dump_json.py -i <items input> -n <nano input> -o <json output>\n')
+    parser.add_argument('-i', '--items', type=str, required=True)
+    parser.add_argument('-n', '--nanos', type=str, required=True)
     parser.add_argument('-o', '--output', type=str, required=True)
     args = parser.parse_args()
 
-    if not os.path.exists(args.file):
-        print('Input file does not exist!')
+    if not os.path.exists(args.items):
+        print('Items file does not exist!')
+        sys.exit(1)
+
+    if not os.path.exists(args.nanos):
+        print('Nanos file does not exist!')
         sys.exit(1)
 
     else:
         remove_old(args.output)
-        implants, clusters = parse_xml(args.file, args.output)
-        write_json(clusters, implants, args.output)
+        implants, clusters, crystals = parse_xml(args.items)
+        nanos = parse_nanos(args.nanos, crystals)
+        write_json(clusters, implants, nanos, args.output)
 
 

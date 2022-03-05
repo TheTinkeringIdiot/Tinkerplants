@@ -7,19 +7,23 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'aobase.settings'
 django.setup()
 
 from tinkerplants.models import *
+from tinkernukes.models import *
 
 # Clear out the old data entirely
 Implant.objects.all().delete()
 Cluster.objects.all().delete()
+Nano.objects.all().delete()
 
 with open('data.json', 'r') as fd:
     data = json.loads(fd.read())
 
 clusters = data['data']['clusters']
 implants = data['data']['implants']
+nanos = data['data']['nanos']
 
 new_clusters = []
 new_implants = []
+new_nanos = []
 
 for name, vals in clusters.items():
     if not vals.get('normal'): # what the....skip it
@@ -158,3 +162,39 @@ for entry in bright_nd:
 
 Implant.objects.bulk_update(bright_nd_fixed, ['bright'])
 
+for aiod, vals in nanos.items():
+    nano = Nano()
+    nano.name = vals['name']
+    nano.ql = vals['ql']
+    nano.mc = vals['mc']
+    nano.attack = vals['attack']
+    nano.recharge = vals['recharge']
+    nano.cost = vals['cost']
+    nano.low_dmg = vals['low_dmg']
+    nano.high_dmg = vals['high_dmg']
+    nano.ac = vals['ac']
+    nano.nr_pct = vals['nr_pct']
+
+    if vals.get('level_req') is not None:
+        nano.level = vals['level_req']
+    else:
+        nano.level = 0
+
+    if vals.get('spec') is not None:
+        nano.spec = vals['spec']
+    else:
+        nano.spec = 0
+
+    if vals.get('deck') is not None:
+        nano.deck = vals['deck']
+    else:
+        nano.deck = 0
+
+    if vals.get('atk_cap') is not None:
+        nano.atk_cap = vals['atk_cap']
+    else:
+        nano.atk_cap = 0
+
+    new_nanos.append(nano)
+
+Nano.objects.bulk_create(new_nanos)
