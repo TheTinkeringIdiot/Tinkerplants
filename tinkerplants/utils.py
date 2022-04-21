@@ -18,13 +18,34 @@ NP_MODS = {'1h Blunt' : 1.8, '1h Edged Weapon' : 1.9, '2h Blunt' : 1.8, '2h Edge
 'Swimming' : 1.25, 'Time & Space' : 2.4, 'Trap Disarm' : 1.8, 'Treatment' : 2.15, 'Tutoring' : 1.3, 'Vehicle Air' : 1.0, 'Vehicle Ground' : 1.5, 
 'Vehicle Water' : 1.2, 'Weapon Smt' : 2.0}
 
-JOBE_SKILL = {'Add All Def.' : 'Psychology', 'Add All Off' : 'Psychology', 'Add. Chem. Dam.' : 'Quantum FT', 'Add. Energy Dam.' : 'Quantum FT', 
-'Add. Fire Dam.' : 'Quantum FT', 'Add. Melee Dam.' : 'Quantum FT', 'Add. Poison Dam.' : 'Quantum FT', 'Add. Proj. Dam.' : 'Quantum FT',  
-'Add.Rad. Dam.' : 'Quantum FT', 'Add. Xp' : 'Psychology', 
-'Heal Delta' : 'Pharma Tech', 'Max NCU' : 'Computer Literacy', 'Nano Delta' : 'Pharma Tech', 'Nano Point Cost Modifier' : 'Quantum FT', 
-'NF Interrupt' : 'Psychology', 'Nano Formula Interrupt Modifier' : 'Nanoprogramming', 'RangeInc. NF' : 'Nanoprogramming', 'RangeInc. Weapon' : 'Weaponsmithing', 'Shield Chemical AC' : 'Quantum FT', 
-'Shield Cold AC' : 'Quantum FT', 'Shield Melee AC' : 'Quantum FT', 'Shield Poison AC' : 'Quantum FT', 'Shield Energy AC' : 'Quantum FT', 
-'Shield Fire AC' : 'Quantum FT', 'Shield Projectile AC' : 'Quantum FT', 'Shield Radiation AC' : 'Quantum FT', 'Skill Time Lock Modifier' : 'Psychology'}
+JOBE_SKILL = {
+    'Add All Def.' : 'Psychology', 
+    'Add All Off' : 'Psychology', 
+    'Add. Chem. Dam.' : 'Quantum FT', 
+    'Add. Energy Dam.' : 'Quantum FT', 
+    'Add. Fire Dam.' : 'Quantum FT', 
+    'Add. Melee Dam.' : 'Quantum FT', 
+    'Add. Poison Dam.' : 'Quantum FT', 
+    'Add. Proj. Dam.' : 'Quantum FT',  
+    'Add.Rad. Dam.' : 'Quantum FT', 
+    'Add. Xp' : 'Psychology', 
+    'Heal Delta' : 'Pharma Tech', 
+    'Max NCU' : 'Computer Literacy', 
+    'Nano Delta' : 'Pharma Tech', 
+    'Nano Point Cost Modifier' : 'Quantum FT', 
+    'NF Interrupt' : 'Psychology', 
+    'Nano Formula Interrupt Modifier' : 'Nanoprogramming', 
+    'RangeInc. NF' : 'Nanoprogramming', 
+    'RangeInc. Weapon' : 'Weaponsmithing', 
+    'Shield Chemical AC' : 'Quantum FT', 
+    'Shield Cold AC' : 'Quantum FT', 
+    'Shield Melee AC' : 'Quantum FT', 
+    'Shield Poison AC' : 'Quantum FT', 
+    'Shield Energy AC' : 'Quantum FT', 
+    'Shield Fire AC' : 'Quantum FT', 
+    'Shield Projectile AC' : 'Quantum FT', 
+    'Shield Radiation AC' : 'Quantum FT', 
+    'Skill Time Lock Modifier' : 'Psychology'}
 
 JOBE_MODS = {'Shiny' : 6.25, 'Bright' : 4.75, 'Faded' : 3.25}
 
