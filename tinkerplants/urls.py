@@ -11,5 +11,6 @@ urlpatterns = [
     path('lookup_cluster', views.lookup_cluster, name='lookup_cluster'),
     path('save_profile', views.save_profile, name='save_profile'),
     path('load_profile', views.load_profile, name='load_profile'),
-    path('construct_imp', views.construct_imp, name='construct_imp')
+    path('construct_imp', views.construct_imp, name='construct_imp'),
+    path('reset_all', views.reset_all, name='reset_all')
 ]

@@ -97,6 +97,18 @@ def update_ql(request):
             traceback.print_exc()
         return JsonResponse({'success': False, 'message': 'Quit tinkering, that''s my job'})
 
+def reset_all(request):
+    if request.method == 'POST':
+        request.session['implants'] = initial_implants()
+        return JsonResponse({'success': True, 'implants' : request.session.get('implants')})
+        
+    else:
+        if DEBUG:
+            import traceback
+            traceback.print_exc()
+        return JsonResponse({'success': False, 'message': 'Quit tinkering, that''s my job'})
+
+
 def update_all_ql(request):
     if request.method == 'POST':
         try:

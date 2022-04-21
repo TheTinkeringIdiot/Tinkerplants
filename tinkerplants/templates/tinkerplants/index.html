@@ -50,7 +50,7 @@
                             <option value="Aimed Shot">Aimed Shot</option>
                             <option value="Elec. Engi">Elec. Engi</option>
                             <option value="Map Navig">Map Navig</option>
-                            <option value="RangeInc. Weapon">RangeInc. Weapon</option>
+                            <option value="RangeInc. Weapon" class="text-success">RangeInc. Weapon (JOBE)</option>
                             <option value="Rifle">Rifle</option>
                             <option value="Tutoring">Tutoring</option>
                             <option value="Vehicle Air">Vehicle Air</option>
@@ -685,11 +685,13 @@
                     </div>
                 </div>
                 <div class="row border">
-                    <div class="col col-md-3">&nbsp;</div>
-                    <div class="col float-start">
-                        <div class="float-end">Cluster lookup:</div>
-                    </div>
                     <div class="col col-md-3">
+                        <button id="btn-reset" class="btn">Reset All</button>
+                    </div>
+                    <div class="col float-start">
+                        <div class="float-end"><button class="btn">Cluster Lookup:</button></div>
+                    </div>
+                    <div class="col col-md-4">
                         <select class="form-select" id="cluster-lookup">
                             <option value=""></option>
                             <option value="1h Blunt">1h Blunt</option>
@@ -807,7 +809,7 @@
                     </div>
                     
                     <div class="col float-start">
-                        <div class="float-end">Set all QL to:</div>
+                        <div class="float-end"><button class="btn">Set all QL to:</button></div>
                     </div>
                     <div class="col col-md-2 col-lg-1">
                         <input type="number" min="1" max="300" class="form-control" id="update-all" style="width:84px" value="1">

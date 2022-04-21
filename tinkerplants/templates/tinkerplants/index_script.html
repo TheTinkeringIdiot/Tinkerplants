@@ -46,6 +46,8 @@
 
     document.getElementById('cluster-lookup').addEventListener('change', lookup_cluster)
 
+    document.getElementById('btn-reset').addEventListener('click', reset_all)
+
     function upload_file() {
         document.getElementById('load-dropdown-menu').classList.toggle('show')
         var input_file = document.getElementById('upload-file')
@@ -121,6 +123,22 @@
         fetch('update_all_ql', {
             method: 'post',
             body: JSON.stringify({'value' : val}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_data(data)
+        })
+    }
+
+    function reset_all(evt) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch('reset_all', {
+            method: 'post',
             headers: {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json',
