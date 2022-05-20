@@ -247,7 +247,7 @@ def construct_imp(request):
             # Refined imps can't go under ql200
             min_ql = 1
             if target_ql > 200:
-                min_ql = 200
+                min_ql = 201
             elif target_ql >= 50:
                 min_ql = 50
 

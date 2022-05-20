@@ -321,6 +321,8 @@ def rk_cluster_ql_bump(slot, skill, combine_skills, cur_ql, min_ql):
         return ['Your nanoprogramming skill is too high to build this implant.'], start_ql, False
 
     cluster_ql = math.ceil(CLUSTER_MIN_QL[slot] * cur_ql)
+    if cluster_ql < min_ql:
+        cluster_ql = min_ql
 
     return 'Add a QL {}+ {} {} cluster. The result is QL {}.'.format(cluster_ql, slot, skill, start_ql), cur_ql, True
 
