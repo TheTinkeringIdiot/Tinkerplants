@@ -84,7 +84,7 @@ def update_stats(request):
                 request.session['stats']['nano_delta'] = nano_delta
 
             he = int(data.get('he'))
-            if he is not None and he >= 0 and he <= 6:
+            if he is not None and he >= 0 and he <= 7:
                 request.session['stats']['he'] = he
 
             crunchcom = int(data.get('crunchcom'))
