@@ -198,6 +198,14 @@
         construct = document.getElementById('construct-table')
         clear_table(construct)
 
+        shopping = document.getElementById('shopping-table')
+        clear_table(shopping)
+
+        shop_implants = Array()
+        shop_shiny = Array()
+        shop_bright = Array()
+        shop_faded = Array()
+
         for (let slot in data.implants) {
             implant = data.implants[slot]
 
@@ -228,6 +236,18 @@
             
             //Update the results tab
             if( ! (implant.Shiny == 'Empty' && implant.Bright == 'Empty' && implant.Faded == 'Empty')) {
+                shop_implants.push(slot)
+                if(implant.Shiny != 'Empty') {
+                    shop_shiny.push(implant.Shiny)
+                }
+                if(implant.Bright != 'Empty') {
+                    shop_bright.push(implant.Bright)
+                }
+                if(implant.Faded != 'Empty') {
+                    shop_faded.push(implant.Faded)
+                }
+
+
                 imp_row = document.createElement('tr')
 
                 name_col = document.createElement('td')
@@ -319,6 +339,60 @@
                 imp_row.appendChild(build_col)
                 results.appendChild(imp_row)
             }
+        }
+        shop_implants.sort()
+        shop_shiny.sort()
+        shop_bright.sort()
+        shop_faded.sort()
+        for(const [idx, val] of shop_implants.entries()) {
+            shop_row = document.createElement('tr')
+
+            imp_td = document.createElement('td')
+            check = document.createElement('input')
+            check.type = 'checkbox'
+            imp_td.appendChild(check)
+            lbl = document.createElement('label')
+            lbl.appendChild(document.createTextNode(`\u00A0${val}`))
+            imp_td.appendChild(lbl)
+            shop_row.appendChild(imp_td)
+
+            shiny_td = document.createElement('td')
+            cluster = shop_shiny[idx]
+            if(typeof cluster !== 'undefined') {
+                check = document.createElement('input')
+                check.type = 'checkbox'
+                shiny_td.appendChild(check)
+                lbl = document.createElement('label')
+                lbl.appendChild(document.createTextNode(`\u00A0${cluster}`))
+                shiny_td.appendChild(lbl)
+            }
+            shop_row.appendChild(shiny_td)
+
+            bright_td = document.createElement('td')
+            cluster = shop_bright[idx]
+            if(typeof cluster !== 'undefined') {
+                check = document.createElement('input')
+                check.type = 'checkbox'
+                bright_td.appendChild(check)
+                lbl = document.createElement('label')
+                lbl.appendChild(document.createTextNode(`\u00A0${cluster}`))
+                bright_td.appendChild(lbl)
+            }
+            shop_row.appendChild(bright_td)
+
+            faded_td = document.createElement('td')
+            cluster = shop_faded[idx]
+            if(typeof cluster !== 'undefined') {
+                check = document.createElement('input')
+                check.type = 'checkbox'
+                faded_td.appendChild(check)
+                lbl = document.createElement('label')
+                lbl.appendChild(document.createTextNode(`\u00A0${cluster}`))
+                faded_td.appendChild(lbl)
+            }
+            shop_row.appendChild(faded_td)
+
+            shopping.appendChild(shop_row)
         }
     }
 
