@@ -56,7 +56,7 @@ def update_stats(request):
                 request.session['stats']['aggdef'] = aggdef
 
             spec = int(data.get('spec'))
-            if spec is not None and spec >= 0 and spec <= 4:
+            if spec is not None and spec >= 0 and spec <= 8:
                 request.session['stats']['spec'] = spec
             
             deck = int(data.get('deck'))
