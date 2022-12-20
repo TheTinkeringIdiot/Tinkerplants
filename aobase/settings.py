@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tinkerplants.apps.TinkerplantsConfig',
-    'tinkernukes.apps.TinkernukesConfig'
+    'tinkernukes.apps.TinkernukesConfig',
+    'tinkertools.apps.TinkertoolsConfig'
 ]
 
 MIDDLEWARE = [
