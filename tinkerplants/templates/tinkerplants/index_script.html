@@ -195,6 +195,9 @@
         results = document.getElementById('result-table')
         clear_table(results)
 
+        result_totals_table = document.getElementById('result-totals-table')
+        clear_table(result_totals_table)
+
         construct = document.getElementById('construct-table')
         clear_table(construct)
 
@@ -205,6 +208,8 @@
         shop_shiny = Array()
         shop_bright = Array()
         shop_faded = Array()
+
+        result_totals = {}
 
         for (let slot in data.implants) {
             implant = data.implants[slot]
@@ -281,18 +286,42 @@
                     bene_shiny_p = document.createElement('li')
                     bene_shiny_p.textContent = `${implant.Shiny}: ${implant.shiny_benefit}`
                     bene_list.appendChild(bene_shiny_p)
+
+                    //add shiny benefit to result_totals
+                    if(!(implant.Shiny in result_totals)) {
+                        result_totals[implant.Shiny] = implant.shiny_benefit
+                    }
+                    else {
+                        result_totals[implant.Shiny] += implant.shiny_benefit
+                    }
                 }
 
                 if(implant.Bright != 'Empty') {
                     bene_bright_p = document.createElement('li')
                     bene_bright_p.textContent = `${implant.Bright}: ${implant.bright_benefit}`
                     bene_list.appendChild(bene_bright_p)
+
+                    //add bright benefit to result_totals
+                    if(!(implant.Bright in result_totals)) {
+                        result_totals[implant.Bright] = implant.bright_benefit
+                    }
+                    else {
+                        result_totals[implant.Bright] += implant.bright_benefit
+                    }
                 }
 
                 if(implant.Faded != 'Empty') {
                     bene_faded_p = document.createElement('li')
                     bene_faded_p.textContent = `${implant.Faded}: ${implant.faded_benefit}`
                     bene_list.appendChild(bene_faded_p)
+
+                    //add faded benefit to result_totals
+                    if(!(implant.Faded in result_totals)) {
+                        result_totals[implant.Faded] = implant.faded_benefit
+                    }
+                    else {
+                        result_totals[implant.Faded] += implant.faded_benefit
+                    }
                 }
                 bene_col.appendChild(bene_list)
                 imp_row.appendChild(bene_col)
@@ -340,6 +369,29 @@
                 results.appendChild(imp_row)
             }
         }
+
+        // Populate the result totals
+        sorted_results = Object.keys(result_totals)
+            .sort()
+            .reduce((accumulator, key) => {
+                accumulator[key] = result_totals[key]
+                return accumulator
+            }, {})
+
+        idx = 0;
+        result_row = null;
+        for(item in sorted_results) {
+            if(idx % 5 == 0) {
+                result_row = document.createElement('tr')
+                result_totals_table.appendChild(result_row)
+            }
+            entry = document.createElement('td')
+            entry.textContent = `${item}: ${sorted_results[item]}`
+            result_row.appendChild(entry)
+            idx += 1
+        }
+
+        // Populate the shopping list
         shop_implants.sort()
         shop_shiny.sort()
         shop_bright.sort()
