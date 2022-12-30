@@ -194,6 +194,18 @@ def initial_implants():
     
     return implants
 
+def initial_prefs():
+    prefs = {
+        'Agility' : False,
+        'Intelligence' : False,
+        'Psychic' : False,
+        'Sense' : False,
+        'Stamina' : False,
+        'Strength' : False
+    }
+
+    return prefs
+
 def pick_faded_cluster(slot):
     skills = list(IMP_SKILLS[slot]['Faded'])
     skills.remove('Empty')

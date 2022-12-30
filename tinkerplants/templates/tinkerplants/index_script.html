@@ -42,6 +42,11 @@
         elem.addEventListener('change', update_ql);
     })
 
+    var attribElements = Array.from(document.querySelectorAll("input[type='checkbox'][id^=attrib]"))
+    attribElements.forEach(function(elem) {
+        elem.addEventListener('change', update_attrib_prefs);
+    })
+
     document.getElementById('update-all').addEventListener('change', update_all_ql)
 
     document.getElementById('cluster-lookup').addEventListener('change', lookup_cluster)
@@ -139,6 +144,32 @@
 
         fetch('reset_all', {
             method: 'post',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_data(data)
+        })
+    }
+
+    function update_attrib_prefs(evt) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        var prefs = {
+            'Agility' : document.getElementById('attrib-agi').checked,
+            'Intelligence' : document.getElementById('attrib-int').checked,
+            'Psychic' : document.getElementById('attrib-psy').checked,
+            'Sense' : document.getElementById('attrib-sen').checked,
+            'Stamina' : document.getElementById('attrib-sta').checked,
+            'Strength' : document.getElementById('attrib-str').checked,
+        }
+
+        fetch('update_attrib_prefs', {
+            method: 'post',
+            body: JSON.stringify({'prefs' : prefs}),
             headers: {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json',
@@ -445,6 +476,28 @@
             shop_row.appendChild(faded_td)
 
             shopping.appendChild(shop_row)
+        }
+
+        // Update the Settings tab
+        for (let attrib in data.attrib_prefs) {
+            if(attrib == 'Agility') {
+                document.getElementById('attrib-agi').checked = data.attrib_prefs[attrib]
+            }
+            if(attrib == 'Intelligence') {
+                document.getElementById('attrib-int').checked = data.attrib_prefs[attrib]
+            }
+            if(attrib == 'Psychic') {
+                document.getElementById('attrib-psy').checked = data.attrib_prefs[attrib]
+            }
+            if(attrib == 'Sense') {
+                document.getElementById('attrib-sen').checked = data.attrib_prefs[attrib]
+            }
+            if(attrib == 'Stamina') {
+                document.getElementById('attrib-sta').checked = data.attrib_prefs[attrib]
+            }
+            if(attrib == 'Strength') {
+                document.getElementById('attrib-str').checked = data.attrib_prefs[attrib]
+            }
         }
     }
 

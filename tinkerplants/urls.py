@@ -12,5 +12,6 @@ urlpatterns = [
     path('save_profile', views.save_profile, name='save_profile'),
     path('load_profile', views.load_profile, name='load_profile'),
     path('construct_imp', views.construct_imp, name='construct_imp'),
+    path('update_attrib_prefs', views.update_attrib_prefs, name='update_attrib_prefs'),
     path('reset_all', views.reset_all, name='reset_all')
 ]
