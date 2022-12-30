@@ -10,11 +10,12 @@ import json, mimetypes
 def index(request):
     if request.session.get('implants') is None:
         request.session['implants'] = initial_implants()
+        request.session['attrib_prefs'] = initial_prefs()
         print('Session setup')
     return render(request, 'tinkerplants/index.html')
 
 def update_display(request):
-    return JsonResponse({'success': True, 'implants' : request.session.get('implants')})
+    return JsonResponse({'success': True, 'implants' : request.session.get('implants'), 'attrib_prefs' : request.session.get('attrib_prefs')})
 
 def update_implants(request):
     if request.method == 'POST':
@@ -43,7 +44,7 @@ def update_implants(request):
             if not calc_implants(request, imp_slot):
                 return JsonResponse({'success': False, 'message': 'Unable to update implant'})
 
-            return JsonResponse({'success': True, 'implants' : request.session.get('implants')})
+            return JsonResponse({'success': True, 'implants' : request.session.get('implants'), 'attrib_prefs' : request.session.get('attrib_prefs')})
         except Exception as e:
             if DEBUG:
                 import traceback
@@ -84,7 +85,7 @@ def update_ql(request):
             if not calc_implants(request, imp_slot):
                 return JsonResponse({'success': False, 'message': 'Unable to update ql'})
 
-            return JsonResponse({'success': True, 'implants' : request.session.get('implants')})
+            return JsonResponse({'success': True, 'implants' : request.session.get('implants'), 'attrib_prefs' : request.session.get('attrib_prefs')})
         except:
             if DEBUG:
                 import traceback
@@ -108,6 +109,27 @@ def reset_all(request):
             traceback.print_exc()
         return JsonResponse({'success': False, 'message': 'Quit tinkering, that''s my job'})
 
+def update_attrib_prefs(request):
+    if request.method == 'POST':
+        prefs = json.loads(request.body)
+        prefs = prefs['prefs']
+
+        if prefs.get('Agility') is not None and \
+                prefs.get('Intelligence') is not None and \
+                prefs.get('Psychic') is not None and \
+                prefs.get('Sense') is not None and \
+                prefs.get('Stamina') is not None and \
+                prefs.get('Strength') is not None:
+
+            request.session['attrib_prefs'] = prefs
+
+        return JsonResponse({'success': True, 'implants' : request.session.get('implants'), 'attrib_prefs' : request.session.get('attrib_prefs')})
+
+    else:
+        if DEBUG:
+            import traceback
+            traceback.print_exc()
+        return JsonResponse({'success': False, 'message': 'Quit tinkering, that''s my job'})
 
 def update_all_ql(request):
     if request.method == 'POST':
@@ -410,22 +432,79 @@ def calc_implants(request, imp_slot):
         request.session['implants'][key]['attrib_name'] = ''
         return True
 
-    implants = Implant.objects.filter(shiny=val['Shiny'], bright=val['Bright'], faded=val['Faded'])
+    prefs = request.session['attrib_prefs']
+    has_prefs = True in prefs.values()
+    attrib_prefs = [x for x in prefs.keys() if prefs[x]]
+
+    filt_dict = {}
+
+    if has_prefs:
+        if val['Shiny'] != 'Empty':
+            filt_dict['shiny'] = val['Shiny']
+        if val['Bright'] != 'Empty':
+            filt_dict['bright'] = val['Bright']
+        if val['Faded'] != 'Empty':
+            filt_dict['faded'] = val['Faded']
+    else:
+        filt_dict['shiny'] = val['Shiny']
+        filt_dict['bright'] = val['Bright']
+        filt_dict['faded'] = val['Faded']
+
+
+    implants = Implant.objects.filter(**filt_dict)
     if len(implants) <= 0:
         print('IMPLANT NOT FOUND:\nImplant: {}\nShiny: {}\nBright: {}\nFaded: {}'.format(key, val['Shiny'], val['Bright'], val['Faded']))
-        #breakpoint()
         return False
-    target_ql = val['ql']
+    target_ql = val['ql'] 
 
-    for item in implants:
-        if item.ql == 1 and target_ql < 201: # normal implant
-            implant = item
-            level_range = 199
-            low_ql = 1
-        elif item.ql == 201 and target_ql >= 201: # refined implant
-            implant = item
-            level_range = 99
-            low_ql = 201
+    matched = False
+    
+    for item in implants: 
+        attrib_req = get_implant_attribute(item)
+
+        if not has_prefs:
+            if item.ql == 1 and target_ql < 201: # normal implant
+                implant = item
+                level_range = 199
+                low_ql = 1
+                matched = True
+                break
+            elif item.ql == 201 and target_ql >= 201: # refined implant
+                implant = item
+                level_range = 99
+                low_ql = 201
+                matched = True
+                break
+        
+        elif attrib_req in attrib_prefs: # Match for one of the preferred attributes
+            if item.ql == 1 and target_ql < 201: # normal implant
+                implant = item
+                level_range = 199
+                low_ql = 1
+                matched = True
+                break
+            elif item.ql == 201 and target_ql >= 201: # refined implant
+                implant = item
+                level_range = 99
+                low_ql = 201
+                matched = True
+                break
+
+    if not matched: # If no match was found for preferred attrib, leave the implant alone
+        implants = Implant.objects.filter(shiny=val['Shiny'], bright=val['Bright'], faded=val['Faded'])
+        for item in implants:
+            if item.ql == 1 and target_ql < 201: # normal implant
+                implant = item
+                level_range = 199
+                low_ql = 1
+            elif item.ql == 201 and target_ql >= 201: # refined implant
+                implant = item
+                level_range = 99
+                low_ql = 201
+        
+    request.session['implants'][key]['Shiny'] = implant.shiny
+    request.session['implants'][key]['Bright'] = implant.bright
+    request.session['implants'][key]['Faded'] = implant.faded
 
     for skill, req_vals in implant.reqs.items(): # equip requirements
         loval = req_vals['loval']
@@ -526,3 +605,12 @@ def get_cluster_info(skill, ql, slot):
     benefit = round(((ql - target_ql) * bene_per_ql) + cluster.loval)
 
     return np_req, jobe_skill, jobe_skill_req, benefit
+
+def get_implant_attribute(implant):
+    for skill, req_vals in implant.reqs.items():
+        if skill == 'Treatment':
+            continue
+        elif skill == 'Title level':
+            continue
+        else: 
+            return skill
