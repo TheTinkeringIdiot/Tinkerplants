@@ -16,4 +16,8 @@ class Nano(models.Model):
     spec = models.IntegerField(default=0)
     deck = models.IntegerField(default=0)
     level = models.IntegerField(default=0)
+    nt_dot = models.BooleanField(default=False)
+    dot_hits = models.IntegerField(default=0)
+    dot_delay = models.IntegerField(default=0)
+    strain_cd = models.IntegerField(default=0)
 
