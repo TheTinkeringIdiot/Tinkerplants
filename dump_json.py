@@ -281,7 +281,7 @@ def parse_xml(in_name):
             except:
                 pass
 
-        elif item_type == 0 and ("Crystal" in name or 'Nano Cube' in name): # Item is a nano crystal, grab the QL
+        elif item_type == 0 and ('Crystal' in name or 'Nano Cube' in name) and not 'Supercharged' in name: # Item is a nano crystal, grab the QL
             ql = int(item.find('ql').text)
 
             requires = item.find('requirements')
