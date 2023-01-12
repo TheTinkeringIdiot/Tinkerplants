@@ -281,7 +281,7 @@ def parse_xml(in_name):
             except:
                 pass
 
-        elif item_type == 0 and ("Crystal" in name or 'Nano Cube' in name): # Item is a nano crystal, grab the QL
+        elif item_type == 0 and ('Crystal' in name or 'Nano Cube' in name) and not 'Supercharged' in name: # Item is a nano crystal, grab the QL
             ql = int(item.find('ql').text)
 
             requires = item.find('requirements')
@@ -322,6 +322,11 @@ def parse_nanos(in_name, crystals):
             continue
         if nanoclass.get('school') != 'Combat':
             continue
+
+        if nanoclass.get('strain') == '10':
+            nano['nt_dot'] = True
+        else:
+            nano['nt_dot'] = False
 
         requires = item.find('requirements')
         if requires is not None:
@@ -367,6 +372,12 @@ def parse_nanos(in_name, crystals):
                         nano['high_dmg'] = abs(int(vals[2]))
                         nano['ac'] = vals[3]
 
+                    if eff.get('hits') is not None:
+                        nano['dot_hits'] = int(eff.get('hits'))
+
+                    if eff.get('delay') is not None:
+                        nano['dot_delay'] = int(eff.get('delay'))
+
         if nano.get('low_dmg') is None: # not a nuke, skip it
             nt_nano = False
             continue
@@ -381,6 +392,8 @@ def parse_nanos(in_name, crystals):
             for attrib in other:
                 if attrib.get('key') == 'Attack time cap':
                     nano['atk_cap'] = int(attrib.get('value'))
+                if attrib.get('key') == '643': # School cooldown
+                    nano['strain_cd'] = int(attrib.get('value'))
 
         if nt_nano:
             nanos[aoid] = nano

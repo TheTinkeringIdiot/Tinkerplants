@@ -174,6 +174,7 @@ for aiod, vals in nanos.items():
     nano.high_dmg = vals['high_dmg']
     nano.ac = vals['ac']
     nano.nr_pct = vals['nr_pct']
+    nano.nt_dot = vals['nt_dot']
 
     if vals.get('level_req') is not None:
         nano.level = vals['level_req']
@@ -194,6 +195,21 @@ for aiod, vals in nanos.items():
         nano.atk_cap = vals['atk_cap']
     else:
         nano.atk_cap = 0
+
+    if vals.get('dot_hits') is not None:
+        nano.dot_hits = vals['dot_hits']
+    else:
+        nano.dot_hits = 0
+
+    if vals.get('dot_delay') is not None:
+        nano.dot_delay = vals['dot_delay']
+    else:
+        nano.dot_delay = 0
+
+    if vals.get('strain_cd') is not None:
+        nano.strain_cd = vals['strain_cd']
+    else:
+        nano.strain_cd = 0
 
     new_nanos.append(nano)
 
