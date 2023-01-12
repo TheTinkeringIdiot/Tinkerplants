@@ -177,7 +177,13 @@ def get_nano_list(stats):
         if atk_speed < db_nano.atk_cap:
             atk_speed = db_nano.atk_cap
 
-        atk_rch = '{:.2f}/{:.2f}'.format(atk_speed / 100, db_nano.recharge / 100)
+        
+        if db_nano.recharge >= db_nano.strain_cd:
+            recharge = db_nano.recharge
+        else:
+            recharge = db_nano.strain_cd
+            
+        atk_rch = '{:.2f}/{:.2f}'.format(atk_speed / 100, recharge / 100)
 
         nano.append(atk_rch) # atk/recharge
 
@@ -185,7 +191,11 @@ def get_nano_list(stats):
         if stats['target_ac'] > 0:
             ac_reduce = round(stats['target_ac'] / 10)
 
-        dmg_multiplier = 1 + (pct_dmg / 100)
+        if db_nano.nt_dot: # DoT lines don't benefit from damage increase
+            dmg_multiplier = 1
+        else:
+            dmg_multiplier = 1 + (pct_dmg / 100)
+
         low_dmg = round(db_nano.low_dmg * dmg_multiplier)
         high_dmg = round(db_nano.high_dmg * dmg_multiplier) - ac_reduce
         if high_dmg < low_dmg:
@@ -196,10 +206,18 @@ def get_nano_list(stats):
         nano.append(avg_dmg)
         nano.append(high_dmg)
 
-        cast_time = (atk_speed + db_nano.recharge) / 100
-        min_dps = round(low_dmg / cast_time)
-        avg_dps = round(avg_dmg / cast_time)
-        high_dps = round(high_dmg / cast_time)
+        cast_time = (atk_speed + recharge) / 100
+        sample_len = 60
+        casts = math.floor(sample_len / cast_time)
+
+        if db_nano.nt_dot and db_nano.dot_hits > 1:
+            low_dmg = low_dmg * db_nano.dot_hits
+            avg_dmg = avg_dmg * db_nano.dot_hits
+            high_dmg = high_dmg * db_nano.dot_hits
+
+        min_dps = round((low_dmg * casts) / sample_len)
+        avg_dps = round((avg_dmg * casts) / sample_len)
+        high_dps = round((high_dmg * casts) / sample_len)
 
         nano.append(min_dps)
         nano.append(avg_dps)
