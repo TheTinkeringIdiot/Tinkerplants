@@ -207,6 +207,11 @@ def get_nano_list(stats):
         nano.append(high_dmg)
 
         cast_time = (atk_speed + recharge) / 100
+        if db_nano.nt_dot and db_nano.dot_hits > 1: # since sample is 60 seconds, count damage of the whole DoT as one cast
+            dot_time = (db_nano.dot_hits * db_nano.dot_delay) / 100
+            if dot_time > cast_time:
+                cast_time = dot_time
+
         sample_len = 60
         casts = math.floor(sample_len / cast_time)
 

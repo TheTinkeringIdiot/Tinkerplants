@@ -341,11 +341,6 @@ def parse_nanos(in_name, crystals):
         if nanoclass.get('school') != 'Combat':
             continue
 
-        # if nanoclass.get('strain') == '10':
-        #     nano['nt_dot'] = True
-        # else:
-        #     nano['nt_dot'] = False
-
         requires = item.find('requirements')
         if requires is not None:
             for req in requires:
@@ -391,8 +386,10 @@ def parse_nanos(in_name, crystals):
                         nano['ac'] = vals[3]
 
                     if eff.get('hits') is not None:
-                        nano['dot_hits'] = int(eff.get('hits'))
-                        nano['nt_dot'] = True
+                        hits = int(eff.get('hits'))
+                        nano['dot_hits'] = hits
+                        if hits > 1:
+                            nano['nt_dot'] = True
 
                     if eff.get('delay') is not None:
                         nano['dot_delay'] = int(eff.get('delay'))

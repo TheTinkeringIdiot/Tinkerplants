@@ -174,7 +174,11 @@ for aiod, vals in nanos.items():
     nano.high_dmg = vals['high_dmg']
     nano.ac = vals['ac']
     nano.nr_pct = vals['nr_pct']
-    nano.nt_dot = vals['nt_dot']
+
+    if vals.get('nt_dot') is not None:
+        nano.nt_dot = vals['nt_dot']
+    else:
+        nano.nt_dot = False
 
     if vals.get('nt_dot') is not None:
         nano.nt_dot = vals['nt_dot']
