@@ -176,6 +176,11 @@ for aiod, vals in nanos.items():
     nano.nr_pct = vals['nr_pct']
     nano.nt_dot = vals['nt_dot']
 
+    if vals.get('nt_dot') is not None:
+        nano.nt_dot = vals['nt_dot']
+    else:
+        nano.nt_dot = False
+
     if vals.get('level_req') is not None:
         nano.level = vals['level_req']
     else:

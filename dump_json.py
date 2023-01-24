@@ -144,12 +144,16 @@ def parse_xml(in_name):
     implants = {}
     clusters = {}
     crystals = {}
+    weapons = {}
+
+    weapon_count = 0
 
     for item in root.findall('item'):
         name = item.find('name').text
         if name is None:
             continue
         item_type = int(item.find('type').text)
+        icon = int(item.find('icon').text)
 
         if item_type == 0 and 'Cluster' in name: # Item is a cluster, store it
             idx = name.find(' - ')
@@ -301,6 +305,20 @@ def parse_xml(in_name):
                                     val = eff.get('value')
                                     crystals[val] = ql
 
+        elif item_type == 1 and item.find('skillmap') is not None and icon != 0: # Item is a weapon
+            dmg_range = item.find('damage')
+            if dmg_range is None:
+                continue
+            if dmg_range.get('maximum') == '1': # filter out social items
+                continue
+
+            if not weapons.get(name):
+                weapons[name] = {}
+
+            ql = int(item.find('ql').text)
+            
+
+    print('Weapon Count: {}'.format(weapon_count))
     return implants, clusters, crystals
 
 def parse_nanos(in_name, crystals):
@@ -323,10 +341,10 @@ def parse_nanos(in_name, crystals):
         if nanoclass.get('school') != 'Combat':
             continue
 
-        if nanoclass.get('strain') == '10':
-            nano['nt_dot'] = True
-        else:
-            nano['nt_dot'] = False
+        # if nanoclass.get('strain') == '10':
+        #     nano['nt_dot'] = True
+        # else:
+        #     nano['nt_dot'] = False
 
         requires = item.find('requirements')
         if requires is not None:
@@ -374,6 +392,7 @@ def parse_nanos(in_name, crystals):
 
                     if eff.get('hits') is not None:
                         nano['dot_hits'] = int(eff.get('hits'))
+                        nano['nt_dot'] = True
 
                     if eff.get('delay') is not None:
                         nano['dot_delay'] = int(eff.get('delay'))
