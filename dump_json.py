@@ -340,7 +340,9 @@ def parse_xml(in_name):
                 bitfields = item.findall('bitfield')
                 for bitfield in bitfields:
                     if bitfield.get('type') == 'props':
-                        weapons[aoid]['props'] = bitfield.text
+                        props = bitfield.text
+                        prop_items = props.split(',')
+                        weapons[aoid]['props'] = [x.strip() for x in prop_items]
 
                 reqs = item.find('requirements')
                 if reqs is not None:
@@ -376,7 +378,7 @@ def parse_xml(in_name):
 
             except (AttributeError, TypeError):
                 print('Weapon error ({}), moving on'.format(name))
-                breakpoint()
+                
             
             
 

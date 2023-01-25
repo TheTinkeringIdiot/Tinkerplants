@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tinkerplants.apps.TinkerplantsConfig',
     'tinkernukes.apps.TinkernukesConfig',
+    'tinkerfite.apps.TinkerfiteConfig',
     'tinkertools.apps.TinkertoolsConfig'
 ]
 
