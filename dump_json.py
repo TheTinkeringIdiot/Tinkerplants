@@ -130,8 +130,8 @@ SKILL_NAMES = {
  'life' : 'Max Health',
 }
 
-def write_json(clusters, implants, nanos, out_name):
-    writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nanos' : nanos}}
+def write_json(clusters, implants, nanos, weapons, out_name):
+    writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nanos' : nanos, 'weapons' : weapons}}
 
     with open(out_name, 'w') as fd:
         fd.write(json.dumps(writeme))
@@ -306,20 +306,82 @@ def parse_xml(in_name):
                                     crystals[val] = ql
 
         elif item_type == 1 and item.find('skillmap') is not None and icon != 0: # Item is a weapon
-            dmg_range = item.find('damage')
-            if dmg_range is None:
+            damage = item.find('damage')
+            if damage is None:
                 continue
-            if dmg_range.get('maximum') == '1': # filter out social items
+            if damage.get('maximum') == '1': # filter out social items
                 continue
 
-            if not weapons.get(name):
-                weapons[name] = {}
+            try:
+                aoid = int(item.get('aoid'))
 
-            ql = int(item.find('ql').text)
+                if not weapons.get(aoid):
+                    weapons[aoid] = {'name' : name}
+
+                ql = int(item.find('ql').text)
+                weapons[aoid]['ql'] = ql
+
+                times = item.find('times')
+                weapons[aoid]['times'] = {
+                    'attack' : int(times.get('attack')),
+                    'recharge' : int(times.get('recharge'))
+                }
+
+                weapons[aoid]['damage'] = {
+                    'minimum' : int(damage.get('minimum')),
+                    'maximum' : int(damage.get('maximum')),
+                    'critical' : int(damage.get('critical'))
+                }
+
+                ammo = item.find('ammo')
+                if ammo is not None:
+                    weapons[aoid]['clipsize'] = int(ammo.get('clipsize'))
+
+                bitfields = item.findall('bitfield')
+                for bitfield in bitfields:
+                    if bitfield.get('type') == 'props':
+                        weapons[aoid]['props'] = bitfield.text
+
+                reqs = item.find('requirements')
+                if reqs is not None:
+                    weapons[aoid]['reqs'] = {}
+                    profs = []
+                    breeds = []
+                    for child in reqs:
+                        attrib = child.get('attribute')
+                        if attrib == 'Profession':
+                            profs.append(int(child.get('value')))
+                        elif attrib == 'Breed':
+                            breeds.append(int(child.get('value')))
+                        else:
+                            weapons[aoid]['reqs'][attrib] = child.get('value')
+
+                    weapons[aoid]['reqs']['Profession'] = profs
+                    weapons[aoid]['reqs']['Breed'] = breeds
+
+                skillmaps = item.findall('skillmap')
+                if skillmaps is not None:
+                    for map in skillmaps:
+                        if map.get('type') == 'attack':
+                            weapons[aoid]['attack_skills'] = {}
+                            for child in map:
+                                weapons[aoid]['attack_skills'][child.get('name')] = int(child.get('percentage'))
+
+                other = item.find('other')
+                if other is not None:
+                    weapons[aoid]['other'] = {}
+                    for child in other:
+                        key = child.get('key')
+                        weapons[aoid]['other'][key] = int(child.get('value'))
+
+            except (AttributeError, TypeError):
+                print('Weapon error ({}), moving on'.format(name))
+                breakpoint()
+            
             
 
     print('Weapon Count: {}'.format(weapon_count))
-    return implants, clusters, crystals
+    return implants, clusters, crystals, weapons
 
 def parse_nanos(in_name, crystals):
     tree = ET.parse(in_name)
@@ -437,8 +499,8 @@ if __name__ == '__main__':
 
     else:
         remove_old(args.output)
-        implants, clusters, crystals = parse_xml(args.items)
+        implants, clusters, crystals, weapons = parse_xml(args.items)
         nanos = parse_nanos(args.nanos, crystals)
-        write_json(clusters, implants, nanos, args.output)
+        write_json(clusters, implants, nanos, weapons, args.output)
 
 
