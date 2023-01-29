@@ -130,6 +130,8 @@ SKILL_NAMES = {
  'life' : 'Max Health',
 }
 
+SPECIAL_ATTACKS = ['Brawl', 'Dimach', 'Fast Attack', 'Fling Shot', 'Burst', 'Full Auto', 'Sneak Attack', 'Aimed Shot']
+
 def write_json(clusters, implants, nanos, weapons, out_name):
     writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nanos' : nanos, 'weapons' : weapons}}
 
@@ -336,17 +338,19 @@ def parse_xml(in_name):
                 ammo = item.find('ammo')
                 if ammo is not None:
                     weapons[aoid]['clipsize'] = int(ammo.get('clipsize'))
+                else:
+                    weapons[aoid]['clipsize'] = -1
 
                 bitfields = item.findall('bitfield')
                 for bitfield in bitfields:
                     if bitfield.get('type') == 'props':
                         props = bitfield.text
                         prop_items = props.split(',')
-                        weapons[aoid]['props'] = [x.strip() for x in prop_items]
+                        weapons[aoid]['props'] = [x.strip() for x in prop_items if x.strip() in SPECIAL_ATTACKS]
 
                 reqs = item.find('requirements')
+                weapons[aoid]['reqs'] = {}
                 if reqs is not None:
-                    weapons[aoid]['reqs'] = {}
                     profs = []
                     breeds = []
                     for child in reqs:
@@ -370,8 +374,8 @@ def parse_xml(in_name):
                                 weapons[aoid]['attack_skills'][child.get('name')] = int(child.get('percentage'))
 
                 other = item.find('other')
+                weapons[aoid]['other'] = {}
                 if other is not None:
-                    weapons[aoid]['other'] = {}
                     for child in other:
                         key = child.get('key')
                         weapons[aoid]['other'][key] = int(child.get('value'))
