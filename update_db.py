@@ -8,11 +8,13 @@ django.setup()
 
 from tinkerplants.models import *
 from tinkernukes.models import *
+from tinkerfite.models import *
 
 # Clear out the old data entirely
 Implant.objects.all().delete()
 Cluster.objects.all().delete()
 Nano.objects.all().delete()
+Weapon.objects.all().delete()
 
 with open('data.json', 'r') as fd:
     data = json.loads(fd.read())
@@ -20,10 +22,12 @@ with open('data.json', 'r') as fd:
 clusters = data['data']['clusters']
 implants = data['data']['implants']
 nanos = data['data']['nanos']
+weapons = data['data']['weapons']
 
 new_clusters = []
 new_implants = []
 new_nanos = []
+new_weapons = []
 
 for name, vals in clusters.items():
     if not vals.get('normal'): # what the....skip it
@@ -223,3 +227,23 @@ for aiod, vals in nanos.items():
     new_nanos.append(nano)
 
 Nano.objects.bulk_create(new_nanos)
+
+for aoid, vals in weapons.items():
+    weapon = Weapon()
+    weapon.aoid = aoid
+    weapon.ql = vals['ql']
+    weapon.name = vals['name']
+    weapon.atk_time = vals['times']['attack']
+    weapon.rech_time = vals['times']['recharge']
+    weapon.dmg_min = vals['damage']['minimum']
+    weapon.dmg_max = vals['damage']['maximum']
+    weapon.dmg_crit = vals['damage']['critical']
+    weapon.clipsize = vals['clipsize']
+    weapon.props = vals['props']
+    weapon.reqs = vals['reqs']
+    weapon.atk_skills = vals['attack_skills']
+    weapon.other = vals['other']
+
+    new_weapons.append(weapon)
+
+Weapon.objects.bulk_create(new_weapons)
