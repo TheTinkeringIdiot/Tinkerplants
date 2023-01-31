@@ -1,7 +1,7 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        $('#nuke-table').DataTable({
+        $('#weapon-table').DataTable({
             order: [[ 14, 'desc' ]],
             pageLength: 25
         })
@@ -35,54 +35,85 @@
     })
 
     function update_stats(evt) {
-        breed = document.getElementById('breed').value
-        level = document.getElementById('level').value
-        mc = document.getElementById('mc').value
-        nano_init = document.getElementById('nano_init').value
-        max_nano = document.getElementById('max_nano').value
-        aggdef = document.getElementById('aggdef').value
-        spec = document.getElementById('spec').value
-        deck = document.getElementById('deck').value
-        he = document.getElementById('he').value
-        crunchcom = document.getElementById('crunchcom').value
-        con = document.getElementById('CoN').value
-        end = document.getElementById('END').value
-        ns = document.getElementById('NS').value
-        am = document.getElementById('AM').value
-        nano_dmg = document.getElementById('nano_dmg').value
-        cost_pct = document.getElementById('cost_pct').value
-        body_dev = document.getElementById('body_dev').value
-        psychic = document.getElementById('psychic').value
-        nano_delta = document.getElementById('nano_delta').value
-        target_ac = document.getElementById('target-ac').value
-        dmg_type = document.getElementById('dmg-type').value
+        console.log('here')
+        // breed = document.getElementById('breed').value
+        // profession = document.getElementById('profession').value
+        // level = document.getElementById('level').value
+
+        // onehb = document.getElementById('1hb-skill').value
+        // onehe = document.getElementById('1he-skill').value
+        // twohb = document.getElementById('2hb-skill').value
+        // twohe = document.getElementById('2he-skill').value
+        // ma = document.getElementById('martial-arts-skill').value
+        // me = document.getElementById('melee-energy-skill').value
+        // piercing = document.getElementById('piercing-skill').value
+
+        // ar = document.getElementById('assault-rifle-skill').value
+        // bow = document.getElementById('bow-skill').value
+        // smg = document.getElementById('mg-smg-skill').value
+        // pistol = document.getElementById('pistol-skill').value
+        // re = document.getElementById('ranged-energy-skill').value
+        // rifle = document.getElementById('rifle-skill').value
+        // shotgun = document.getElementById('shotgun-skill').value
+
+        // aimed = document.getElementById('aimed-shot-skill').value
+        // brawl = document.getElementById('brawl-skill').value
+        // burst = document.getElementById('burst-skill').value
+        // dimach = document.getElementById('dimach-skill').value
+        // fastattack = document.getElementById('fast-attack-skill').value
+        // fling = document.getElementById('fling-shot-skill').value
+        // fullauto = document.getElementById('full-auto-skill').value
+        // sneak = document.getElementById('sneak-attack-skill').value
+        
+        // melee_init = document.getElementById('melee-init').value
+        // phys_init = document.getElementById('physical-init').value
+        // ranged_init = document.getElementById('ranged-init').value
+        // aggdef = document.getElementById('aggdef').value
+
+        // aao = document.getElementById('aao').value
+        // add_dmg = document.getElementById('add-dmg').value
+
+        // target_ac = document.getElementById('target-ac').value
+        // dmg_type = document.getElementById('dmg-type').value
 
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
         
         fetch('update_stats', {
             method: 'post',
             body: JSON.stringify({
-                'breed' : breed, 
-                'level' : level,
-                'mc' : mc,
-                'nano_init' : nano_init,
-                'max_nano' : max_nano,
-                'aggdef' : aggdef,
-                'spec' : spec,
-                'deck' : deck,
-                'he' : he,
-                'crunchcom' : crunchcom,
-                'con' : con,
-                'end' : end,
-                'ns' : ns,
-                'am' : am,
-                'nano_dmg' : nano_dmg,
-                'cost_pct' : cost_pct,
-                'body_dev' : body_dev,
-                'psychic' : psychic,
-                'nano_delta' : nano_delta,
-                'target_ac' : target_ac,
-                'dmg_type' : dmg_type
+                'breed' : document.getElementById('breed').value, 
+                'profession' : document.getElementById('profession').value,
+                'level' : document.getElementById('level').value,
+                '1hb' : document.getElementById('1hb-skill').value,
+                '1he' : document.getElementById('1he-skill').value,
+                '2hb' : document.getElementById('2hb-skill').value,
+                '2he' : document.getElementById('2he-skill').value,
+                'martial_arts' : document.getElementById('martial-arts-skill').value,
+                'melee_energy' : document.getElementById('melee-energy-skill').value,
+                'piercing' : document.getElementById('piercing-skill').value,
+                'assault_rifle' : document.getElementById('assault-rifle-skill').value,
+                'bow' : document.getElementById('bow-skill').value,
+                'mg_smg' : document.getElementById('mg-smg-skill').value,
+                'pistol' : document.getElementById('pistol-skill').value,
+                're' : document.getElementById('ranged-energy-skill').value,
+                'rifle' : document.getElementById('rifle-skill').value,
+                'shotgun' : document.getElementById('shotgun-skill').value,
+                'aimed' : document.getElementById('aimed-shot-skill').value,
+                'brawl' : document.getElementById('brawl-skill').value,
+                'burst' : document.getElementById('burst-skill').value,
+                'dimach' : document.getElementById('dimach-skill').value,
+                'fastattack' : document.getElementById('fast-attack-skill').value,
+                'fling' : document.getElementById('fling-shot-skill').value,
+                'fullauto' : document.getElementById('full-auto-skill').value,
+                'sneak' : document.getElementById('sneak-attack-skill').value,
+                'melee_init' : document.getElementById('melee-init').value,
+                'phys_init' : document.getElementById('physical-init').value,
+                'ranged_init' : document.getElementById('ranged-init').value,
+                'aggdef' : document.getElementById('aggdef').value,
+                'aao' : document.getElementById('aao').value,
+                'add_dmg' : document.getElementById('add-damage').value,
+                'target_ac' : document.getElementById('target-ac').value,
+                'dmg_type' : document.getElementById('dmg-type').value
             }),
             headers: {
                 'Accept' : 'application/json',
@@ -95,28 +126,28 @@
         })
     }
 
-    function display_stats(data) {
-        stats = data['stats']
+    // function display_stats(data) {
+    //     stats = data['stats']
 
-        document.getElementById('breed').value = stats['breed']
-        document.getElementById('level').value = stats['level']
-        document.getElementById('mc').value = stats['mc']
-        document.getElementById('nano_init').value = stats['nano_init']
-        document.getElementById('max_nano').value = stats['max_nano']
-        document.getElementById('aggdef').value = stats['aggdef']
-        document.getElementById('spec').value = stats['spec']
-        document.getElementById('deck').value = stats['deck']
-        document.getElementById('he').value = stats['he']
-        document.getElementById('crunchcom').value = stats['crunchcom']
-        document.getElementById('CoN').value = stats['CoN']
-        document.getElementById('END').value = stats['END']
-        document.getElementById('NS').value = stats['NS']
-        document.getElementById('AM').value = stats['AM']
-        document.getElementById('nano_dmg').value = stats['nano_dmg']
-        document.getElementById('body_dev').value = stats['body_dev']
-        document.getElementById('psychic').value = stats['psychic']
-        document.getElementById('nano_delta').value = stats['nano_delta']
-    }
+    //     document.getElementById('breed').value = stats['breed']
+    //     document.getElementById('level').value = stats['level']
+    //     document.getElementById('mc').value = stats['mc']
+    //     document.getElementById('nano_init').value = stats['nano_init']
+    //     document.getElementById('max_nano').value = stats['max_nano']
+    //     document.getElementById('aggdef').value = stats['aggdef']
+    //     document.getElementById('spec').value = stats['spec']
+    //     document.getElementById('deck').value = stats['deck']
+    //     document.getElementById('he').value = stats['he']
+    //     document.getElementById('crunchcom').value = stats['crunchcom']
+    //     document.getElementById('CoN').value = stats['CoN']
+    //     document.getElementById('END').value = stats['END']
+    //     document.getElementById('NS').value = stats['NS']
+    //     document.getElementById('AM').value = stats['AM']
+    //     document.getElementById('nano_dmg').value = stats['nano_dmg']
+    //     document.getElementById('body_dev').value = stats['body_dev']
+    //     document.getElementById('psychic').value = stats['psychic']
+    //     document.getElementById('nano_delta').value = stats['nano_delta']
+    // }
 
     function clear_table(tbl) {
         while(tbl.lastChild) {
@@ -132,36 +163,47 @@
         stats = JSON.parse(data['stats'])
 
         document.getElementById('breed').value = stats['breed']
+        document.getElementById('profession').value = stats['profession']
         document.getElementById('level').value = stats['level']
-        document.getElementById('mc').value = stats['mc']
-        document.getElementById('nano_init').value = stats['nano_init']
-        document.getElementById('max_nano').value = stats['max_nano']
+        document.getElementById('1hb').value = stats['1hb']
+        document.getElementById('1he').value = stats['1he']
+        document.getElementById('2hb').value = stats['2hb']
+        document.getElementById('2he').value = stats['2he']
+        document.getElementById('martial_arts').value = stats['martial_arts']
+        document.getElementById('melee_energy').value = stats['melee_energy']
+        document.getElementById('piercing').value = stats['piercing']
+        document.getElementById('assault_rifle').value = stats['assault_rifle']
+        document.getElementById('bow').value = stats['bow']
+        document.getElementById('mg_smg').value = stats['mg_smg']
+        document.getElementById('pistol').value = stats['pistol']
+        document.getElementById('re').value = stats['re']
+        document.getElementById('rifle').value = stats['rifle']
+        document.getElementById('shotgun').value = stats['shotgun']
+        document.getElementById('aimed').value = stats['aimed']
+        document.getElementById('brawl').value = stats['brawl']
+        document.getElementById('burst').value = stats['burst']
+        document.getElementById('dimach').value = stats['dimach']
+        document.getElementById('fastattack').value = stats['fastattack']
+        document.getElementById('fling').value = stats['fling']
+        document.getElementById('fullauto').value = stats['fullauto']
+        document.getElementById('sneak').value = stats['sneak']
+        document.getElementById('melee_init').value = stats['melee_init']
+        document.getElementById('phys_init').value = stats['phys_init']
+        document.getElementById('ranged_init').value = stats['ranged_init']
         document.getElementById('aggdef').value = stats['aggdef']
-        document.getElementById('spec').value = stats['spec']
-        document.getElementById('deck').value = stats['deck']
-        document.getElementById('he').value = stats['he']
-        document.getElementById('crunchcom').value = stats['crunchcom']
-        document.getElementById('CoN').value = stats['CoN']
-        document.getElementById('END').value = stats['END']
-        document.getElementById('NS').value = stats['NS']
-        document.getElementById('AM').value = stats['AM']
-        document.getElementById('nano_dmg').value = stats['nano_dmg']
-        document.getElementById('body_dev').value = stats['body_dev']
-        document.getElementById('psychic').value = stats['psychic']
-        document.getElementById('nano_delta').value = stats['nano_delta']
+        document.getElementById('aao').value = stats['aao']
+        document.getElementById('add_dmg').value = stats['add_dmg']
+        document.getElementById('target_ac').value = stats['target_ac']
+        document.getElementById('dmg_type').value = stats['dmg_type']
         
-        nukes = JSON.parse(data.nukes)
+        weapons = JSON.parse(data.weapons)
 
-        nuke_table = $('#nuke-table').DataTable()
-        nuke_table.rows().remove()
+        weapon_table = $('#weapon-table').DataTable()
+        weapon_table.rows().remove()
 
-        nukes.forEach(function(nuke) {
-            nuke_table.row.add(nuke).draw()
+        weapons.forEach(function(weapon) {
+            weapon_table.row.add(weapon).draw()
         })
-
-        
     }
-
-    
 
 </script>
