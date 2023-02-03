@@ -38,52 +38,52 @@ def update_stats(request):
             subscription = int(data.get('subscription'))
             if subscription is not None and 0 <= subscription <= 128: request.session['stats']['subscription'] = subscription
 
-            onehb = int(data.get('1hb'))
-            if onehb is not None and onehb >= 1: request.session['stats']['1hb'] = onehb
-            onehe = int(data.get('1he'))
-            if onehe is not None and onehe >= 1: request.session['stats']['1he'] = onehe
-            twohb = int(data.get('2hb'))
-            if twohb is not None and twohb >= 1: request.session['stats']['2hb'] = twohb
-            twohe = int(data.get('2he'))
-            if twohe is not None and twohe >= 1: request.session['stats']['2he'] = twohe
-            martial_arts = int(data.get('martial_arts'))
-            if martial_arts is not None and martial_arts >= 1: request.session['stats']['martial_arts'] = martial_arts
-            melee_energy = int(data.get('melee_energy'))
-            if melee_energy is not None and melee_energy >= 1: request.session['stats']['melee_energy'] = melee_energy
-            piercing = int(data.get('piercing'))
-            if piercing is not None and piercing >= 1: request.session['stats']['piercing'] = piercing
+            onehb = int(data.get('1h Blunt'))
+            if onehb is not None and onehb >= 1: request.session['stats']['1h Blunt'] = onehb
+            onehe = int(data.get('1h Edged'))
+            if onehe is not None and onehe >= 1: request.session['stats']['1h Edged'] = onehe
+            twohb = int(data.get('2h Blunt'))
+            if twohb is not None and twohb >= 1: request.session['stats']['2h Blunt'] = twohb
+            twohe = int(data.get('2h Edged'))
+            if twohe is not None and twohe >= 1: request.session['stats']['2h Edged'] = twohe
+            martial_arts = int(data.get('Martial arts'))
+            if martial_arts is not None and martial_arts >= 1: request.session['stats']['Martial arts'] = martial_arts
+            melee_energy = int(data.get('Melee energy'))
+            if melee_energy is not None and melee_energy >= 1: request.session['stats']['Melee energy'] = melee_energy
+            piercing = int(data.get('Piercing'))
+            if piercing is not None and piercing >= 1: request.session['stats']['Piercing'] = piercing
             
-            assault_rifle = int(data.get('assault_rifle'))
-            if assault_rifle is not None and assault_rifle >= 1: request.session['stats']['assault_rifle'] = assault_rifle
-            bow = int(data.get('bow'))
-            if bow is not None and bow >= 1: request.session['stats']['bow'] = bow
-            mg_smg = int(data.get('mg_smg'))
-            if mg_smg is not None and mg_smg >= 1: request.session['stats']['mg_smg'] = mg_smg
-            pistol = int(data.get('pistol'))
-            if pistol is not None and pistol >= 1: request.session['stats']['pistol'] = pistol
-            re = int(data.get('re'))
-            if re is not None and re >= 1: request.session['stats']['re'] = re
-            rifle = int(data.get('rifle'))
-            if rifle is not None and rifle >= 1: request.session['stats']['rifle'] = rifle
-            shotgun = int(data.get('shotgun'))
-            if shotgun is not None and shotgun >= 1: request.session['stats']['shotgun'] = shotgun
+            assault_rifle = int(data.get('Assault rifle'))
+            if assault_rifle is not None and assault_rifle >= 1: request.session['stats']['Assault rifle'] = assault_rifle
+            bow = int(data.get('Bow'))
+            if bow is not None and bow >= 1: request.session['stats']['Bow'] = bow
+            mg_smg = int(data.get('Smg'))
+            if mg_smg is not None and mg_smg >= 1: request.session['stats']['Smg'] = mg_smg
+            pistol = int(data.get('Pistol'))
+            if pistol is not None and pistol >= 1: request.session['stats']['Pistol'] = pistol
+            re = int(data.get('Ranged energy'))
+            if re is not None and re >= 1: request.session['stats']['Ranged energy'] = re
+            rifle = int(data.get('Rifle'))
+            if rifle is not None and rifle >= 1: request.session['stats']['Rifle'] = rifle
+            shotgun = int(data.get('Shotgun'))
+            if shotgun is not None and shotgun >= 1: request.session['stats']['Shotgun'] = shotgun
 
-            aimed = int(data.get('aimed'))
-            if aimed is not None and aimed >= 1: request.session['stats']['aimed'] = aimed
-            brawl = int(data.get('brawl'))
-            if brawl is not None and brawl >= 1: request.session['stats']['brawl'] = brawl
-            burst = int(data.get('burst'))
-            if burst is not None and burst >= 1: request.session['stats']['burst'] = burst
-            dimach = int(data.get('dimach'))
-            if dimach is not None and dimach >= 1: request.session['stats']['dimach'] = dimach
-            fastattack = int(data.get('fastattack'))
-            if fastattack is not None and fastattack >= 1: request.session['stats']['fastattack'] = fastattack
-            fling = int(data.get('fling'))
-            if fling is not None and fling >= 1: request.session['stats']['fling'] = fling
-            fullauto = int(data.get('fullauto'))
-            if fullauto is not None and fullauto >= 1: request.session['stats']['fullauto'] = fullauto
-            sneak = int(data.get('sneak'))
-            if sneak is not None and sneak >= 1: request.session['stats']['sneak'] = sneak
+            aimed = int(data.get('Aimed shot'))
+            if aimed is not None and aimed >= 1: request.session['stats']['Aimed shot'] = aimed
+            brawl = int(data.get('Brawl'))
+            if brawl is not None and brawl >= 1: request.session['stats']['Brawl'] = brawl
+            burst = int(data.get('Burst'))
+            if burst is not None and burst >= 1: request.session['stats']['Burst'] = burst
+            dimach = int(data.get('Dimach'))
+            if dimach is not None and dimach >= 1: request.session['stats']['Dimach'] = dimach
+            fastattack = int(data.get('Fast attack'))
+            if fastattack is not None and fastattack >= 1: request.session['stats']['Fast attack'] = fastattack
+            fling = int(data.get('Fling shot'))
+            if fling is not None and fling >= 1: request.session['stats']['Fling shot'] = fling
+            fullauto = int(data.get('Full auto'))
+            if fullauto is not None and fullauto >= 1: request.session['stats']['Full auto'] = fullauto
+            sneak = int(data.get('Sneak attack'))
+            if sneak is not None and sneak >= 1: request.session['stats']['Sneak attack'] = sneak
 
             melee_init = int(data.get('melee_init'))
             if melee_init is not None and melee_init >= 1: request.session['stats']['melee_init'] = melee_init
