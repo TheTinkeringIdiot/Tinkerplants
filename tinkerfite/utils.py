@@ -1,3 +1,10 @@
+BREEDS = {
+    1 : 'Solitus',
+    2 : 'Opifex',
+    3 : 'Nanomage',
+    4 : 'Atrox'
+}
+
 PROFESSIONS = {
     6 : 'Adventurer',
     5 : 'Agent',
@@ -31,8 +38,8 @@ SUBSCRIPTIONS = {
 
 def initial_weapons():
     return {
-        'breed' : 6, 
-        'profession' : 0,
+        'breed' : 1, 
+        'profession' : 6,
         'level' : 1,
         'subscription' : 0,
         '1hb' : 1,
