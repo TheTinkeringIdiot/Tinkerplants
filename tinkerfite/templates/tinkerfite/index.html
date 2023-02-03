@@ -16,34 +16,42 @@
                             <li class="nav-item">
                                 <span class="fw-bold">Breed:</span>
                                 <select class="form-select" id="breed">
-                                    <option selected value="0">Solitus</option>
-                                    <option value="1">Opifex</option>
-                                    <option value="2">Nanomage</option>
-                                    <option value="3">Atrox</option>
+                                    <option selected value="1">Solitus</option>
+                                    <option value="2">Opifex</option>
+                                    <option value="3">Nanomage</option>
+                                    <option value="4">Atrox</option>
                                 </select>
                             </li>
                             <li class="navitem">
                                 <span class="fw-bold">Profession:</span>
                                 <select class="form-select" id="profession">
-                                    <option selected value="0">Adventurer</option>
-                                    <option value="1">Agent</option>
-                                    <option value="2">Bureaucrat</option>
-                                    <option value="3">Doctor</option>
-                                    <option value="4">Enforcer</option>
-                                    <option value="5">Engineer</option>
-                                    <option value="6">Fixer</option>
-                                    <option value="7">Keeper</option>
-                                    <option value="8">Martial Artist</option>
-                                    <option value="9">Meta-Physicist</option>
-                                    <option value="10">Nano-Technician</option>
-                                    <option value="11">Shade</option>
-                                    <option value="12">Soldier</option>
-                                    <option value="13">Trader</option>
+                                    <option selected value="6">Adventurer</option>
+                                    <option value="5">Agent</option>
+                                    <option value="8">Bureaucrat</option>
+                                    <option value="10">Doctor</option>
+                                    <option value="9">Enforcer</option>
+                                    <option value="3">Engineer</option>
+                                    <option value="4">Fixer</option>
+                                    <option value="14">Keeper</option>
+                                    <option value="2">Martial Artist</option>
+                                    <option value="12">Meta-Physicist</option>
+                                    <option value="11">Nano-Technician</option>
+                                    <option value="15">Shade</option>
+                                    <option value="1">Soldier</option>
+                                    <option value="7">Trader</option>
                                 </select>
                             </li>
                             <li class="nav-item">
                                 <span class="fw-bold">Level:</span>
                                 <input type="number" id="level" min=1 max=220 class="form-control" value="1">
+                            </li>
+                            <li class="navitem">
+                                <span class="fw-bold">Subscription:</span>
+                                <select class="form-select" id="subscription">
+                                    <option selected value="0">Free (Froob)</option>
+                                    <option value="2">Shadowlands (Sloob)</option>
+                                    <option value="8">Paid</option>
+                                </select>
                             </li>
                         </ul>
                     </div>
@@ -223,26 +231,20 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>MC</th>
-                        <th>NR%</th>
-                        <th>AC</th>
                         <th>QL</th>
-                        <th>Deck</th>
-                        <th>Level</th>
-                        <th>Spec</th>
-                        <th>Cost</th>
+                        <th>Clip</th>
+                        <th>Specials</th>
                         <th>Atk/Rch</th>
-                        <th>Min</th>
-                        <th>Avg.</th>
-                        <th>Max</th>
+                        <th>Min Dmg</th>
+                        <th>Mid Dmg</th>
+                        <th>Max Dmg</th>
+                        <th>Crit</th>
                         <th>Min DPS</th>
                         <th>Avg. DPS</th>
                         <th>Max DPS</th>
-                        <th>NPS</th>
-                        <th>OON</th>
                     </tr>
                 </thead>
-                <tbody id="nukes">
+                <tbody id="weapons">
 
                 </tbody>
             </table>

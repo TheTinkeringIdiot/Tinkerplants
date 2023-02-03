@@ -2,7 +2,7 @@
 
     $(document).ready(function() {
         $('#weapon-table').DataTable({
-            order: [[ 14, 'desc' ]],
+            order: [[ 8, 'desc' ]],
             pageLength: 25
         })
     })
@@ -19,7 +19,7 @@
             }
         }).then(response => response.json())
         .then(data => {
-            display_stats(data)
+            //display_stats(data)
             update_stats()
         })
     })
@@ -35,47 +35,6 @@
     })
 
     function update_stats(evt) {
-        console.log('here')
-        // breed = document.getElementById('breed').value
-        // profession = document.getElementById('profession').value
-        // level = document.getElementById('level').value
-
-        // onehb = document.getElementById('1hb-skill').value
-        // onehe = document.getElementById('1he-skill').value
-        // twohb = document.getElementById('2hb-skill').value
-        // twohe = document.getElementById('2he-skill').value
-        // ma = document.getElementById('martial-arts-skill').value
-        // me = document.getElementById('melee-energy-skill').value
-        // piercing = document.getElementById('piercing-skill').value
-
-        // ar = document.getElementById('assault-rifle-skill').value
-        // bow = document.getElementById('bow-skill').value
-        // smg = document.getElementById('mg-smg-skill').value
-        // pistol = document.getElementById('pistol-skill').value
-        // re = document.getElementById('ranged-energy-skill').value
-        // rifle = document.getElementById('rifle-skill').value
-        // shotgun = document.getElementById('shotgun-skill').value
-
-        // aimed = document.getElementById('aimed-shot-skill').value
-        // brawl = document.getElementById('brawl-skill').value
-        // burst = document.getElementById('burst-skill').value
-        // dimach = document.getElementById('dimach-skill').value
-        // fastattack = document.getElementById('fast-attack-skill').value
-        // fling = document.getElementById('fling-shot-skill').value
-        // fullauto = document.getElementById('full-auto-skill').value
-        // sneak = document.getElementById('sneak-attack-skill').value
-        
-        // melee_init = document.getElementById('melee-init').value
-        // phys_init = document.getElementById('physical-init').value
-        // ranged_init = document.getElementById('ranged-init').value
-        // aggdef = document.getElementById('aggdef').value
-
-        // aao = document.getElementById('aao').value
-        // add_dmg = document.getElementById('add-dmg').value
-
-        // target_ac = document.getElementById('target-ac').value
-        // dmg_type = document.getElementById('dmg-type').value
-
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
         
         fetch('update_stats', {
@@ -84,6 +43,7 @@
                 'breed' : document.getElementById('breed').value, 
                 'profession' : document.getElementById('profession').value,
                 'level' : document.getElementById('level').value,
+                'subscription' : document.getElementById('subscription').value,
                 '1hb' : document.getElementById('1hb-skill').value,
                 '1he' : document.getElementById('1he-skill').value,
                 '2hb' : document.getElementById('2hb-skill').value,
@@ -165,36 +125,37 @@
         document.getElementById('breed').value = stats['breed']
         document.getElementById('profession').value = stats['profession']
         document.getElementById('level').value = stats['level']
-        document.getElementById('1hb').value = stats['1hb']
-        document.getElementById('1he').value = stats['1he']
-        document.getElementById('2hb').value = stats['2hb']
-        document.getElementById('2he').value = stats['2he']
-        document.getElementById('martial_arts').value = stats['martial_arts']
-        document.getElementById('melee_energy').value = stats['melee_energy']
-        document.getElementById('piercing').value = stats['piercing']
-        document.getElementById('assault_rifle').value = stats['assault_rifle']
-        document.getElementById('bow').value = stats['bow']
-        document.getElementById('mg_smg').value = stats['mg_smg']
-        document.getElementById('pistol').value = stats['pistol']
-        document.getElementById('re').value = stats['re']
-        document.getElementById('rifle').value = stats['rifle']
-        document.getElementById('shotgun').value = stats['shotgun']
-        document.getElementById('aimed').value = stats['aimed']
-        document.getElementById('brawl').value = stats['brawl']
-        document.getElementById('burst').value = stats['burst']
-        document.getElementById('dimach').value = stats['dimach']
-        document.getElementById('fastattack').value = stats['fastattack']
-        document.getElementById('fling').value = stats['fling']
-        document.getElementById('fullauto').value = stats['fullauto']
-        document.getElementById('sneak').value = stats['sneak']
-        document.getElementById('melee_init').value = stats['melee_init']
-        document.getElementById('phys_init').value = stats['phys_init']
-        document.getElementById('ranged_init').value = stats['ranged_init']
+        document.getElementById('subscription').value = stats['subscription']
+        document.getElementById('1hb-skill').value = stats['1hb']
+        document.getElementById('1he-skill').value = stats['1he']
+        document.getElementById('2hb-skill').value = stats['2hb']
+        document.getElementById('2he-skill').value = stats['2he']
+        document.getElementById('martial-arts-skill').value = stats['martial_arts']
+        document.getElementById('melee-energy-skill').value = stats['melee_energy']
+        document.getElementById('piercing-skill').value = stats['piercing']
+        document.getElementById('assault-rifle-skill').value = stats['assault_rifle']
+        document.getElementById('bow-skill').value = stats['bow']
+        document.getElementById('mg-smg-skill').value = stats['mg_smg']
+        document.getElementById('pistol-skill').value = stats['pistol']
+        document.getElementById('ranged-energy-skill').value = stats['re']
+        document.getElementById('rifle-skill').value = stats['rifle']
+        document.getElementById('shotgun-skill').value = stats['shotgun']
+        document.getElementById('aimed-shot-skill').value = stats['aimed']
+        document.getElementById('brawl-skill').value = stats['brawl']
+        document.getElementById('burst-skill').value = stats['burst']
+        document.getElementById('dimach-skill').value = stats['dimach']
+        document.getElementById('fast-attack-skill').value = stats['fastattack']
+        document.getElementById('fling-shot-skill').value = stats['fling']
+        document.getElementById('full-auto-skill').value = stats['fullauto']
+        document.getElementById('sneak-attack-skill').value = stats['sneak']
+        document.getElementById('melee-init').value = stats['melee_init']
+        document.getElementById('physical-init').value = stats['phys_init']
+        document.getElementById('ranged-init').value = stats['ranged_init']
         document.getElementById('aggdef').value = stats['aggdef']
         document.getElementById('aao').value = stats['aao']
-        document.getElementById('add_dmg').value = stats['add_dmg']
-        document.getElementById('target_ac').value = stats['target_ac']
-        document.getElementById('dmg_type').value = stats['dmg_type']
+        document.getElementById('add-damage').value = stats['add_dmg']
+        document.getElementById('target-ac').value = stats['target_ac']
+        document.getElementById('dmg-type').value = stats['dmg_type']
         
         weapons = JSON.parse(data.weapons)
 

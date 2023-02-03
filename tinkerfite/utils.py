@@ -1,25 +1,40 @@
 PROFESSIONS = {
-    '0' : 'Adventurer',
-    '1' : 'Agent',
-    '2' : 'Bureaucrat',
-    '3' : 'Doctor',
-    '4' : 'Enforcer',
-    '5' : 'Engineer',
-    '6' : 'Fixer',
-    '7' : 'Keeper',
-    '8' : 'Martial Artist',
-    '9' : 'Meta-Physicist',
-    '10' : 'Nano-Technician',
-    '11' : 'Shade',
-    '12' : 'Soldier',
-    '13' : 'Trader',
+    6 : 'Adventurer',
+    5 : 'Agent',
+    8 : 'Bureaucrat',
+    10 : 'Doctor',
+    9 : 'Enforcer',
+    3 : 'Engineer',
+    4 : 'Fixer',
+    14 : 'Keeper',
+    2 : 'Martial Artist',
+    12 : 'Meta-Physicist',
+    11 : 'Nano-Technician',
+    15 : 'Shade',
+    1 : 'Soldier',
+    7 : 'Trader'
+}
+
+EXPANSIONS = {
+    0 : 'None',
+    2 : 'Shadowlands',
+    8 : 'Alien Invasion',
+    32 : 'Lost Eden',
+    128 : 'Legacy of Xan'
+}
+
+SUBSCRIPTIONS = {
+    0 : 'Free (Froob)',
+    2 : 'Shadowlands (Sloob)',
+    8 : 'Paid'
 }
 
 def initial_weapons():
     return {
-        'breed' : 0, 
+        'breed' : 6, 
         'profession' : 0,
         'level' : 1,
+        'subscription' : 0,
         '1hb' : 1,
         '1he' : 1,
         '2hb' : 1,

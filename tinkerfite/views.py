@@ -27,6 +27,14 @@ def update_stats(request):
             if request.session.get('stats') is None:
                 return JsonResponse({'success': False, 'message': 'Session timed out', 'next': ''})
 
+            data = json.loads(request.body)
+
+            breakpoint()
+
+            weapon_list = get_weapon_list(request.session.get('stats'))
+
+            return JsonResponse({'success': True, 'stats': json.dumps(request.session['stats']), 'weapons' : json.dumps(weapon_list)})
+
         except Exception as e:
             #if DEBUG:
             import traceback
@@ -35,4 +43,7 @@ def update_stats(request):
             return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
 
 def get_weapon_list(stats):
-    return []
+    weapon_list = []
+    weapon = ['Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Mid', 'Max', 'Crit', 'Min', 'Avg', 'Max']
+    weapon_list.append(weapon)
+    return weapon_list
