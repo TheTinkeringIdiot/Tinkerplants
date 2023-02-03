@@ -73,7 +73,6 @@
                 'aao' : document.getElementById('aao').value,
                 'add_dmg' : document.getElementById('add-damage').value,
                 'target_ac' : document.getElementById('target-ac').value,
-                'dmg_type' : document.getElementById('dmg-type').value
             }),
             headers: {
                 'Accept' : 'application/json',
@@ -155,7 +154,6 @@
         document.getElementById('aao').value = stats['aao']
         document.getElementById('add-damage').value = stats['add_dmg']
         document.getElementById('target-ac').value = stats['target_ac']
-        document.getElementById('dmg-type').value = stats['dmg_type']
         
         weapons = JSON.parse(data.weapons)
 
