@@ -114,7 +114,31 @@ def update_stats(request):
             return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
 
 def get_weapon_list(stats):
+    atk_skill = get_weapon_skill(stats)
+
+    breakpoint()
+
     weapon_list = []
     weapon = ['Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Mid', 'Max', 'Crit', 'Min', 'Avg', 'Max']
     weapon_list.append(weapon)
     return weapon_list
+
+def get_weapon_skill(stats): 
+    weapon_skills = {
+        '1h Blunt' : stats['1h Blunt'],
+        '1h Edged' : stats['1h Edged'],
+        '2h Blunt' : stats['2h Blunt'],
+        '2h Edged' : stats['2h Edged'],
+        'Martial arts' : stats['Martial arts'],
+        'Melee energy' : stats['Melee energy'],
+        'Piercing' : stats['Piercing'],
+        'Assault rifle' : stats['Assault rifle'],
+        'Bow' : stats['Bow'],
+        'Smg' : stats['Smg'],
+        'Pistol' : stats['Pistol'],
+        'Ranged energy' : stats['Ranged energy'],
+        'Rifle' : stats['Rifle'],
+        'Shotgun' : stats['Shotgun']
+    }
+
+    return max(weapon_skills, key=weapon_skills.get)
