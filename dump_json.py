@@ -360,7 +360,7 @@ def parse_xml(in_name):
                         elif attrib == 'Breed':
                             breeds.append(int(child.get('value')))
                         else:
-                            weapons[aoid]['reqs'][attrib] = child.get('value')
+                            weapons[aoid]['reqs'][attrib] = int(child.get('value'))
 
                     weapons[aoid]['reqs']['Profession'] = profs
                     weapons[aoid]['reqs']['Breed'] = breeds
@@ -383,10 +383,6 @@ def parse_xml(in_name):
             except (AttributeError, TypeError):
                 print('Weapon error ({}), moving on'.format(name))
                 
-            
-            
-
-    print('Weapon Count: {}'.format(weapon_count))
     return implants, clusters, crystals, weapons
 
 def parse_nanos(in_name, crystals):
