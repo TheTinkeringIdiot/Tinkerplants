@@ -19,7 +19,7 @@
             }
         }).then(response => response.json())
         .then(data => {
-            //display_stats(data)
+            display_stats(data)
             update_stats()
         })
     })
@@ -85,28 +85,43 @@
         })
     }
 
-    // function display_stats(data) {
-    //     stats = data['stats']
+    function display_stats(data) {
+        stats = data['stats']
 
-    //     document.getElementById('breed').value = stats['breed']
-    //     document.getElementById('level').value = stats['level']
-    //     document.getElementById('mc').value = stats['mc']
-    //     document.getElementById('nano_init').value = stats['nano_init']
-    //     document.getElementById('max_nano').value = stats['max_nano']
-    //     document.getElementById('aggdef').value = stats['aggdef']
-    //     document.getElementById('spec').value = stats['spec']
-    //     document.getElementById('deck').value = stats['deck']
-    //     document.getElementById('he').value = stats['he']
-    //     document.getElementById('crunchcom').value = stats['crunchcom']
-    //     document.getElementById('CoN').value = stats['CoN']
-    //     document.getElementById('END').value = stats['END']
-    //     document.getElementById('NS').value = stats['NS']
-    //     document.getElementById('AM').value = stats['AM']
-    //     document.getElementById('nano_dmg').value = stats['nano_dmg']
-    //     document.getElementById('body_dev').value = stats['body_dev']
-    //     document.getElementById('psychic').value = stats['psychic']
-    //     document.getElementById('nano_delta').value = stats['nano_delta']
-    // }
+        document.getElementById('breed').value = stats['breed']
+        document.getElementById('profession').value = stats['profession']
+        document.getElementById('level').value = stats['level']
+        document.getElementById('subscription').value = stats['subscription']
+        document.getElementById('1hb-skill').value = stats['1h Blunt']
+        document.getElementById('1he-skill').value = stats['1h Edged']
+        document.getElementById('2hb-skill').value = stats['2h Blunt']
+        document.getElementById('2he-skill').value = stats['2h Edged']
+        document.getElementById('martial-arts-skill').value = stats['Martial arts']
+        document.getElementById('melee-energy-skill').value = stats['Melee energy']
+        document.getElementById('piercing-skill').value = stats['Piercing']
+        document.getElementById('assault-rifle-skill').value = stats['Assault rifle']
+        document.getElementById('bow-skill').value = stats['Bow']
+        document.getElementById('mg-smg-skill').value = stats['Smg']
+        document.getElementById('pistol-skill').value = stats['Pistol']
+        document.getElementById('ranged-energy-skill').value = stats['Ranged energy']
+        document.getElementById('rifle-skill').value = stats['Rifle']
+        document.getElementById('shotgun-skill').value = stats['Shotgun']
+        document.getElementById('aimed-shot-skill').value = stats['Aimed shot']
+        document.getElementById('brawl-skill').value = stats['Brawl']
+        document.getElementById('burst-skill').value = stats['Burst']
+        document.getElementById('dimach-skill').value = stats['Dimach']
+        document.getElementById('fast-attack-skill').value = stats['Fast attack']
+        document.getElementById('fling-shot-skill').value = stats['Fling shot']
+        document.getElementById('full-auto-skill').value = stats['Full auto']
+        document.getElementById('sneak-attack-skill').value = stats['Sneak attack']
+        document.getElementById('melee-init').value = stats['melee_init']
+        document.getElementById('physical-init').value = stats['phys_init']
+        document.getElementById('ranged-init').value = stats['ranged_init']
+        document.getElementById('aggdef').value = stats['aggdef']
+        document.getElementById('aao').value = stats['aao']
+        document.getElementById('add-damage').value = stats['add_dmg']
+        document.getElementById('target-ac').value = stats['target_ac']
+    }
 
     function clear_table(tbl) {
         while(tbl.lastChild) {
