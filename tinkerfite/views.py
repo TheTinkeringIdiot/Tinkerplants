@@ -147,10 +147,10 @@ def get_weapon_list(stats):
 
 def get_equipable_weapons(weapons, stats):
     equipable_weapons = []
-    skip_duplicate = False
+    skip_duplicate = 0
     for weapon in weapons:
-        if skip_duplicate: # Assumes that two qls of same weapon are next to each other in the list
-            skip_duplicate = False
+        if skip_duplicate > 0: # Assumes that all qls of same weapon are next to each other in the list
+            skip_duplicate -= 1
             continue
 
         same_weapons = weapons.filter(name=weapon.name)
@@ -158,11 +158,12 @@ def get_equipable_weapons(weapons, stats):
         if len(same_weapons) == 1:
             eval_weapon = weapon
         else:
-            skip_duplicate = True
-            if same_weapons[0].ql < same_weapons[1].ql:
-                eval_weapon = interpolate(same_weapons[0], same_weapons[1], stats)
-            else:
-                eval_weapon = interpolate(same_weapons[1], same_weapons[0], stats)
+            skip_duplicate = len(same_weapons) - 1 # skip all iterations of this weapon
+
+            for i in range(len(same_weapons) - 1, 1, -1):
+                eval_weapon = interpolate(same_weapons[i-1], same_weapons[i], stats)
+                if eval_weapon is not None:
+                    break
 
         if eval_weapon is None: # Don't meet lo_weapon reqs, skip the rest
             continue
@@ -252,6 +253,9 @@ def check_requirements(weapon, stats):
         elif key == 'Level':
             if val > stats['level']:
                 return False
+
+        elif key == 'Cyberdeck': # MP QL215 weapon
+            continue
 
         else:
             try:
