@@ -49,6 +49,7 @@ def initial_weapons():
         'Martial arts' : 1,
         'Melee energy' : 1,
         'Piercing' : 1,
+        'Time and space' : 1,
         'Assault rifle' : 1,
         'Bow' : 1,
         'Smg' : 1,

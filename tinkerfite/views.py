@@ -53,6 +53,8 @@ def update_stats(request):
             if melee_energy is not None and melee_energy >= 1: request.session['stats']['Melee energy'] = melee_energy
             piercing = int(data.get('Piercing'))
             if piercing is not None and piercing >= 1: request.session['stats']['Piercing'] = piercing
+            timeandspace = int(data.get('Time and space'))
+            if timeandspace is not None and timeandspace >= 1: request.session['stats']['Time and space'] = timeandspace
             
             assault_rifle = int(data.get('Assault rifle'))
             if assault_rifle is not None and assault_rifle >= 1: request.session['stats']['Assault rifle'] = assault_rifle
@@ -164,9 +166,6 @@ def get_equipable_weapons(weapons, stats):
 
         if eval_weapon is None: # Don't meet lo_weapon reqs, skip the rest
             continue
-        
-        # if eval_weapon.name == 'Very Old Mitaar':
-        #     breakpoint()
 
         if check_requirements(eval_weapon, stats):
             equipable_weapons.append(eval_weapon)
@@ -174,7 +173,6 @@ def get_equipable_weapons(weapons, stats):
     return equipable_weapons
 
 def interpolate(lo_weapon, hi_weapon, stats):
-    # breakpoint()
     if check_requirements(hi_weapon, stats):
         return hi_weapon
     elif not check_requirements(lo_weapon, stats):
@@ -230,11 +228,7 @@ def interpolate(lo_weapon, hi_weapon, stats):
                 reqs[key] = round(val + (i * ((hi_weapon.reqs.get(key) - val) / ql_delta)))
         weapon.reqs = reqs
 
-        # if lo_weapon.name == 'Very Old Mitaar' and weapon.ql == 41:
-        #     breakpoint()
-
         if check_requirements(weapon, stats):
-            # breakpoint()
             return weapon
 
 def check_requirements(weapon, stats):
@@ -283,6 +277,7 @@ def get_weapon_skill(stats):
         'Martial arts' : stats['Martial arts'],
         'Melee energy' : stats['Melee energy'],
         'Piercing' : stats['Piercing'],
+        'Time and space' : stats['Time and space'],
         'Assault rifle' : stats['Assault rifle'],
         'Bow' : stats['Bow'],
         'Smg' : stats['Smg'],
