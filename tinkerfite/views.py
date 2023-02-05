@@ -118,12 +118,29 @@ def get_weapon_list(stats):
     atk_skill = get_weapon_skill(stats)
     candidate_weapons = get_candidate_weapons(atk_skill) # weapons that primarily use atk_skill
     equipable_weapons = get_equipable_weapons(candidate_weapons, stats)
-    
-    breakpoint()
 
     weapon_list = []
-    weapon = ['Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Mid', 'Max', 'Crit', 'Min', 'Avg', 'Max']
-    weapon_list.append(weapon)
+    #weapon = ['Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Mid', 'Max', 'Crit', 'Min', 'Avg', 'Max']
+    for weapon in equipable_weapons:
+        this_weapon = []
+        this_weapon.append(weapon.name)
+        this_weapon.append(weapon.ql)
+        if weapon.clipsize <= 0:
+            this_weapon.append('N/A')
+        else:
+            this_weapon.append(weapon.clipsize)
+
+        this_weapon.append(', '.join(x for x in weapon.props))
+        this_weapon.append('{}/{}'.format(weapon.atk_time, weapon.rech_time))
+        this_weapon.append(weapon.dmg_min)
+        this_weapon.append(round(weapon.dmg_max / weapon.dmg_min))
+        this_weapon.append(weapon.dmg_max)
+        this_weapon.append(weapon.dmg_crit)
+        this_weapon.append(0)
+        this_weapon.append(0)
+        this_weapon.append(0)
+        weapon_list.append(this_weapon)
+    
     return weapon_list
 
 def get_equipable_weapons(weapons, stats):
@@ -139,6 +156,7 @@ def get_equipable_weapons(weapons, stats):
         if len(same_weapons) == 1:
             eval_weapon = weapon
         else:
+            skip_duplicate = True
             if same_weapons[0].ql < same_weapons[1].ql:
                 eval_weapon = interpolate(same_weapons[0], same_weapons[1], stats)
             else:
