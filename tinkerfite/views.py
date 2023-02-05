@@ -95,7 +95,7 @@ def update_stats(request):
             ranged_init = int(data.get('ranged_init'))
             if ranged_init is not None and ranged_init >= 1: request.session['stats']['ranged_init'] = ranged_init
             aggdef = int(data.get('aggdef'))
-            if aggdef is not None and aggdef >= 1: request.session['stats']['aggdef'] = aggdef
+            if aggdef is not None and -100 <= aggdef <= 100: request.session['stats']['aggdef'] = aggdef
 
             aao = int(data.get('aao'))
             if aao is not None and aao >= 1: request.session['stats']['aao'] = aao
@@ -127,15 +127,20 @@ def get_weapon_list(stats):
         this_weapon = []
         this_weapon.append(weapon.name)
         this_weapon.append(weapon.ql)
+
         if weapon.clipsize <= 0:
             this_weapon.append('N/A')
         else:
             this_weapon.append(weapon.clipsize)
 
         this_weapon.append(', '.join(x for x in weapon.props))
+
+        atk_time, rech_time = calculate_speeds(weapon, stats)
         this_weapon.append('{}/{}'.format(weapon.atk_time, weapon.rech_time))
         this_weapon.append(weapon.dmg_min)
-        this_weapon.append(round(weapon.dmg_max / weapon.dmg_min))
+
+        mid_dmg = round(weapon.dmg_min + (weapon.dmg_max - weapon.dmg_min) / 2)
+        this_weapon.append(mid_dmg)
         this_weapon.append(weapon.dmg_max)
         this_weapon.append(weapon.dmg_crit)
         this_weapon.append(0)
@@ -144,6 +149,9 @@ def get_weapon_list(stats):
         weapon_list.append(this_weapon)
     
     return weapon_list
+
+def calculate_speeds(weapon, stats):
+    pass
 
 def get_equipable_weapons(weapons, stats):
     equipable_weapons = []
@@ -160,7 +168,7 @@ def get_equipable_weapons(weapons, stats):
         else:
             skip_duplicate = len(same_weapons) - 1 # skip all iterations of this weapon
 
-            for i in range(len(same_weapons) - 1, 1, -1):
+            for i in range(len(same_weapons) - 1, 1, -1): # walk through list from high to low ql
                 eval_weapon = interpolate(same_weapons[i-1], same_weapons[i], stats)
                 if eval_weapon is not None:
                     break
