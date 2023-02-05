@@ -311,7 +311,7 @@ def parse_xml(in_name):
             damage = item.find('damage')
             if damage is None:
                 continue
-            if damage.get('maximum') == '1': # filter out social items
+            if int(damage.get('maximum')) <= 1: # filter out social items
                 continue
 
             try:
