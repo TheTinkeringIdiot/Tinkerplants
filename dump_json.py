@@ -314,6 +314,9 @@ def parse_xml(in_name):
             if int(damage.get('maximum')) <= 1: # filter out social items
                 continue
 
+            if 'Otek ' in name: # not in game
+                continue
+
             try:
                 aoid = int(item.get('aoid'))
 
