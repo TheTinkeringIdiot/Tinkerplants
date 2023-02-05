@@ -18,7 +18,8 @@ def update_display(request):
     if request.session.get('stats') is None:
         return JsonResponse({'success': False, 'message': 'Session timed out', 'next': ''})
 
-    weapon_list = get_weapon_list(request.session.get('stats'))
+    #weapon_list = get_weapon_list(request.session.get('stats'))
+    weapon_list = []
     return JsonResponse({'success': True, 'stats': request.session.get('stats'), 'weapons' : json.dumps(weapon_list)})
 
 def update_stats(request):
@@ -115,13 +116,145 @@ def update_stats(request):
 
 def get_weapon_list(stats):
     atk_skill = get_weapon_skill(stats)
-
+    candidate_weapons = get_candidate_weapons(atk_skill) # weapons that primarily use atk_skill
+    equipable_weapons = get_equipable_weapons(candidate_weapons, stats)
+    
     breakpoint()
 
     weapon_list = []
     weapon = ['Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Mid', 'Max', 'Crit', 'Min', 'Avg', 'Max']
     weapon_list.append(weapon)
     return weapon_list
+
+def get_equipable_weapons(weapons, stats):
+    equipable_weapons = []
+    skip_duplicate = False
+    for weapon in weapons:
+        if skip_duplicate: # Assumes that two qls of same weapon are next to each other in the list
+            skip_duplicate = False
+            continue
+
+        same_weapons = weapons.filter(name=weapon.name)
+        eval_weapon = None
+        if len(same_weapons) == 1:
+            eval_weapon = weapon
+        else:
+            if same_weapons[0].ql < same_weapons[1].ql:
+                eval_weapon = interpolate(same_weapons[0], same_weapons[1], stats)
+            else:
+                eval_weapon = interpolate(same_weapons[1], same_weapons[0], stats)
+
+        if eval_weapon is None: # Don't meet lo_weapon reqs, skip the rest
+            continue
+        
+        # if eval_weapon.name == 'Very Old Mitaar':
+        #     breakpoint()
+
+        if check_requirements(eval_weapon, stats):
+            equipable_weapons.append(eval_weapon)
+
+    return equipable_weapons
+
+def interpolate(lo_weapon, hi_weapon, stats):
+    # breakpoint()
+    if check_requirements(hi_weapon, stats):
+        return hi_weapon
+    elif not check_requirements(lo_weapon, stats):
+        return None
+
+    lo_ql = lo_weapon.ql
+    hi_ql = hi_weapon.ql
+    ql_delta = hi_ql - lo_ql
+    min_dmg_delta = (hi_weapon.dmg_min - lo_weapon.dmg_min) / ql_delta
+    max_dmg_delta = (hi_weapon.dmg_max - lo_weapon.dmg_max) / ql_delta
+    crit_dmg_delta = (hi_weapon.dmg_crit - lo_weapon.dmg_crit) / ql_delta
+    
+    lo_ar_cap = lo_weapon.other.get('Attack rating cap')
+    hi_ar_cap = hi_weapon.other.get('Attack rating cap')
+    if lo_ar_cap is not None and hi_ar_cap is not None:
+        ar_cap_delta = (hi_ar_cap - lo_ar_cap) / ql_delta
+    else:
+        ar_cap_delta = 0
+
+    for i in range(hi_ql - lo_ql, 1, -1):
+        
+        weapon = Weapon()
+        weapon.ql = lo_ql + i
+        weapon.name = lo_weapon.name
+        weapon.atk_time = lo_weapon.atk_time
+        weapon.rech_time = lo_weapon.rech_time
+        weapon.dmg_min = round(lo_weapon.dmg_min + (i * min_dmg_delta))
+        weapon.dmg_max= round(lo_weapon.dmg_max + (i * max_dmg_delta))
+        weapon.dmg_crit = round(lo_weapon.dmg_crit + (i * crit_dmg_delta))
+        weapon.clipsize = lo_weapon.clipsize
+        weapon.props = lo_weapon.props
+        weapon.atk_skills = lo_weapon.atk_skills
+
+        other = {}
+        for key, val in lo_weapon.other.items():
+            if key == 'Attack rating cap':
+                other['Attack rating cap'] = round(val + (i * ar_cap_delta))
+            else:
+                other[key] = val
+        weapon.other = other
+
+        reqs = {}
+        for key, val in lo_weapon.reqs.items():
+            if key == 'Breed':
+                reqs['Breed'] = val
+            elif key == 'Profession':
+                reqs['Profession'] = val
+            elif key == 'Expansion sets':
+                reqs['Expansion sets'] = val
+            elif key == 'Level':
+                reqs['Level'] = val
+            else:
+                reqs[key] = round(val + (i * ((hi_weapon.reqs.get(key) - val) / ql_delta)))
+        weapon.reqs = reqs
+
+        # if lo_weapon.name == 'Very Old Mitaar' and weapon.ql == 41:
+        #     breakpoint()
+
+        if check_requirements(weapon, stats):
+            # breakpoint()
+            return weapon
+
+def check_requirements(weapon, stats):
+    for key, val in weapon.reqs.items():
+
+        if key == 'Breed':
+            if len(val) != 0:
+                if not stats.get('breed') in val:
+                    return False
+
+        elif key == 'Profession':
+            if len(val) != 0:
+                if not stats.get('profession') in val:
+                    return False
+
+        elif key == 'Expansion sets':
+            if 0 <= stats['subscription'] <= 2: # Froob and Sloob
+                if val > stats['subscription']:
+                    return False
+
+        elif key == 'Level':
+            if val > stats['level']:
+                return False
+
+        else:
+            try:
+                if not stats.get(key) >= val:
+                    return False
+            except Exception as e:
+                breakpoint()
+                print(e)
+
+    return True
+
+def get_candidate_weapons(atk_skill):
+    candidates = Weapon.objects.filter(atk_skills__has_key=atk_skill)
+    weapons = candidates.filter(**{'atk_skills__' + atk_skill + '__gte' : 50}) # atk_skill is 50% or more of attack skill
+    return weapons
 
 def get_weapon_skill(stats): 
     weapon_skills = {
