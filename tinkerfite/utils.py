@@ -59,6 +59,8 @@ def initial_weapons():
         'Time and space' : 1,
         'Assault rifle' : 1,
         'Bow' : 1,
+        'Grenade' : 1,
+        'Heavy weapons' : 1,
         'Smg' : 1,
         'Pistol' : 1,
         'Ranged energy' : 1,
