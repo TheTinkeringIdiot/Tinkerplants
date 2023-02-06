@@ -124,7 +124,7 @@ def get_weapon_list(stats):
     equipable_weapons = get_equipable_weapons(candidate_weapons, stats)
 
     weapon_list = []
-    #weapon = ['Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Mid', 'Max', 'Crit', 'Min', 'Avg', 'Max']
+    #weapon = ['Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Max', 'Crit', 'Min', 'Avg', 'Max']
     for weapon in equipable_weapons:
         this_weapon = []
         this_weapon.append(weapon.name)
@@ -142,7 +142,6 @@ def get_weapon_list(stats):
         this_weapon.append(weapon.dmg_min)
 
         mid_dmg = round(weapon.dmg_min + (weapon.dmg_max - weapon.dmg_min) / 2)
-        this_weapon.append(mid_dmg)
         this_weapon.append(weapon.dmg_max)
         this_weapon.append(weapon.dmg_crit)
         this_weapon.append(0)
@@ -278,6 +277,12 @@ def check_requirements(weapon, stats):
 
         elif key == 'Cyberdeck': # MP QL215 weapon
             continue
+
+        elif key == 'Faction':
+            continue
+
+        elif key == 'NPC type':
+            return False
 
         else:
             try:
