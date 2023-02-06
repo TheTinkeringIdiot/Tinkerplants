@@ -62,6 +62,8 @@ def update_stats(request):
             if assault_rifle is not None and assault_rifle >= 1: request.session['stats']['Assault rifle'] = assault_rifle
             bow = int(data.get('Bow'))
             if bow is not None and bow >= 1: request.session['stats']['Bow'] = bow
+            grenade = int(data.get('Grenade'))
+            if grenade is not None and grenade >= 1: request.session['stats']['Grenade'] = grenade
             mg_smg = int(data.get('Smg'))
             if mg_smg is not None and mg_smg >= 1: request.session['stats']['Smg'] = mg_smg
             pistol = int(data.get('Pistol'))
@@ -211,20 +213,23 @@ def get_equipable_weapons(weapons, stats):
         same_weapons = weapons.filter(name=weapon.name)
         eval_weapon = None
         if len(same_weapons) == 1:
-            eval_weapon = weapon
+            if check_requirements(weapon, stats):
+                equipable_weapons.append(weapon)
+                continue
         else:
             skip_duplicate = len(same_weapons) - 1 # skip all iterations of this weapon
 
-            for i in range(len(same_weapons) - 1, 1, -1): # walk through list from high to low ql
+            for i in range(len(same_weapons) - 1, 0, -1): # walk through list from high to low ql
                 eval_weapon = interpolate(same_weapons[i-1], same_weapons[i], stats)
                 if eval_weapon is not None:
+                    equipable_weapons.append(eval_weapon)
                     break
 
         if eval_weapon is None: # Don't meet lo_weapon reqs, skip the rest
             continue
 
-        if check_requirements(eval_weapon, stats):
-            equipable_weapons.append(eval_weapon)
+        # if check_requirements(eval_weapon, stats):
+        #     equipable_weapons.append(eval_weapon)
 
     return equipable_weapons
 
@@ -345,6 +350,8 @@ def get_weapon_skill(stats):
         'Time and space' : stats['Time and space'],
         'Assault rifle' : stats['Assault rifle'],
         'Bow' : stats['Bow'],
+        'Grenade' : stats['Grenade'],
+        'Heavy weapons' : stats['Heavy weapons'],
         'Smg' : stats['Smg'],
         'Pistol' : stats['Pistol'],
         'Ranged energy' : stats['Ranged energy'],
