@@ -38,6 +38,8 @@ def update_stats(request):
             if level is not None and 1 <= level <= 220: request.session['stats']['level'] = level
             subscription = int(data.get('subscription'))
             if subscription is not None and 0 <= subscription <= 128: request.session['stats']['subscription'] = subscription
+            crit = int(data.get('crit'))
+            if crit is not None and crit >= 0: request.session['stats']['crit'] = crit
 
             onehb = int(data.get('1h Blunt'))
             if onehb is not None and onehb >= 1: request.session['stats']['1h Blunt'] = onehb

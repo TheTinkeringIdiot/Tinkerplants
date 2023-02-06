@@ -48,6 +48,7 @@ def initial_weapons():
         'profession' : 6,
         'level' : 1,
         'subscription' : 0,
+        'crit' : 0,
         '1h Blunt' : 1,
         '1h Edged' : 1,
         '2h Blunt' : 1,
