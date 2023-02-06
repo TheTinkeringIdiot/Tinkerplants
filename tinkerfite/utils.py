@@ -36,6 +36,12 @@ SUBSCRIPTIONS = {
     8 : 'Paid'
 }
 
+INITS = {
+    120 : 'phys_init',
+    118 : 'melee_init',
+    119 : 'ranged_init'
+}
+
 def initial_weapons():
     return {
         'breed' : 1, 

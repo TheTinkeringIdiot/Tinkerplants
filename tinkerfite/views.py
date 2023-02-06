@@ -136,7 +136,7 @@ def get_weapon_list(stats):
         this_weapon.append(', '.join(x for x in weapon.props))
 
         atk_time, rech_time = calculate_speeds(weapon, stats)
-        this_weapon.append('{}/{}'.format(weapon.atk_time, weapon.rech_time))
+        this_weapon.append('{:.2f}/{:.2f}'.format(atk_time / 100, rech_time / 100))
         this_weapon.append(weapon.dmg_min)
 
         mid_dmg = round(weapon.dmg_min + (weapon.dmg_max - weapon.dmg_min) / 2)
@@ -151,7 +151,19 @@ def get_weapon_list(stats):
     return weapon_list
 
 def calculate_speeds(weapon, stats):
-    pass
+    atk_time = weapon.atk_time
+    rech_time = weapon.rech_time
+    atk_time = atk_time - (stats['aggdef'] - 75)
+    if atk_time < 100: atk_time = 100
+    rech_time = rech_time - (stats['aggdef'] - 75)
+    if rech_time < 100: rech_time = 100
+
+    atk_time = round(atk_time - (stats[INITS[weapon.other.get('Initiative skill')]] / 6))
+    if atk_time < 100: atk_time = 100
+    rech_time = round(rech_time - (stats[INITS[weapon.other.get('Initiative skill')]] / 3))
+    if rech_time < 100: rech_time = 100
+
+    return atk_time, rech_time
 
 def get_equipable_weapons(weapons, stats):
     equipable_weapons = []
