@@ -124,7 +124,7 @@ def get_weapon_list(stats):
     equipable_weapons = get_equipable_weapons(candidate_weapons, stats)
 
     weapon_list = []
-    #weapon = ['Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Max', 'Crit', 'Min', 'Avg', 'Max']
+    #weapon = ['Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Avg', 'Max', 'Crit', 'Min', 'Avg', 'Max']
     for weapon in equipable_weapons:
         this_weapon = []
         this_weapon.append(weapon.name)
@@ -137,19 +137,53 @@ def get_weapon_list(stats):
 
         this_weapon.append(', '.join(x for x in weapon.props))
 
-        atk_time, rech_time = calculate_speeds(weapon, stats)
-        this_weapon.append('{:.2f}/{:.2f}'.format(atk_time / 100, rech_time / 100))
-        this_weapon.append(weapon.dmg_min)
+        atk_time, rech_time, min_dmg, avg_dmg, max_dmg, min_dps, avg_dps, max_dps = calculate_dps(weapon, stats)
 
-        mid_dmg = round(weapon.dmg_min + (weapon.dmg_max - weapon.dmg_min) / 2)
-        this_weapon.append(weapon.dmg_max)
+        this_weapon.append('{:.2f}/{:.2f}'.format(atk_time / 100, rech_time / 100))
+        this_weapon.append(min_dmg)
+        
+        this_weapon.append(avg_dmg)
+        this_weapon.append(max_dmg)
         this_weapon.append(weapon.dmg_crit)
-        this_weapon.append(0)
-        this_weapon.append(0)
-        this_weapon.append(0)
+        this_weapon.append(min_dps)
+        this_weapon.append(avg_dps)
+        this_weapon.append(max_dps)
         weapon_list.append(this_weapon)
     
     return weapon_list
+
+def calculate_dps(weapon, stats):
+    sample_len = 60
+    atk_time, rech_time = calculate_speeds(weapon, stats)
+    cycle_time = (atk_time / 100) + (rech_time / 100)
+    num_basic_attacks = math.floor(sample_len / cycle_time)
+    ar_bonus = calculate_ar_bonus(weapon, stats)
+
+    min_dmg = round((weapon.dmg_min * ar_bonus) + stats['add_dmg'])
+    max_dmg = round((weapon.dmg_max * ar_bonus) + stats['add_dmg'])
+    avg_dmg = round(min_dmg + (max_dmg - min_dmg) / 2)
+
+    min_dps = round((min_dmg * num_basic_attacks) / sample_len)
+    avg_dps = round((avg_dmg * num_basic_attacks) / sample_len)
+    max_dps = round((max_dmg * num_basic_attacks) / sample_len)
+
+    return atk_time, rech_time, min_dmg, avg_dmg, max_dmg, min_dps, avg_dps, max_dps
+
+
+def calculate_ar_bonus(weapon, stats):
+    atk_skill = 0
+    for key, val in weapon.atk_skills.items():
+        atk_skill += round(stats.get(key) * (val / 100))
+    atk_skill += stats['aao']
+    ar_cap = weapon.other.get('Attack rating cap')
+    if ar_cap is not None and atk_skill > ar_cap: # MBS
+        atk_skill = ar_cap
+
+    ar_bonus = 1 + (atk_skill / 400)
+    if atk_skill > 1000:
+        ar_bonus += (atk_skill - 1000) / 1200
+
+    return ar_bonus
 
 def calculate_speeds(weapon, stats):
     atk_time = weapon.atk_time
@@ -278,7 +312,7 @@ def check_requirements(weapon, stats):
         elif key == 'Cyberdeck': # MP QL215 weapon
             continue
 
-        elif key == 'Faction':
+        elif key in ['Faction', 'Nano programming', 'Mechanical engineering']: # ignore these keys
             continue
 
         elif key == 'NPC type':

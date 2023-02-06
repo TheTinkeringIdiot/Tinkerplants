@@ -79,5 +79,4 @@ def initial_weapons():
         'aao' : 0,
         'add_dmg' : 0,
         'target_ac' : 1,
-        'dmg_type' : 0,
     }
