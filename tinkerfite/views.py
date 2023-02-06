@@ -175,7 +175,10 @@ def calculate_dps(weapon, stats):
 def calculate_ar_bonus(weapon, stats):
     atk_skill = 0
     for key, val in weapon.atk_skills.items():
-        atk_skill += round(stats.get(key) * (val / 100))
+        try:
+            atk_skill += round(stats.get(key) * (val / 100))
+        except: # weird attack skills like nanoprogramming
+            continue
     atk_skill += stats['aao']
     ar_cap = weapon.other.get('Attack rating cap')
     if ar_cap is not None and atk_skill > ar_cap: # MBS
@@ -314,10 +317,27 @@ def check_requirements(weapon, stats):
             if val > stats['level']:
                 return False
 
+        elif key == 'Title level':
+            if val == 7 and stats['level'] < 205:
+                return False
+            elif val == 6 and stats['level'] < 190:
+                return False
+            elif val == 5 and stats['level'] < 150:
+                return False
+            elif val == 4 and stats['level'] < 100:
+                return False
+            elif val == 3 and stats['level'] < 50:
+                return False
+            elif val == 2 and stats['level'] < 15:
+                return False
+
         elif key == 'Cyberdeck': # MP QL215 weapon
             continue
+        
+        elif 'Faction' in key:
+            continue
 
-        elif key in ['Faction', 'Nano programming', 'Mechanical engineering']: # ignore these keys
+        elif key in ['Nano programming', 'Mechanical engineering', 'Weapon smithing']: # ignore these keys
             continue
 
         elif key == 'NPC type':
