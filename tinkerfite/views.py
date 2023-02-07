@@ -244,9 +244,29 @@ def calculate_dps(weapon, stats):
             avg_special_dmg += round(avg_dmg * num_attacks)
             max_special_dmg += round(max_dmg * num_attacks)
 
-    min_dps = round((min_dmg * num_basic_attacks) / sample_len)
-    avg_dps = round((avg_dmg * num_basic_attacks) / sample_len)
-    max_dps = round((max_dmg * num_basic_attacks) / sample_len)
+        elif special == 'Brawl':
+            pass
+
+        elif special == 'Dimach':
+            pass
+
+        elif special == 'Sneak attack':
+            #cycle_time = 40
+            sneak_bonus = round(stats['Sneak attack'] / 95)
+            min_sneak_dmg = round(min_dmg * sneak_bonus)
+            if min_sneak_dmg > 13000: min_sneak_dmg = 13000
+            avg_sneak_dmg = round(avg_dmg * sneak_bonus)
+            if avg_sneak_dmg > 13000: avg_sneak_dmg = 13000
+            max_sneak_dmg = round(max_dmg * sneak_bonus)
+            if max_sneak_dmg > 13000: max_sneak_dmg = 13000
+
+            min_special_dmg += min_sneak_dmg
+            avg_special_dmg += avg_sneak_dmg
+            max_special_dmg += max_sneak_dmg
+
+    min_dps = round(((min_dmg * num_basic_attacks) + min_special_dmg) / sample_len)
+    avg_dps = round(((avg_dmg * num_basic_attacks) + avg_special_dmg) / sample_len)
+    max_dps = round(((max_dmg * num_basic_attacks) + max_special_dmg) / sample_len)
 
     return atk_time, rech_time, min_dmg, avg_dmg, max_dmg, min_dps, avg_dps, max_dps
 
