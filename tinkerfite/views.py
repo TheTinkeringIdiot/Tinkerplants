@@ -234,6 +234,16 @@ def calculate_dps(weapon, stats):
             avg_special_dmg += as_dmg
             max_special_dmg += as_dmg
 
+        elif special == 'Fast attack':
+            cycle_cap = math.floor(6 + (weapon.atk_time / 100))
+            cycle_time = (weapon.atk_time / 100) * 15 - stats['Fast attack'] / 100
+            if cycle_time < cycle_cap: cycle_time = cycle_cap
+
+            num_attacks = math.floor(sample_len / cycle_time)
+            min_special_dmg += round(min_dmg * num_attacks)
+            avg_special_dmg += round(avg_dmg * num_attacks)
+            max_special_dmg += round(max_dmg * num_attacks)
+
     min_dps = round((min_dmg * num_basic_attacks) / sample_len)
     avg_dps = round((avg_dmg * num_basic_attacks) / sample_len)
     max_dps = round((max_dmg * num_basic_attacks) / sample_len)
