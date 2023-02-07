@@ -167,6 +167,36 @@ def calculate_dps(weapon, stats):
     max_dmg = round((weapon.dmg_max * ar_bonus) + stats['add_dmg'])
     avg_dmg = round(min_dmg + (max_dmg - min_dmg) / 2)
 
+    min_special_dmg = 0
+    avg_special_dmg = 0
+    max_special_dmg = 0
+    for special in weapon.props:
+        if special == "Fling Shot":
+            cycle_time = 1600 * (weapon.atk_time / 100) - stats['Fling shot'] / 100
+            if cycle_time < 7.0: cycle_time = 7.0
+
+            num_attacks = math.floor(sample_len / cycle_time)
+            min_special_dmg += round((min_dmg * num_attacks) / sample_len)
+            avg_special_dmg += round((avg_dmg * num_attacks) / sample_len)
+            max_special_dmg += round((max_dmg * num_attacks) / sample_len)
+
+        elif special == "Burst":
+            burst_cycle = weapon.other.get('Burst cycle')
+            if burst_cycle is None:
+                burst_cycle = 0
+
+            cycle_time = (weapon.rech_time / 100) * 20 + (burst_cycle / 100) - (stats['Burst'] / 25)
+            if cycle_time < 9.0: cycle_time = 9.0
+
+            num_attacks = math.floor(sample_len / cycle_time)
+            min_special_dmg += round((min_dmg * 3 * num_attacks) / sample_len)
+            avg_special_dmg += round((avg_dmg * 3 * num_attacks) / sample_len)
+            max_special_dmg += round((max_dmg * 3 * num_attacks) / sample_len)
+
+
+        elif special == "Full Auto":
+            pass
+
     min_dps = round((min_dmg * num_basic_attacks) / sample_len)
     avg_dps = round((avg_dmg * num_basic_attacks) / sample_len)
     max_dps = round((max_dmg * num_basic_attacks) / sample_len)
