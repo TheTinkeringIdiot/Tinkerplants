@@ -178,9 +178,9 @@ def calculate_dps(weapon, stats):
             if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             num_attacks = math.floor(sample_len / cycle_time)
-            min_special_dmg += round((min_dmg * num_attacks) / sample_len)
-            avg_special_dmg += round((avg_dmg * num_attacks) / sample_len)
-            max_special_dmg += round((max_dmg * num_attacks) / sample_len)
+            min_special_dmg += round(min_dmg * num_attacks)
+            avg_special_dmg += round(avg_dmg * num_attacks)
+            max_special_dmg += round(max_dmg * num_attacks)
 
         elif special == "Burst":
             cycle_cap = math.floor(8 + (weapon.atk_time / 100))
@@ -192,9 +192,9 @@ def calculate_dps(weapon, stats):
             if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             num_attacks = math.floor(sample_len / cycle_time)
-            min_special_dmg += round((min_dmg * 3 * num_attacks) / sample_len)
-            avg_special_dmg += round((avg_dmg * 3 * num_attacks) / sample_len)
-            max_special_dmg += round((max_dmg * 3 * num_attacks) / sample_len)
+            min_special_dmg += round(min_dmg * 3 * num_attacks)
+            avg_special_dmg += round(avg_dmg * 3 * num_attacks)
+            max_special_dmg += round(max_dmg * 3 * num_attacks)
 
 
         elif special == "Full Auto":
@@ -215,9 +215,9 @@ def calculate_dps(weapon, stats):
             max_fa_dmg = calculate_fa_dmg(max_dmg, num_rounds)
 
             num_attacks = math.floor(sample_len / cycle_time)
-            min_special_dmg += round((min_fa_dmg * num_attacks) / sample_len)
-            avg_special_dmg += round((avg_fa_dmg * num_attacks) / sample_len)
-            max_special_dmg += round((max_fa_dmg * num_attacks) / sample_len)
+            min_special_dmg += round(min_fa_dmg * num_attacks)
+            avg_special_dmg += round(avg_fa_dmg * num_attacks)
+            max_special_dmg += round(max_fa_dmg * num_attacks)
 
         elif special == 'Aimed shot':
             # These are commented for posterity, since Tinkerfite uses PVE rules and AS will only fire once per fight
