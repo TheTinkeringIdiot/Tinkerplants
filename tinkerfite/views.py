@@ -173,8 +173,9 @@ def calculate_dps(weapon, stats):
     max_special_dmg = 0
     for special in weapon.props:
         if special == "Fling Shot":
+            cycle_cap = math.floor(6 + (weapon.atk_time / 100))
             cycle_time = 1600 * (weapon.atk_time / 100) - stats['Fling shot'] / 100
-            if cycle_time < 7.0: cycle_time = 7.0
+            if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             num_attacks = math.floor(sample_len / cycle_time)
             min_special_dmg += round((min_dmg * num_attacks) / sample_len)
@@ -182,12 +183,13 @@ def calculate_dps(weapon, stats):
             max_special_dmg += round((max_dmg * num_attacks) / sample_len)
 
         elif special == "Burst":
+            cycle_cap = math.floor(8 + (weapon.atk_time / 100))
             burst_cycle = weapon.other.get('Burst cycle')
             if burst_cycle is None:
                 burst_cycle = 0
 
             cycle_time = (weapon.rech_time / 100) * 20 + (burst_cycle / 100) - (stats['Burst'] / 25)
-            if cycle_time < 9.0: cycle_time = 9.0
+            if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             num_attacks = math.floor(sample_len / cycle_time)
             min_special_dmg += round((min_dmg * 3 * num_attacks) / sample_len)
@@ -196,7 +198,41 @@ def calculate_dps(weapon, stats):
 
 
         elif special == "Full Auto":
-            pass
+            cycle_cap = math.floor(10 + (weapon.rech_time / 100))
+            fa_cycle = weapon.other.get('Fullauto cycle')
+            if fa_cycle is None: 
+                fa_cycle = 0
+
+            cycle_time = ((weapon.rech_time / 100) * 40) + (fa_cycle / 100) - (stats['Full auto'] / 25)
+            if cycle_time < cycle_cap: cycle_time = cycle_cap
+
+            num_rounds = 5 + (stats['Full auto'] / 100)
+            if num_rounds > 15: num_rounds = 15
+            if weapon.clipsize < num_rounds: num_rounds = weapon.clipsize
+
+            min_fa_dmg = calculate_fa_dmg(min_dmg, num_rounds)
+            avg_fa_dmg = calculate_fa_dmg(avg_dmg, num_rounds)
+            max_fa_dmg = calculate_fa_dmg(max_dmg, num_rounds)
+
+            num_attacks = math.floor(sample_len / cycle_time)
+            min_special_dmg += round((min_fa_dmg * num_attacks) / sample_len)
+            avg_special_dmg += round((avg_fa_dmg * num_attacks) / sample_len)
+            max_special_dmg += round((max_fa_dmg * num_attacks) / sample_len)
+
+        elif special == 'Aimed shot':
+            # These are commented for posterity, since Tinkerfite uses PVE rules and AS will only fire once per fight
+            # cycle_cap = math.floor(10 + (weapon.rech_time / 100))
+            # cycle_time = (weapon.rech_time / 100) * 40 - (3 * stats['Aimed shot'] / 100)
+            # if cycle_time < cycle_cap: cycle_time = cycle_cap
+
+            as_dmg = round((weapon.dmg_max * ar_bonus) + stats['add_dmg'])
+            as_bonus = stats['Aimed shot'] / 95
+            as_dmg = as_dmg * as_bonus
+            if as_dmg > 13000: as_dmg = 13000
+
+            min_special_dmg += as_dmg
+            avg_special_dmg += as_dmg
+            max_special_dmg += as_dmg
 
     min_dps = round((min_dmg * num_basic_attacks) / sample_len)
     avg_dps = round((avg_dmg * num_basic_attacks) / sample_len)
@@ -204,6 +240,36 @@ def calculate_dps(weapon, stats):
 
     return atk_time, rech_time, min_dmg, avg_dmg, max_dmg, min_dps, avg_dps, max_dps
 
+def calculate_fa_dmg(dmg, num_rounds):
+    fa_dmg = dmg * num_rounds
+
+    if fa_dmg > 10000:
+        remain = round((fa_dmg - 10000) / 2)
+        fa_dmg = 10000
+
+        if remain > 1500:
+            remain = round((remain - 1500) / 2)
+            fa_dmg = 11500
+
+            if remain > 1500:
+                remain = round((remain - 1500) / 2)
+                fa_dmg = 13000
+
+                if remain > 1500:
+                    remain = round((remain - 1500) / 2)
+                    fa_dmg = 14500
+
+                    if remain > 500:
+                        fa_dmg = 15000
+
+                else:
+                    fa_dmg += remain
+            else:
+                fa_dmg += remain
+        else:
+            fa_dmg += remain
+    
+    return fa_dmg
 
 def calculate_ar_bonus(weapon, stats):
     atk_skill = 0
