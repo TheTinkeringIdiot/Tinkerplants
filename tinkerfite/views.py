@@ -164,7 +164,8 @@ def calculate_dps(weapon, stats):
     ar_bonus = calculate_ar_bonus(weapon, stats)
 
     min_dmg = round((weapon.dmg_min * ar_bonus) + stats['add_dmg'])
-    max_dmg = round((weapon.dmg_max * ar_bonus) + stats['add_dmg'])
+    max_dmg = round((weapon.dmg_max * ar_bonus) + stats['add_dmg'] - (stats['target_ac'] / 10))
+    if max_dmg < min_dmg: max_dmg = min_dmg
     avg_dmg = round(min_dmg + (max_dmg - min_dmg) / 2)
 
     min_special_dmg = 0
