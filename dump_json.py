@@ -335,7 +335,8 @@ def parse_xml(in_name):
                 weapons[aoid]['damage'] = {
                     'minimum' : int(damage.get('minimum')),
                     'maximum' : int(damage.get('maximum')),
-                    'critical' : int(damage.get('critical'))
+                    'critical' : int(damage.get('critical')),
+                    'type' : int(damage.get('type'))
                 }
 
                 ammo = item.find('ammo')

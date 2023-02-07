@@ -42,6 +42,18 @@ INITS = {
     119 : 'ranged_init'
 }
 
+DMG_TYPES = {
+    0 : '-',
+    90 : 'Projectile',
+    91 : 'Melee',
+    92 : 'Energy',
+    93 : 'Chemical',
+    94 : 'Radiation',
+    95 : 'Cold',
+    96 : 'Poison',
+    97 : 'Fire'
+}
+
 def initial_weapons():
     return {
         'breed' : 1, 

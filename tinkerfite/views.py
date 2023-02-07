@@ -137,6 +137,8 @@ def get_weapon_list(stats):
         else:
             this_weapon.append(weapon.clipsize)
 
+        this_weapon.append(DMG_TYPES[weapon.dmg_type])
+
         this_weapon.append(', '.join(x for x in weapon.props))
 
         atk_time, rech_time, min_dmg, avg_dmg, max_dmg, min_dps, avg_dps, max_dps = calculate_dps(weapon, stats)

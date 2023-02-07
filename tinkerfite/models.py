@@ -11,6 +11,7 @@ class Weapon(models.Model):
     dmg_min = models.IntegerField()
     dmg_max = models.IntegerField()
     dmg_crit = models.IntegerField()
+    dmg_type = models.IntegerField(default=0)
     clipsize = models.IntegerField()
     props = models.JSONField()
     reqs = models.JSONField()

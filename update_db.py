@@ -238,6 +238,7 @@ for aoid, vals in weapons.items():
     weapon.dmg_min = vals['damage']['minimum']
     weapon.dmg_max = vals['damage']['maximum']
     weapon.dmg_crit = vals['damage']['critical']
+    weapon.dmg_type = vals['damage']['type']
     weapon.clipsize = vals['clipsize']
     weapon.props = vals['props']
     weapon.reqs = vals['reqs']
