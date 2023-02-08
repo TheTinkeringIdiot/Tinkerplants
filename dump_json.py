@@ -369,6 +369,31 @@ def parse_xml(in_name):
                     weapons[aoid]['reqs']['Profession'] = profs
                     weapons[aoid]['reqs']['Breed'] = breeds
 
+                else: 
+                    # add proper reqs to MA items
+                    # if aoid > 211351 and aoid < 211366: breakpoint()
+                    if aoid in [211352, 211353, 211354, 211357, 211358, 211363, 211364]: # Martial Artist
+                        weapons[aoid]['reqs']['Profession'] = [2]
+                    elif aoid in [211349, 211350, 211351, 211359, 211360, 211365, 211366]: # Shade
+                        weapons[aoid]['reqs']['Profession'] = [15]
+                    elif aoid in [43712, 144745,  43713, 211355, 211356, 211361, 211362]: # Other
+                        weapons[aoid]['reqs']['Profession'] = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+
+                    if aoid in [211349, 211352, 43712]:
+                        weapons[aoid]['reqs']['Martial arts'] = 1
+                    elif aoid in [211353, 211350, 144745]:
+                        weapons[aoid]['reqs']['Martial arts'] = 200
+                    elif aoid in [211354, 211351, 43713]:
+                        weapons[aoid]['reqs']['Martial arts'] = 1000
+                    elif aoid in [211357, 211359, 211355]:
+                        weapons[aoid]['reqs']['Martial arts'] = 1001
+                    elif aoid in [211358, 211360, 211356]:
+                        weapons[aoid]['reqs']['Martial arts'] = 2000
+                    elif aoid in [211363, 211365, 211361]:
+                        weapons[aoid]['reqs']['Martial arts'] = 2001
+                    elif aoid in [211364, 211366, 211362]:
+                        weapons[aoid]['reqs']['Martial arts'] = 3000
+
                 skillmaps = item.findall('skillmap')
                 if skillmaps is not None:
                     for map in skillmaps:
