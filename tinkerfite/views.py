@@ -18,8 +18,7 @@ def update_display(request):
     if request.session.get('stats') is None:
         return JsonResponse({'success': False, 'message': 'Session timed out', 'next': ''})
 
-    #weapon_list = get_weapon_list(request.session.get('stats'))
-    weapon_list = []
+    weapon_list = get_weapon_list(request.session.get('stats'))
     return JsonResponse({'success': True, 'stats': request.session.get('stats'), 'weapons' : json.dumps(weapon_list)})
 
 def update_stats(request):
@@ -138,7 +137,6 @@ def get_weapon_list(stats):
             this_weapon.append(weapon.clipsize)
 
         this_weapon.append(DMG_TYPES[weapon.dmg_type])
-
         this_weapon.append(', '.join(x for x in weapon.props))
 
         atk_time, rech_time, min_dmg, avg_dmg, max_dmg, min_dps, avg_dps, max_dps = calculate_dps(weapon, stats)
@@ -203,7 +201,6 @@ def calculate_dps(weapon, stats):
             avg_special_dmg += round(avg_dmg * 3 * num_attacks)
             max_special_dmg += round(max_dmg * 3 * num_attacks)
 
-
         elif special == "Full Auto":
             cycle_cap = math.floor(10 + (weapon.rech_time / 100))
             fa_cycle = weapon.other.get('Fullauto cycle')
@@ -252,7 +249,24 @@ def calculate_dps(weapon, stats):
             max_special_dmg += round(max_dmg * num_attacks)
 
         elif special == 'Brawl':
-            pass
+            brawl_weapons = Weapon.objects.filter(name='Brawl Item')
+            brawl_weapon = None
+            
+            for i in range(len(brawl_weapons) - 1, 0, -1): # walk through list from high to low ql
+                brawl_weapon = interpolate(brawl_weapons[i-1], brawl_weapons[i], stats)
+                if brawl_weapon is not None:
+                    break
+
+            min_brawl = round((brawl_weapon.dmg_min * ar_bonus) + stats['add_dmg'])
+            max_brawl = round((brawl_weapon.dmg_max * ar_bonus) + stats['add_dmg'] - (stats['target_ac'] / 10))
+            if max_brawl < min_brawl: max_brawl = min_brawl
+            avg_brawl = round(min_dmg + (max_dmg - min_dmg) / 2)
+            
+            cycle_time = 15
+            num_attacks = math.floor(sample_len / cycle_time)
+            min_special_dmg += round(min_brawl * num_attacks)
+            avg_special_dmg += round(avg_brawl * num_attacks)
+            max_special_dmg += round(max_brawl * num_attacks)
 
         elif special == 'Dimach':
             pass
@@ -343,12 +357,10 @@ def calculate_speeds(weapon, stats):
 
 def get_equipable_weapons(weapons, stats):
     equipable_weapons = []
-    duplicate_name = ''
+    processed_weapons = []
     for weapon in weapons:
-        if weapon.name == duplicate_name: # Assumes that all qls of same weapon are next to each other in the list
+        if weapon.name in processed_weapons: 
             continue
-        else:
-            duplicate_name = ''
 
         same_weapons = weapons.filter(name=weapon.name)
         eval_weapon = None
@@ -357,8 +369,7 @@ def get_equipable_weapons(weapons, stats):
                 equipable_weapons.append(weapon)
                 continue
         else:
-            # breakpoint()
-            duplicate_name = weapon.name # skip all future iterations of this weapon
+            processed_weapons.append(weapon.name) # skip all future iterations of this weapon
 
             for i in range(len(same_weapons) - 1, 0, -1): # walk through list from high to low ql
                 eval_weapon = interpolate(same_weapons[i-1], same_weapons[i], stats)
@@ -368,9 +379,6 @@ def get_equipable_weapons(weapons, stats):
 
         if eval_weapon is None: # Don't meet lo_weapon reqs, skip the rest
             continue
-
-        # if check_requirements(eval_weapon, stats):
-        #     equipable_weapons.append(eval_weapon)
 
     return equipable_weapons
 
@@ -396,8 +404,8 @@ def interpolate(lo_weapon, hi_weapon, stats):
     else:
         ar_cap_delta = 0
 
-    for i in range(hi_ql - lo_ql, 1, -1):
-        
+    for i in range(hi_ql - lo_ql, -1, -1):
+
         weapon = Weapon()
         weapon.ql = lo_ql + i
         weapon.name = lo_weapon.name
@@ -406,6 +414,7 @@ def interpolate(lo_weapon, hi_weapon, stats):
         weapon.dmg_min = round(lo_weapon.dmg_min + (i * min_dmg_delta))
         weapon.dmg_max= round(lo_weapon.dmg_max + (i * max_dmg_delta))
         weapon.dmg_crit = round(lo_weapon.dmg_crit + (i * crit_dmg_delta))
+        weapon.dmg_type = lo_weapon.dmg_type
         weapon.clipsize = lo_weapon.clipsize
         weapon.props = lo_weapon.props
         weapon.atk_skills = lo_weapon.atk_skills
@@ -477,7 +486,7 @@ def check_requirements(weapon, stats):
         elif 'Faction' in key:
             continue
 
-        elif key in ['Nano programming', 'Mechanical engineering', 'Weapon smithing', 'Parry', 'Riposte']: # ignore these keys
+        elif key in ['Nano programming', 'Mechanical engineering', 'Weapon smithing', 'Parry', 'Riposte', 'Wielded weapons']: # ignore these keys
             continue
 
         elif key == 'NPC type':
@@ -488,7 +497,7 @@ def check_requirements(weapon, stats):
                 if not stats.get(key) >= val:
                     return False
             except Exception as e:
-                print('MISSING KEY: {}'.format(key))
+                print('TINKERFITE: MISSING KEY: {}'.format(key))
                 print(e)
 
     return True
