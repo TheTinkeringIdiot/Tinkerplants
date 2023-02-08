@@ -168,6 +168,13 @@ def calculate_dps(weapon, stats):
     if max_dmg < min_dmg: max_dmg = min_dmg
     avg_dmg = round(min_dmg + (max_dmg - min_dmg) / 2)
 
+    num_crits = math.floor(num_basic_attacks * (stats['crit'] / 100))
+    num_basic_attacks = num_basic_attacks - num_crits
+
+    crit_min_dmg = round(((weapon.dmg_min + weapon.dmg_crit) * ar_bonus) + stats['add_dmg'])
+    crit_dmg = round(((weapon.dmg_max + weapon.dmg_crit) * ar_bonus) + stats['add_dmg']  - (stats['target_ac'] / 10))
+    if crit_dmg < crit_min_dmg: crit_dmg = crit_min_dmg
+
     min_special_dmg = 0
     avg_special_dmg = 0
     max_special_dmg = 0
@@ -264,9 +271,9 @@ def calculate_dps(weapon, stats):
             avg_special_dmg += avg_sneak_dmg
             max_special_dmg += max_sneak_dmg
 
-    min_dps = round(((min_dmg * num_basic_attacks) + min_special_dmg) / sample_len)
-    avg_dps = round(((avg_dmg * num_basic_attacks) + avg_special_dmg) / sample_len)
-    max_dps = round(((max_dmg * num_basic_attacks) + max_special_dmg) / sample_len)
+    min_dps = round(((min_dmg * num_basic_attacks) + (crit_dmg * num_crits) + min_special_dmg) / sample_len)
+    avg_dps = round(((avg_dmg * num_basic_attacks) + (crit_dmg * num_crits) + avg_special_dmg) / sample_len)
+    max_dps = round(((max_dmg * num_basic_attacks) + (crit_dmg * num_crits) + max_special_dmg) / sample_len)
 
     return atk_time, rech_time, min_dmg, avg_dmg, max_dmg, min_dps, avg_dps, max_dps
 
