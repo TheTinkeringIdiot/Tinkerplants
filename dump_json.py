@@ -307,7 +307,8 @@ def parse_xml(in_name):
                                     val = eff.get('value')
                                     crystals[val] = ql
 
-        elif item_type == 1 and item.find('skillmap') is not None and icon != 0: # Item is a weapon
+        elif item.find('skillmap') is not None and icon != 0: # Item is a weapon
+            # if int(item.get('aoid')) == 211404: breakpoint()
             damage = item.find('damage')
             if damage is None:
                 continue
@@ -319,7 +320,7 @@ def parse_xml(in_name):
 
             try:
                 aoid = int(item.get('aoid'))
-
+                
                 if not weapons.get(aoid):
                     weapons[aoid] = {'name' : name}
 
@@ -369,9 +370,22 @@ def parse_xml(in_name):
                     weapons[aoid]['reqs']['Profession'] = profs
                     weapons[aoid]['reqs']['Breed'] = breeds
 
+                    # Set reqs for brawl
+                    if aoid == 70292:
+                        weapons[aoid]['reqs']['Brawl'] = 1
+                    if aoid == 70293:
+                        weapons[aoid]['reqs']['Brawl'] = 1000
+                    if aoid == 211401:
+                        weapons[aoid]['reqs']['Brawl'] = 1001
+                    if aoid == 211402:
+                        weapons[aoid]['reqs']['Brawl'] = 2000
+                    if aoid == 211403:
+                        weapons[aoid]['reqs']['Brawl'] = 2001
+                    if aoid == 211404:
+                        weapons[aoid]['reqs']['Brawl'] = 3000
+
                 else: 
                     # add proper reqs to MA items
-                    # if aoid > 211351 and aoid < 211366: breakpoint()
                     if aoid in [211352, 211353, 211354, 211357, 211358, 211363, 211364]: # Martial Artist
                         weapons[aoid]['reqs']['Profession'] = [2]
                     elif aoid in [211349, 211350, 211351, 211359, 211360, 211365, 211366]: # Shade
