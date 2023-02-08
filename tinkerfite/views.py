@@ -343,11 +343,12 @@ def calculate_speeds(weapon, stats):
 
 def get_equipable_weapons(weapons, stats):
     equipable_weapons = []
-    skip_duplicate = 0
+    duplicate_name = ''
     for weapon in weapons:
-        if skip_duplicate > 0: # Assumes that all qls of same weapon are next to each other in the list
-            skip_duplicate -= 1
+        if weapon.name == duplicate_name: # Assumes that all qls of same weapon are next to each other in the list
             continue
+        else:
+            duplicate_name = ''
 
         same_weapons = weapons.filter(name=weapon.name)
         eval_weapon = None
@@ -356,7 +357,8 @@ def get_equipable_weapons(weapons, stats):
                 equipable_weapons.append(weapon)
                 continue
         else:
-            skip_duplicate = len(same_weapons) - 1 # skip all iterations of this weapon
+            # breakpoint()
+            duplicate_name = weapon.name # skip all future iterations of this weapon
 
             for i in range(len(same_weapons) - 1, 0, -1): # walk through list from high to low ql
                 eval_weapon = interpolate(same_weapons[i-1], same_weapons[i], stats)
@@ -381,6 +383,8 @@ def interpolate(lo_weapon, hi_weapon, stats):
     lo_ql = lo_weapon.ql
     hi_ql = hi_weapon.ql
     ql_delta = hi_ql - lo_ql
+    if ql_delta <= 0:
+        return hi_weapon
     min_dmg_delta = (hi_weapon.dmg_min - lo_weapon.dmg_min) / ql_delta
     max_dmg_delta = (hi_weapon.dmg_max - lo_weapon.dmg_max) / ql_delta
     crit_dmg_delta = (hi_weapon.dmg_crit - lo_weapon.dmg_crit) / ql_delta
@@ -473,7 +477,7 @@ def check_requirements(weapon, stats):
         elif 'Faction' in key:
             continue
 
-        elif key in ['Nano programming', 'Mechanical engineering', 'Weapon smithing']: # ignore these keys
+        elif key in ['Nano programming', 'Mechanical engineering', 'Weapon smithing', 'Parry', 'Riposte']: # ignore these keys
             continue
 
         elif key == 'NPC type':
@@ -484,7 +488,7 @@ def check_requirements(weapon, stats):
                 if not stats.get(key) >= val:
                     return False
             except Exception as e:
-                breakpoint()
+                print('MISSING KEY: {}'.format(key))
                 print(e)
 
     return True
