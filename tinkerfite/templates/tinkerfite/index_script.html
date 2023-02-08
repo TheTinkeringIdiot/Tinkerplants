@@ -24,15 +24,16 @@
         })
     })
 
-    var selectElements = Array.from(document.getElementsByTagName('select'))
-    selectElements.forEach(function(elem) {
-        elem.addEventListener('change', update_stats);
-    })
+    // var selectElements = Array.from(document.getElementsByTagName('select'))
+    // selectElements.forEach(function(elem) {
+    //     elem.addEventListener('change', update_stats);
+    // })
 
-    var selectElements = Array.from(document.getElementsByTagName('input'))
-    selectElements.forEach(function(elem) {
-        elem.addEventListener('change', update_stats);
-    })
+    // var selectElements = Array.from(document.getElementsByTagName('input'))
+    // selectElements.forEach(function(elem) {
+    //     elem.addEventListener('change', update_stats);
+    // })
+    document.getElementById('submit-button').addEventListener('click', update_stats)
 
     function update_stats(evt) {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
