@@ -125,9 +125,10 @@ def get_weapon_list(stats):
     equipable_weapons = get_equipable_weapons(candidate_weapons, stats)
 
     weapon_list = []
-    #weapon = ['Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Avg', 'Max', 'Crit', 'Min', 'Avg', 'Max']
+    #weapon = ['AOID', 'Name', 'QL', 'Clip', 'Specials', 'Atk/Rch', 'Min', 'Avg', 'Max', 'Crit', 'Min', 'Avg', 'Max']
     for weapon in equipable_weapons:
         this_weapon = []
+        this_weapon.append(weapon.aoid)
         this_weapon.append(weapon.name)
         this_weapon.append(weapon.ql)
 
