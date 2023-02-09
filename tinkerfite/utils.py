@@ -69,6 +69,8 @@ BANNED_IDS = [
     303419, 303420, # Junior Ofab Wolf
     275607, # Alien Vortex Spinning Weapon
     280460, # Crazy Xanboss Weapon
+    269377, # Metaing's Pink Pocket Knife
+    295603, # Michizure's Boomstick!
 ]
 
 def initial_weapons():
