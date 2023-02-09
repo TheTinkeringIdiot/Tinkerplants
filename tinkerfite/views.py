@@ -32,7 +32,7 @@ def update_stats(request):
             breed = int(data.get('breed'))
             if breed is not None and 1 <= breed <= 4: request.session['stats']['breed'] = breed
             profession = int(data.get('profession'))
-            if profession is not None and 1 <= profession <= 15: request.session['stats']['profession'] = profession
+            if profession is not None and 0 <= profession <= 15: request.session['stats']['profession'] = profession
             level = int(data.get('level'))
             if level is not None and 1 <= level <= 220: request.session['stats']['level'] = level
             subscription = int(data.get('subscription'))
@@ -363,9 +363,6 @@ def get_equipable_weapons(weapons, stats):
         if weapon.name in processed_weapons: 
             continue
 
-        if weapon.aoid in BANNED_IDS: # skip junk weapons
-            continue
-
         if weapon.name != 'Martial Arts Item':
             same_weapons = weapons.filter(name=weapon.name)
         elif stats['profession'] != 0:
@@ -516,6 +513,7 @@ def check_requirements(weapon, stats):
 def get_candidate_weapons(atk_skill):
     candidates = Weapon.objects.filter(atk_skills__has_key=atk_skill)
     weapons = candidates.filter(**{'atk_skills__' + atk_skill + '__gte' : 50}) # atk_skill is 50% or more of attack skill
+    weapons = weapons.exclude(aoid__in=BANNED_IDS)
     return weapons
 
 def get_weapon_skill(stats): 
