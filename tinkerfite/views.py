@@ -408,6 +408,7 @@ def interpolate(lo_weapon, hi_weapon, stats):
     for i in range(hi_ql - lo_ql, -1, -1):
 
         weapon = Weapon()
+        weapon.aoid = hi_weapon.aoid
         weapon.ql = lo_ql + i
         weapon.name = lo_weapon.name
         weapon.atk_time = lo_weapon.atk_time
@@ -487,7 +488,7 @@ def check_requirements(weapon, stats):
         elif 'Faction' in key:
             continue
 
-        elif key in ['Nano programming', 'Mechanical engineering', 'Weapon smithing', 'Parry', 'Riposte', 'Wielded weapons']: # ignore these keys
+        elif key in ['Nano programming', 'Mechanical engineering', 'Weapon smithing', 'Parry', 'Riposte', 'Wielded weapons', '64', 'Form']: # ignore these keys
             continue
 
         elif key == 'NPC type':
@@ -498,7 +499,7 @@ def check_requirements(weapon, stats):
                 if not stats.get(key) >= val:
                     return False
             except Exception as e:
-                print('TINKERFITE: MISSING KEY: {}'.format(key))
+                print('TINKERFITE: MISSING KEY: {} on {}'.format(key, weapon.name))
                 print(e)
 
     return True
