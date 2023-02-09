@@ -363,7 +363,11 @@ def get_equipable_weapons(weapons, stats):
         if weapon.name in processed_weapons: 
             continue
 
-        same_weapons = weapons.filter(name=weapon.name)
+        if weapon.name != 'Martial Arts Item':
+            same_weapons = weapons.filter(name=weapon.name)
+        else:
+            same_weapons = weapons.filter(name=weapon.name, reqs__Profession__contains=stats['profession'])
+            
         eval_weapon = None
         if len(same_weapons) == 1:
             if check_requirements(weapon, stats):
