@@ -367,7 +367,7 @@ def get_equipable_weapons(weapons, stats):
             same_weapons = weapons.filter(name=weapon.name)
         else:
             same_weapons = weapons.filter(name=weapon.name, reqs__Profession__contains=stats['profession'])
-            
+
         eval_weapon = None
         if len(same_weapons) == 1:
             if check_requirements(weapon, stats):
@@ -492,7 +492,7 @@ def check_requirements(weapon, stats):
         elif 'Faction' in key:
             continue
 
-        elif key in ['Nano programming', 'Mechanical engineering', 'Weapon smithing', 'Parry', 'Riposte', 'Wielded weapons', '64', 'Form']: # ignore these keys
+        elif key in ['Nano programming', 'Mechanical engineering', 'Weapon smithing', 'Parry', 'Riposte', 'Wielded weapons', '64', 'Form', 'Psychological modifications', 'Profession level']: # ignore these keys
             continue
 
         elif key == 'NPC type':
