@@ -35,6 +35,63 @@
     // })
     document.getElementById('submit-button').addEventListener('click', update_stats)
 
+    document.getElementById('reset-button').addEventListener('click', reset_stats)
+
+    function reset_stats(evt) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        
+        fetch('update_stats', {
+            method: 'post',
+            body: JSON.stringify({
+                'breed' : 1, 
+                'profession' : 6,
+                'level' : 1,
+                'subscription' : 0,
+                'crit' : 0,
+                '1h Blunt' : 1,
+                '1h Edged' : 1,
+                '2h Blunt' : 1,
+                '2h Edged' : 1,
+                'Martial arts' : 1,
+                'Melee energy' : 1,
+                'Piercing' : 1,
+                'Time and space' : 1,
+                'Assault rifle' : 1,
+                'Bow' : 1,
+                'Grenade' : 1,
+                'Heavy weapons' : 1,
+                'Smg' : 1,
+                'Pistol' : 1,
+                'Ranged energy' : 1,
+                'Rifle' : 1,
+                'Shotgun' : 1,
+                'Aimed shot' : 1,
+                'Brawl' : 1,
+                'Burst' : 1,
+                'Dimach' : 1,
+                'Fast attack' : 1,
+                'Fling shot' : 1,
+                'Full auto' : 1,
+                'Sneak attack' : 1,
+                'melee_init' : 1,
+                'phys_init' : 1,
+                'ranged_init' : 1,
+                'aggdef' : 1,
+                'aao' : 0,
+                'add_dmg' : 0,
+                'target_ac' : 1,
+            }),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_data(data)
+        })
+    }
+
     function update_stats(evt) {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
         
