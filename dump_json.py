@@ -130,8 +130,10 @@ SKILL_NAMES = {
  'life' : 'Max Health',
 }
 
-def write_json(clusters, implants, nanos, out_name):
-    writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nanos' : nanos}}
+SPECIAL_ATTACKS = ['Brawl', 'Dimach', 'Fast Attack', 'Fling Shot', 'Burst', 'Full Auto', 'Sneak Attack', 'Aimed Shot']
+
+def write_json(clusters, implants, nanos, weapons, out_name):
+    writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nanos' : nanos, 'weapons' : weapons}}
 
     with open(out_name, 'w') as fd:
         fd.write(json.dumps(writeme))
@@ -144,12 +146,16 @@ def parse_xml(in_name):
     implants = {}
     clusters = {}
     crystals = {}
+    weapons = {}
+
+    weapon_count = 0
 
     for item in root.findall('item'):
         name = item.find('name').text
         if name is None:
             continue
         item_type = int(item.find('type').text)
+        icon = int(item.find('icon').text)
 
         if item_type == 0 and 'Cluster' in name: # Item is a cluster, store it
             idx = name.find(' - ')
@@ -301,7 +307,126 @@ def parse_xml(in_name):
                                     val = eff.get('value')
                                     crystals[val] = ql
 
-    return implants, clusters, crystals
+        elif item.find('skillmap') is not None and icon != 0: # Item is a weapon
+            # if int(item.get('aoid')) == 211404: breakpoint()
+            damage = item.find('damage')
+            if damage is None:
+                continue
+            if int(damage.get('maximum')) <= 1: # filter out social items
+                continue
+
+            if 'Otek ' in name: # not in game
+                continue
+
+            try:
+                aoid = int(item.get('aoid'))
+                
+                if not weapons.get(aoid):
+                    weapons[aoid] = {'name' : name}
+
+                ql = int(item.find('ql').text)
+                weapons[aoid]['ql'] = ql
+
+                times = item.find('times')
+                weapons[aoid]['times'] = {
+                    'attack' : int(times.get('attack')),
+                    'recharge' : int(times.get('recharge'))
+                }
+
+                weapons[aoid]['damage'] = {
+                    'minimum' : int(damage.get('minimum')),
+                    'maximum' : int(damage.get('maximum')),
+                    'critical' : int(damage.get('critical')),
+                    'type' : int(damage.get('type'))
+                }
+
+                ammo = item.find('ammo')
+                if ammo is not None:
+                    weapons[aoid]['clipsize'] = int(ammo.get('clipsize'))
+                else:
+                    weapons[aoid]['clipsize'] = -1
+
+                bitfields = item.findall('bitfield')
+                for bitfield in bitfields:
+                    if bitfield.get('type') == 'props':
+                        props = bitfield.text
+                        prop_items = props.split(',')
+                        weapons[aoid]['props'] = [x.strip() for x in prop_items if x.strip() in SPECIAL_ATTACKS]
+
+                reqs = item.find('requirements')
+                weapons[aoid]['reqs'] = {}
+                if reqs is not None:
+                    profs = []
+                    breeds = []
+                    for child in reqs:
+                        attrib = child.get('attribute')
+                        if attrib == 'Profession':
+                            profs.append(int(child.get('value')))
+                        elif attrib == 'Breed':
+                            breeds.append(int(child.get('value')))
+                        else:
+                            weapons[aoid]['reqs'][attrib] = int(child.get('value'))
+
+                    weapons[aoid]['reqs']['Profession'] = profs
+                    weapons[aoid]['reqs']['Breed'] = breeds
+
+                    # Set reqs for brawl
+                    if aoid == 70292:
+                        weapons[aoid]['reqs']['Brawl'] = 1
+                    if aoid == 70293:
+                        weapons[aoid]['reqs']['Brawl'] = 1000
+                    if aoid == 211401:
+                        weapons[aoid]['reqs']['Brawl'] = 1001
+                    if aoid == 211402:
+                        weapons[aoid]['reqs']['Brawl'] = 2000
+                    if aoid == 211403:
+                        weapons[aoid]['reqs']['Brawl'] = 2001
+                    if aoid == 211404:
+                        weapons[aoid]['reqs']['Brawl'] = 3000
+
+                else: 
+                    # add proper reqs to MA items
+                    if aoid in [211352, 211353, 211354, 211357, 211358, 211363, 211364]: # Martial Artist
+                        weapons[aoid]['reqs']['Profession'] = [2]
+                    elif aoid in [211349, 211350, 211351, 211359, 211360, 211365, 211366]: # Shade
+                        weapons[aoid]['reqs']['Profession'] = [15]
+                    elif aoid in [43712, 144745,  43713, 211355, 211356, 211361, 211362]: # Other
+                        weapons[aoid]['reqs']['Profession'] = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+
+                    if aoid in [211349, 211352, 43712]:
+                        weapons[aoid]['reqs']['Martial arts'] = 1
+                    elif aoid in [211353, 211350, 144745]:
+                        weapons[aoid]['reqs']['Martial arts'] = 200
+                    elif aoid in [211354, 211351, 43713]:
+                        weapons[aoid]['reqs']['Martial arts'] = 1000
+                    elif aoid in [211357, 211359, 211355]:
+                        weapons[aoid]['reqs']['Martial arts'] = 1001
+                    elif aoid in [211358, 211360, 211356]:
+                        weapons[aoid]['reqs']['Martial arts'] = 2000
+                    elif aoid in [211363, 211365, 211361]:
+                        weapons[aoid]['reqs']['Martial arts'] = 2001
+                    elif aoid in [211364, 211366, 211362]:
+                        weapons[aoid]['reqs']['Martial arts'] = 3000
+
+                skillmaps = item.findall('skillmap')
+                if skillmaps is not None:
+                    for map in skillmaps:
+                        if map.get('type') == 'attack':
+                            weapons[aoid]['attack_skills'] = {}
+                            for child in map:
+                                weapons[aoid]['attack_skills'][child.get('name')] = int(child.get('percentage'))
+
+                other = item.find('other')
+                weapons[aoid]['other'] = {}
+                if other is not None:
+                    for child in other:
+                        key = child.get('key')
+                        weapons[aoid]['other'][key] = int(child.get('value'))
+
+            except (AttributeError, TypeError):
+                print('Weapon error ({}), moving on'.format(name))
+                
+    return implants, clusters, crystals, weapons
 
 def parse_nanos(in_name, crystals):
     tree = ET.parse(in_name)
@@ -419,8 +544,8 @@ if __name__ == '__main__':
 
     else:
         remove_old(args.output)
-        implants, clusters, crystals = parse_xml(args.items)
+        implants, clusters, crystals, weapons = parse_xml(args.items)
         nanos = parse_nanos(args.nanos, crystals)
-        write_json(clusters, implants, nanos, args.output)
+        write_json(clusters, implants, nanos, weapons, args.output)
 
 

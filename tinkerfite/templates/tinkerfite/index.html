@@ -1,0 +1,270 @@
+{% extends "tinkerfite/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col col-md-3 col-lg-2">
+            <span class="fs-4">Tinkerfite</span>
+            <hr>
+            <div class="container">
+                <div class="row">
+                    <button id="submit-button" type="button" class="btn btn-outline-success">Show Weapons</button>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <button id="reset-button" type="button" class="btn btn-outline-secondary">Reset</button>
+                </div>
+            </div>
+            <hr>
+            <div class="accordion" id="fite-accordion">
+                
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#stats">Character</button>
+                    <div id="stats" class="accordion-collapse collapse" data-bs-parent="#fite-accordion">
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="nav-item">
+                                <span class="fw-bold">Breed:</span>
+                                <select class="form-select" id="breed">
+                                    <option selected value="1">Solitus</option>
+                                    <option value="2">Opifex</option>
+                                    <option value="3">Nanomage</option>
+                                    <option value="4">Atrox</option>
+                                </select>
+                            </li>
+                            <li class="navitem">
+                                <span class="fw-bold">Profession:</span>
+                                <select class="form-select" id="profession">
+                                    <option selected value="6">Adventurer</option>
+                                    <option value="5">Agent</option>
+                                    <option value="8">Bureaucrat</option>
+                                    <option value="10">Doctor</option>
+                                    <option value="9">Enforcer</option>
+                                    <option value="3">Engineer</option>
+                                    <option value="4">Fixer</option>
+                                    <option value="14">Keeper</option>
+                                    <option value="2">Martial Artist</option>
+                                    <option value="12">Meta-Physicist</option>
+                                    <option value="11">Nano-Technician</option>
+                                    <option value="15">Shade</option>
+                                    <option value="1">Soldier</option>
+                                    <option value="7">Trader</option>
+                                </select>
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Level:</span>
+                                <input type="number" id="level" min=1 max=220 class="form-control" value="1">
+                            </li>
+                            <li class="navitem">
+                                <span class="fw-bold">Subscription:</span>
+                                <select class="form-select" id="subscription">
+                                    <option selected value="0">Free (Froob)</option>
+                                    <option value="2">Shadowlands (Sloob)</option>
+                                    <option value="8">Paid</option>
+                                </select>
+                            </li>
+                            <li>
+                                <span class="fw-bold">Critical Hit Chance:</span>
+                                <input type="number" id="crit-chance" min=1 class="form-control" value="0">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#melee-weapon-skills">Melee Weapon Skills</button>
+                    <div id="melee-weapon-skills" class="accordion-collapse collapse" data-bs-parent="#fite-accordion">
+                        <li>
+                            <span class="fw-bold">1H&nbsp;Blunt:</span>
+                            <input type="number" id="1hb-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">1H&nbsp;Edged:</span>
+                            <input type="number" id="1he-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">2H&nbsp;Blunt:</span>
+                            <input type="number" id="2hb-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">2H&nbsp;Edged:</span>
+                            <input type="number" id="2he-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Martial&nbsp;Arts:</span>
+                            <input type="number" id="martial-arts-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Melee&nbsp;Energy:</span>
+                            <input type="number" id="melee-energy-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Piercing:</span>
+                            <input type="number" id="piercing-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Time and Space:</span>
+                            <input type="number" id="time-and-space-skill" min=1 class="form-control" value="1">
+                        </li>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#ranged-weapon-skills">Ranged Weapon Skills</button>
+                    <div id="ranged-weapon-skills" class="accordion-collapse collapse" data-bs-parent="#fite-accordion">
+                        <li>
+                            <span class="fw-bold">Assault&nbsp;Rifle:</span>
+                            <input type="number" id="assault-rifle-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Bow:</span>
+                            <input type="number" id="bow-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Grenade:</span>
+                            <input type="number" id="grenade-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Heavy Weapons:</span>
+                            <input type="number" id="heavy-weapons-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">MG/SMG:</span>
+                            <input type="number" id="mg-smg-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Pistol:</span>
+                            <input type="number" id="pistol-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Ranged&nbsp;Energy:</span>
+                            <input type="number" id="ranged-energy-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Rifle:</span>
+                            <input type="number" id="rifle-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Shotgun:</span>
+                            <input type="number" id="shotgun-skill" min=1 class="form-control" value="1">
+                        </li>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#special-attack-skills">Special Attacks</button>
+                    <div id="special-attack-skills" class="accordion-collapse collapse" data-bs-parent="#fite-accordion">
+                        <li>
+                            <span class="fw-bold">Aimed&nbsp;Shot:</span>
+                            <input type="number" id="aimed-shot-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Brawl:</span>
+                            <input type="number" id="brawl-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Burst:</span>
+                            <input type="number" id="burst-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Dimach:</span>
+                            <input type="number" id="dimach-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Fast&nbsp;Attack:</span>
+                            <input type="number" id="fast-attack-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Fling&nbsp;Shot:</span>
+                            <input type="number" id="fling-shot-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Full&nbsp;Auto:</span>
+                            <input type="number" id="full-auto-skill" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Sneak&nbsp;Attack:</span>
+                            <input type="number" id="sneak-attack-skill" min=1 class="form-control" value="1">
+                        </li>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#weapon-speed">Weapon Speed</button>
+                    <div id="weapon-speed" class="accordion-collapse collapse" data-bs-parent="#fite-accordion">
+                        <li>
+                            <span class="fw-bold">Melee&nbsp;Init:</span>
+                            <input type="number" id="melee-init" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Physical&nbsp;Init:</span>
+                            <input type="number" id="physical-init" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Ranged&nbsp;Init:</span>
+                            <input type="number" id="ranged-init" min=1 class="form-control" value="1">
+                        </li>
+                        <li>
+                            <span class="fw-bold">AGG/DEF:</span>
+                            <input type="range" class="form-range" min="-100" max="100" id="aggdef">
+                        </li>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#weapon-damage">Damage/AAO</button>
+                    <div id="weapon-damage" class="accordion-collapse collapse" data-bs-parent="#fite-accordion">
+                        <li>
+                            <span class="fw-bold">Add&nbsp;All&nbsp;Offense:</span>
+                            <input type="number" id="aao" min=0 class="form-control" value="0">
+                        </li>
+                        <li>
+                            <span class="fw-bold">Add&nbsp;Damage:</span>
+                            <input type="number" id="add-damage" min=0 class="form-control" value="0">
+                        </li>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#target">Target</button>
+                    <div id="target" class="accordion-collapse collapse" data-bs-parent="#fite-accordion">
+                        <li>
+                            <span class="fw-bold">Target AC:</span>
+                            <input type="number" id="target-ac" min=0 class="form-control" value="0">
+                        </li>
+                    </div>
+                </div>
+                
+            </div>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li>&nbsp;</li>
+                <li>
+                    <a class="btn" role="button" data-bs-toggle="modal" data-bs-target="#about" aria-expanded="false">About</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col" style="width: 85%;">
+            <table id="weapon-table" class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th width="200px">Name</th>
+                        <th>QL</th>
+                        <th>Clip</th>
+                        <th>AC</th>
+                        <th>Specials</th>
+                        <th>Atk/Rch</th>
+                        <th>Min Dmg</th>
+                        <th>Avg Dmg</th>
+                        <th>Max Dmg</th>
+                        <th>Crit</th>
+                        <th>Min DPS</th>
+                        <th>Avg. DPS</th>
+                        <th>Max DPS</th>
+                    </tr>
+                </thead>
+                <tbody id="weapons">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% include 'tinkerfite/modals.html' %}
+{% include 'tinkerfite/index_script.html' %}
+{% endblock content %}
