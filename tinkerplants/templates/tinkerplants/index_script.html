@@ -423,10 +423,10 @@
         }
 
         // Populate the shopping list
-        shop_implants.sort()
-        shop_shiny.sort()
-        shop_bright.sort()
-        shop_faded.sort()
+        shop_implants.sort((a, b) => a.localeCompare(b))
+        shop_shiny.sort((a, b) => a.localeCompare(b))
+        shop_bright.sort((a, b) => a.localeCompare(b))
+        shop_faded.sort((a, b) => a.localeCompare(b))
         for(const [idx, val] of shop_implants.entries()) {
             shop_row = document.createElement('tr')
 
