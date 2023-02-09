@@ -363,10 +363,15 @@ def get_equipable_weapons(weapons, stats):
         if weapon.name in processed_weapons: 
             continue
 
+        if weapon.aoid in BANNED_IDS: # skip junk weapons
+            continue
+
         if weapon.name != 'Martial Arts Item':
             same_weapons = weapons.filter(name=weapon.name)
-        else:
+        elif stats['profession'] != 0:
             same_weapons = weapons.filter(name=weapon.name, reqs__Profession__contains=stats['profession'])
+        else:
+            same_weapons = weapons.filter(name=weapon.name, reqs__Profession__contains=1) # the 'Any' profession
 
         eval_weapon = None
         if len(same_weapons) == 1:
@@ -459,7 +464,7 @@ def check_requirements(weapon, stats):
                     return False
 
         elif key == 'Profession':
-            if len(val) != 0:
+            if len(val) != 0 and not stats.get('profession') == 0:
                 if not stats.get('profession') in val:
                     return False
 

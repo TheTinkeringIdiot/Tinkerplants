@@ -54,10 +54,27 @@ DMG_TYPES = {
     97 : 'Fire'
 }
 
+BANNED_IDS = [
+    303423, 303424, # Junior Ofab Bear
+    303405, 303406, # Junior Ofab Boar
+    303409, 303410, # Junior Ofab Cobra
+    303413, 303414, # Junior Ofab Hawk
+    303421, 303422, # Junior Ofab Mongoose
+    303403, 303404, # Junior Ofab Panther
+    303407, 303408, # Junior Ofab Peregrine
+    303411, 303412, # Junior Ofab Shark
+    303415, 303416, # Junior Ofab Silverback
+    303425, 303426, # Junior Ofab Tiger
+    303417, 303418, # Junior Ofab Viper
+    303419, 303420, # Junior Ofab Wolf
+    275607, # Alien Vortex Spinning Weapon
+    280460, # Crazy Xanboss Weapon
+]
+
 def initial_weapons():
     return {
         'breed' : 1, 
-        'profession' : 6,
+        'profession' : 0,
         'level' : 1,
         'subscription' : 0,
         'crit' : 0,
