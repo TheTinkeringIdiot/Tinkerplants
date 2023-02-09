@@ -89,7 +89,7 @@ def initial_weapons():
         'melee_init' : 1,
         'phys_init' : 1,
         'ranged_init' : 1,
-        'aggdef' : 1,
+        'aggdef' : 75,
         'aao' : 0,
         'add_dmg' : 0,
         'target_ac' : 1,
