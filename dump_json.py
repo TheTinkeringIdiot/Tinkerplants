@@ -320,6 +320,9 @@ def parse_xml(in_name):
 
             try:
                 aoid = int(item.get('aoid'))
+
+                if aoid in [302624, 304910]:
+                    continue
                 
                 if not weapons.get(aoid):
                     weapons[aoid] = {'name' : name}
