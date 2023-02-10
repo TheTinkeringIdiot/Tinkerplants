@@ -292,7 +292,7 @@ def calculate_dps(weapon, stats):
             min_brawl = round((brawl_weapon.dmg_min * ar_bonus) + stats['add_dmg'])
             max_brawl = round((brawl_weapon.dmg_max * ar_bonus) + stats['add_dmg'] - (stats['target_ac'] / 10))
             if max_brawl < min_brawl: max_brawl = min_brawl
-            avg_brawl = round(min_dmg + (max_dmg - min_dmg) / 2)
+            avg_brawl = round(min_brawl + (max_brawl - min_brawl) / 2)
             
             cycle_time = 15
             num_attacks = math.floor(sample_len / cycle_time)
