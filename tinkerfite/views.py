@@ -525,7 +525,7 @@ def check_requirements(weapon, stats):
         elif 'Faction' in key:
             continue
 
-        elif key in ['Nano programming', 'Mechanical engineering', 'Weapon smithing', 'Parry', 'Riposte', 'Wielded weapons', '64', 'Form', 'Psychological modifications', 'Profession level']: # ignore these keys
+        elif key in ['Gender', 'Nano programming', 'Mechanical engineering', 'Weapon smithing', 'Parry', 'Riposte', 'Wielded weapons', '64', 'Form', 'Psychological modifications', 'Profession level']: # ignore these keys
             continue
 
         elif key == 'NPC type':

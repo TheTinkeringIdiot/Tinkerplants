@@ -71,6 +71,7 @@ BANNED_IDS = [
     280460, # Crazy Xanboss Weapon
     269377, # Metaing's Pink Pocket Knife
     295603, # Michizure's Boomstick!
+    306174, # Bone of a Champion
 ]
 
 def initial_weapons():
