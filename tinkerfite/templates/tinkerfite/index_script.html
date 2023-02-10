@@ -37,6 +37,35 @@
 
     document.getElementById('reset-button').addEventListener('click', reset_stats)
 
+    document.getElementById('save-button').addEventListener('click', save_stats)
+
+    function save_stats(evt) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch('save_stats', {
+            method: 'post',
+            body: JSON.stringify({}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_save_link(data)
+        })
+    }
+
+    function update_save_link(data) {
+        link = "https://ao.tinkeringidiot.com/tinkerfite/restore_stats?stats=" + data['save_link']
+        document.getElementById('save-link').textContent = link
+        var saveModal = new bootstrap.Modal(document.getElementById('save-modal'), {
+            keyboard: false
+        });
+        navigator.clipboard.writeText(link);
+        saveModal.show()
+    }
+
     function reset_stats(evt) {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
         

@@ -5,7 +5,7 @@ from tinkerfite.models import *
 from tinkerfite.utils import *
 from aobase.settings import *
 
-import json, math
+import json, math, base64, pickle
 
 # Create your views here.
 def index(request):
@@ -13,6 +13,37 @@ def index(request):
         request.session['stats'] = initial_weapons()
         print('Session setup')
     return render(request, 'tinkerfite/index.html')
+
+def save_stats(request):
+    if request.session.get('stats') is None:
+        return JsonResponse({'success': False, 'message': 'Session timed out', 'next': ''})
+
+    stats = []
+    for key, val in request.session['stats'].items():
+        stats.append(val)
+
+    stat_pickle = pickle.dumps(stats)
+
+    return JsonResponse({'success': True, 'stats': request.session.get('stats'), 'save_link' : base64.b64encode(stat_pickle).decode('ascii')})
+
+def restore_stats(request):
+    # breakpoint()
+    if request.method == 'GET':
+        b64_stats = request.GET.get('stats')
+        if b64_stats is None:
+            return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+
+        decoded_stats = base64.b64decode(b64_stats)
+        stat_vals = list(pickle.loads(decoded_stats))
+
+        stats = initial_weapons()
+
+        for i, key in enumerate(stats):
+            stats[key] = stat_vals[i]
+
+        request.session['stats'] = stats
+
+        return HttpResponseRedirect('/tinkerfite')
 
 def update_display(request):
     if request.session.get('stats') is None:
