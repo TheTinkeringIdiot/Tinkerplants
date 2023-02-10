@@ -363,7 +363,7 @@ def parse_xml(in_name):
                     breeds = []
                     for child in reqs:
                         attrib = child.get('attribute')
-                        if attrib == 'Profession':
+                        if attrib == 'Profession' or attrib == 'Visual profession':
                             profs.append(int(child.get('value')))
                         elif attrib == 'Breed':
                             breeds.append(int(child.get('value')))
