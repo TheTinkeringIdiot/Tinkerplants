@@ -400,7 +400,10 @@ def calculate_ar_bonus(weapon, stats):
             atk_skill += round(stats.get(key) * (val / 100))
         except: # weird attack skills like nanoprogramming
             continue
-    atk_skill += stats['aao']
+
+    aao = stats.get('aao')
+    if aao is not None:
+        atk_skill += aao
     ar_cap = weapon.other.get('Attack rating cap')
     if ar_cap is not None and atk_skill > ar_cap: # MBS
         atk_skill = ar_cap
