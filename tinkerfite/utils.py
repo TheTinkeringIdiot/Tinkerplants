@@ -75,6 +75,9 @@ BANNED_IDS = [
     228373, # High Novictum Katana of Innocence
     228369, 228370, # Low Novictum Katana of Innocence
     228371, 228372, # Novictum Katana of Innocence
+    281185, # A.F.D. Twohander
+    164638, # Andrew's Uber Test Weapon
+    227455, # Bent Fuzzys Poke Technique
 ]
 
 SKIPPED_REQS = [
