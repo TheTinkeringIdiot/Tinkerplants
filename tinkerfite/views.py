@@ -110,6 +110,9 @@ def update_stats(request):
             try: grenade = int(data.get('Grenade'))
             except: grenade = 1
             if grenade is not None and grenade >= 1: request.session['stats']['Grenade'] = grenade
+            try: hw = int(data.get('Heavy weapons'))
+            except: hw = 1
+            if hw is not None and hw >= 1: request.session['stats']['Heavy weapons'] = hw
             try: mg_smg = int(data.get('Smg'))
             except: mg_smg = 1
             if mg_smg is not None and mg_smg >= 1: request.session['stats']['Smg'] = mg_smg
@@ -416,10 +419,12 @@ def calculate_speeds(weapon, stats):
     rech_time = rech_time - (stats['aggdef'] - 75)
     if rech_time < 100: rech_time = 100
 
-    atk_time = round(atk_time - (stats[INITS[weapon.other.get('Initiative skill')]] / 6))
-    if atk_time < 100: atk_time = 100
-    rech_time = round(rech_time - (stats[INITS[weapon.other.get('Initiative skill')]] / 3))
-    if rech_time < 100: rech_time = 100
+    init = weapon.other.get('Initiative skill')
+    if init is not None:
+        atk_time = round(atk_time - (stats[INITS[init]] / 6))
+        if atk_time < 100: atk_time = 100
+        rech_time = round(rech_time - (stats[INITS[init]] / 3))
+        if rech_time < 100: rech_time = 100
 
     return atk_time, rech_time
 
