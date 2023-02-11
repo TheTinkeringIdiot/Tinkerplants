@@ -77,6 +77,22 @@ BANNED_IDS = [
     228371, 228372, # Novictum Katana of Innocence
 ]
 
+SKIPPED_REQS = [
+    'Gender', 
+    'Nano programming', 
+    'Mechanical engineering', 
+    'Weapon smithing', 
+    'Parry', 
+    'Riposte', 
+    'Wielded weapons', 
+    '64', 
+    'Form', 
+    'Psychological modifications', 
+    'Profession level',
+    'Strength',
+    'Cyberdeck',
+]
+
 def initial_weapons():
     return {
         'breed' : 1, 

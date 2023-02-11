@@ -559,14 +559,11 @@ def check_requirements(weapon, stats):
                 return False
             elif val == 2 and stats['level'] < 15:
                 return False
-
-        elif key == 'Cyberdeck': # MP QL215 weapon
-            continue
         
         elif 'Faction' in key:
             continue
 
-        elif key in ['Gender', 'Nano programming', 'Mechanical engineering', 'Weapon smithing', 'Parry', 'Riposte', 'Wielded weapons', '64', 'Form', 'Psychological modifications', 'Profession level']: # ignore these keys
+        elif key in SKIPPED_REQS: # ignore these keys
             continue
 
         elif key == 'NPC type':
