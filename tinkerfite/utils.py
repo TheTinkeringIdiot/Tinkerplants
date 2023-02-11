@@ -72,6 +72,9 @@ BANNED_IDS = [
     269377, # Metaing's Pink Pocket Knife
     295603, # Michizure's Boomstick!
     306174, # Bone of a Champion
+    228373, # High Novictum Katana of Innocence
+    228369, 228370, # Low Novictum Katana of Innocence
+    228371, 228372, # Novictum Katana of Innocence
 ]
 
 def initial_weapons():
