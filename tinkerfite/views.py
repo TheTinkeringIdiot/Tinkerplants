@@ -232,16 +232,17 @@ def calculate_dps(weapon, stats):
     num_basic_attacks = math.floor(sample_len / cycle_time)
     ar_bonus = calculate_ar_bonus(weapon, stats)
 
-    min_dmg = round((weapon.dmg_min * ar_bonus) + stats['add_dmg'])
-    max_dmg = round((weapon.dmg_max * ar_bonus) + stats['add_dmg'] - (stats['target_ac'] / 10))
+    add_dmg = stats.get('add_dmg', 0)
+    min_dmg = round((weapon.dmg_min * ar_bonus) + add_dmg)
+    max_dmg = round((weapon.dmg_max * ar_bonus) + add_dmg - (stats['target_ac'] / 10))
     if max_dmg < min_dmg: max_dmg = min_dmg
     avg_dmg = round(min_dmg + (max_dmg - min_dmg) / 2)
 
     num_crits = math.floor(num_basic_attacks * (stats['crit'] / 100))
     num_basic_attacks = num_basic_attacks - num_crits
 
-    crit_min_dmg = round(((weapon.dmg_min + weapon.dmg_crit) * ar_bonus) + stats['add_dmg'])
-    crit_dmg = round(((weapon.dmg_max + weapon.dmg_crit) * ar_bonus) + stats['add_dmg']  - (stats['target_ac'] / 10))
+    crit_min_dmg = round(((weapon.dmg_min + weapon.dmg_crit) * ar_bonus) + add_dmg)
+    crit_dmg = round(((weapon.dmg_max + weapon.dmg_crit) * ar_bonus) + add_dmg  - (stats['target_ac'] / 10))
     if crit_dmg < crit_min_dmg: crit_dmg = crit_min_dmg
 
     min_special_dmg = 0
@@ -300,7 +301,7 @@ def calculate_dps(weapon, stats):
             # cycle_time = (weapon.rech_time / 100) * 40 - (3 * stats['Aimed shot'] / 100)
             # if cycle_time < cycle_cap: cycle_time = cycle_cap
 
-            as_dmg = round((weapon.dmg_max * ar_bonus) + stats['add_dmg'])
+            as_dmg = round((weapon.dmg_max * ar_bonus) + add_dmg)
             as_bonus = stats['Aimed shot'] / 95
             as_dmg = as_dmg * as_bonus
             if as_dmg > 13000: as_dmg = 13000
@@ -328,8 +329,8 @@ def calculate_dps(weapon, stats):
                 if brawl_weapon is not None:
                     break
 
-            min_brawl = round((brawl_weapon.dmg_min * ar_bonus) + stats['add_dmg'])
-            max_brawl = round((brawl_weapon.dmg_max * ar_bonus) + stats['add_dmg'] - (stats['target_ac'] / 10))
+            min_brawl = round((brawl_weapon.dmg_min * ar_bonus) + add_dmg)
+            max_brawl = round((brawl_weapon.dmg_max * ar_bonus) + add_dmg - (stats['target_ac'] / 10))
             if max_brawl < min_brawl: max_brawl = min_brawl
             avg_brawl = round(min_brawl + (max_brawl - min_brawl) / 2)
             
