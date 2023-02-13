@@ -94,6 +94,7 @@ SKIPPED_REQS = [
     'Profession level',
     'Strength',
     'Cyberdeck',
+    'Psychology',
 ]
 
 def initial_weapons():
