@@ -109,6 +109,10 @@ def match(request):
 
         level = int(data.get('Level', 1))
         profession = int(data.get('Profession', 0))
+        if data.get('Sloob'):
+            expansions = 2
+        else:
+            expansions = 512
 
         stats = {
             'Strength' : int(data.get('Strength', 1)),
@@ -123,7 +127,9 @@ def match(request):
         if profession == 0:
             return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
 
-        candidates = Symbiant.objects.filter(reqs__Level__lte=level, reqs__Profession__contains=profession)
+        candidates = Symbiant.objects.filter(reqs__Level__lte=level, reqs__Profession__contains=profession, reqs__Expansion_sets__lte=expansions)
+
+        breakpoint()
 
         retlist = []
 
@@ -151,7 +157,7 @@ def match(request):
 def check_requirements(symb, stats):
     for key, val in symb.reqs.items():
 
-        if key in ['Profession', 'Level', 'Expansion sets']:
+        if key in ['Profession', 'Level', 'Expansion_sets']:
             continue
 
         elif key == 'Level':
