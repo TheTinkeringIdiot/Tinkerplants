@@ -53,6 +53,11 @@ def filter(request):
         if high_ql < low_ql: 
             return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
 
+        if data.get('sloob'):
+            expansions = 2
+        else:
+            expansions = 512
+
         families = []
         if data['artillery']: families.append('Artillery')
         if data['control']: families.append('Control')
@@ -79,9 +84,9 @@ def filter(request):
         if data['feet']: slots.append('Feet')
 
         if len(slots) <= 0:
-            symbs = Symbiant.objects.filter(ql__gte=low_ql, ql__lte=high_ql, family__in=families)
+            symbs = Symbiant.objects.filter(ql__gte=low_ql, ql__lte=high_ql, family__in=families, reqs__Expansion_sets__lte=expansions)
         else:
-            symbs = Symbiant.objects.filter(ql__gte=low_ql, ql__lte=high_ql, family__in=families, slot__in=slots)
+            symbs = Symbiant.objects.filter(ql__gte=low_ql, ql__lte=high_ql, family__in=families, slot__in=slots, reqs__Expansion_sets__lte=expansions)
 
         retlist = []
         for symb in symbs:
