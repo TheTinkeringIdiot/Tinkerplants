@@ -160,6 +160,16 @@
     function match_reset(evt) {
         match_table = $('#match-table').DataTable()
         match_table.rows().remove().draw()
+
+        document.getElementById('match-profession').value = 0
+        document.getElementById('match-level').value = 1
+        document.getElementById('match-strength').value = 1
+        document.getElementById('match-stamina').value = 1
+        document.getElementById('match-sense').value = 1
+        document.getElementById('match-agility').value = 1
+        document.getElementById('match-intelligence').value = 1
+        document.getElementById('match-psychic').value = 1
+        document.getElementById('match-treatment').value = 1
     }
 
     function update_boss_info(data) {
