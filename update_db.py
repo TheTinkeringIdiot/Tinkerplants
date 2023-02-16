@@ -260,6 +260,7 @@ for aoid, vals in symbiants.items():
     symb = Symbiant()
     symb.aoid = aoid
     symb.ql = vals['ql']
+    symb.name = vals['name']
     symb.slot = vals['slot']
     symb.family = vals['family']
     symb.reqs = vals['reqs']
