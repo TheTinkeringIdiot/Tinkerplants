@@ -102,3 +102,67 @@ def filter(request):
 
     else:
         return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+
+def match(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        level = int(data.get('Level', 1))
+        profession = int(data.get('Profession', 0))
+
+        stats = {
+            'Strength' : int(data.get('Strength', 1)),
+            'Stamina' : int(data.get('Stamina', 1)),
+            'Sense' : int(data.get('Sense', 1)),
+            'Agility' : int(data.get('Agility', 1)),
+            'Intelligence' : int(data.get('Intelligence', 1)),
+            'Psychic' : int(data.get('Psychic', 1)),
+            'Treatment' : int(data.get('Treatment', 1)),
+        }
+
+        if profession == 0:
+            return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+
+        candidates = Symbiant.objects.filter(reqs__Level__lte=level, reqs__Profession__contains=profession)
+
+        retlist = []
+
+        for candidate in candidates:
+            if check_requirements(candidate, stats):
+                entry = [
+                    candidate.aoid,
+                    candidate.name,
+                    candidate.slot,
+                    candidate.ql,
+                ]
+
+                dropped_by = []
+                for boss in candidate.dropped_by.all():
+                    dropped_by.append(boss.name)
+
+                entry.append(dropped_by)
+                retlist.append(entry)
+
+        return JsonResponse({'success': True, 'data': retlist})
+
+    else:
+        return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+
+def check_requirements(symb, stats):
+    for key, val in symb.reqs.items():
+
+        if key in ['Profession', 'Level', 'Expansion sets']:
+            continue
+
+        elif key == 'Level':
+            continue
+
+        else:
+            try:
+                if not stats.get(key) >= val:
+                    return False
+            except Exception as e:
+                print('TINKERPOCKET: MISSING KEY: {} on {}'.format(key, symb.name))
+                print(e)
+
+    return True

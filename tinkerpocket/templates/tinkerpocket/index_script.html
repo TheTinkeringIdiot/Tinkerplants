@@ -5,38 +5,20 @@
             order: [[ 1, 'desc' ]],
             pageLength: 25
         })
+
+        $('#match-table').DataTable({
+            order: [[ 2, 'desc' ]],
+            pageLength: 25
+        })
     })
 
-    // window.addEventListener('load', function () {
-    //     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
-    //     fetch('update_display', {
-    //         method: 'post',
-    //         body: JSON.stringify({}),
-    //         headers: {
-    //             'Accept' : 'application/json',
-    //             'Content-Type' : 'application/json',
-    //             'X-CSRFToken': csrftoken
-    //         }
-    //     }).then(response => response.json())
-    //     .then(data => {
-    //         display_stats(data)
-    //         update_stats()
-    //     })
-    // })
-
-    // var selectElements = Array.from(document.getElementsByTagName('select'))
-    // selectElements.forEach(function(elem) {
-    //     elem.addEventListener('change', update_stats);
-    // })
-
-    // var selectElements = Array.from(document.getElementsByTagName('input'))
-    // selectElements.forEach(function(elem) {
-    //     elem.addEventListener('change', update_stats);
-    // })
     document.getElementById('bosses-submit').addEventListener('click', get_boss_info)
 
     document.getElementById('filter-submit').addEventListener('click', filter_symbs)
     document.getElementById('filter-reset').addEventListener('click', filter_reset)
+
+    document.getElementById('match-submit').addEventListener('click', match_symbs)
+    document.getElementById('match-reset').addEventListener('click', match_reset)
 
     // document.getElementById('save-button').addEventListener('click', save_stats)
 
@@ -99,6 +81,9 @@
     }
 
     function filter_reset(evt) {
+        filter_table = $('#filter-table').DataTable()
+        filter_table.rows().remove().draw()
+
         document.getElementById('low-ql').value = 1
         document.getElementById('high-ql').value = 300
         document.getElementById('filter-artillery-check').checked = false
@@ -119,6 +104,62 @@
         document.getElementById('filter-leg-check').checked = false
         document.getElementById('filter-left-hand-check').checked = false
         document.getElementById('filter-feet-check').checked = false
+    }
+
+    function match_symbs(evt) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch('match', {
+            method: 'post',
+            body: JSON.stringify({
+                'Profession' : document.getElementById('match-profession').value,
+                'Level' : document.getElementById('match-level').value,
+                'Strength' : document.getElementById('match-strength').value,
+                'Stamina' : document.getElementById('match-stamina').value,
+                'Sense' : document.getElementById('match-sense').value,
+                'Agility' : document.getElementById('match-agility').value,
+                'Intelligence' : document.getElementById('match-intelligence').value,
+                'Psychic' : document.getElementById('match-psychic').value,
+                'Treatment' : document.getElementById('match-treatment').value,
+            }),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_match_info(data)
+        })
+    }
+
+    function update_match_info(data) {
+        if (data.success) {
+            match_table = $('#match-table').DataTable()
+            match_table.rows().remove().draw()
+
+            info = data['data']
+
+            info.forEach(function(symb) {
+                droppers = ''
+
+                symb[4].forEach(function(dropper) {
+                    droppers += dropper + '<br>'
+                })
+
+                match_table.row.add([
+                    '<a href="https://aoitems.com/item/' + symb[0] + '">' + symb[1] + '</a>',
+                    symb[2],
+                    symb[3],
+                    droppers
+                ]).draw()
+            })
+        }
+    }
+
+    function match_reset(evt) {
+        match_table = $('#match-table').DataTable()
+        match_table.rows().remove().draw()
     }
 
     function update_boss_info(data) {
