@@ -1,28 +1,28 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        $('#weapon-table').DataTable({
-            order: [[ 11, 'desc' ]],
-            pageLength: 25
-        })
+        // $('#weapon-table').DataTable({
+        //     order: [[ 11, 'desc' ]],
+        //     pageLength: 25
+        // })
     })
 
-    window.addEventListener('load', function () {
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
-        fetch('update_display', {
-            method: 'post',
-            body: JSON.stringify({}),
-            headers: {
-                'Accept' : 'application/json',
-                'Content-Type' : 'application/json',
-                'X-CSRFToken': csrftoken
-            }
-        }).then(response => response.json())
-        .then(data => {
-            display_stats(data)
-            update_stats()
-        })
-    })
+    // window.addEventListener('load', function () {
+    //     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    //     fetch('update_display', {
+    //         method: 'post',
+    //         body: JSON.stringify({}),
+    //         headers: {
+    //             'Accept' : 'application/json',
+    //             'Content-Type' : 'application/json',
+    //             'X-CSRFToken': csrftoken
+    //         }
+    //     }).then(response => response.json())
+    //     .then(data => {
+    //         display_stats(data)
+    //         update_stats()
+    //     })
+    // })
 
     // var selectElements = Array.from(document.getElementsByTagName('select'))
     // selectElements.forEach(function(elem) {
@@ -33,18 +33,20 @@
     // selectElements.forEach(function(elem) {
     //     elem.addEventListener('change', update_stats);
     // })
-    document.getElementById('submit-button').addEventListener('click', update_stats)
+    document.getElementById('bosses-submit').addEventListener('click', get_boss_info)
 
-    document.getElementById('reset-button').addEventListener('click', reset_stats)
+    // document.getElementById('reset-button').addEventListener('click', reset_stats)
 
-    document.getElementById('save-button').addEventListener('click', save_stats)
+    // document.getElementById('save-button').addEventListener('click', save_stats)
 
-    function save_stats(evt) {
+    function get_boss_info(evt) {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
 
-        fetch('save_stats', {
+        fetch('boss_info', {
             method: 'post',
-            body: JSON.stringify({}),
+            body: JSON.stringify({
+                'name' : document.getElementById('boss-select').value
+            }),
             headers: {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json',
@@ -52,7 +54,7 @@
             }
         }).then(response => response.json())
         .then(data => {
-            update_save_link(data)
+            update_boss_info(data)
         })
     }
 
@@ -121,101 +123,139 @@
         })
     }
 
-    function update_stats(evt) {
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    // function update_stats(evt) {
+    //     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
         
-        fetch('update_stats', {
-            method: 'post',
-            body: JSON.stringify({
-                'breed' : document.getElementById('breed').value, 
-                'profession' : document.getElementById('profession').value,
-                'level' : document.getElementById('level').value,
-                'subscription' : document.getElementById('subscription').value,
-                'crit' : document.getElementById('crit-chance').value,
-                '1h Blunt' : document.getElementById('1hb-skill').value,
-                '1h Edged' : document.getElementById('1he-skill').value,
-                '2h Blunt' : document.getElementById('2hb-skill').value,
-                '2h Edged' : document.getElementById('2he-skill').value,
-                'Martial arts' : document.getElementById('martial-arts-skill').value,
-                'Melee energy' : document.getElementById('melee-energy-skill').value,
-                'Piercing' : document.getElementById('piercing-skill').value,
-                'Time and space' : document.getElementById('time-and-space-skill').value,
-                'Assault rifle' : document.getElementById('assault-rifle-skill').value,
-                'Bow' : document.getElementById('bow-skill').value,
-                'Grenade' : document.getElementById('grenade-skill').value,
-                'Heavy weapons' : document.getElementById('heavy-weapons-skill').value,
-                'Smg' : document.getElementById('mg-smg-skill').value,
-                'Pistol' : document.getElementById('pistol-skill').value,
-                'Ranged energy' : document.getElementById('ranged-energy-skill').value,
-                'Rifle' : document.getElementById('rifle-skill').value,
-                'Shotgun' : document.getElementById('shotgun-skill').value,
-                'Aimed shot' : document.getElementById('aimed-shot-skill').value,
-                'Brawl' : document.getElementById('brawl-skill').value,
-                'Burst' : document.getElementById('burst-skill').value,
-                'Dimach' : document.getElementById('dimach-skill').value,
-                'Fast attack' : document.getElementById('fast-attack-skill').value,
-                'Fling shot' : document.getElementById('fling-shot-skill').value,
-                'Full auto' : document.getElementById('full-auto-skill').value,
-                'Sneak attack' : document.getElementById('sneak-attack-skill').value,
-                'melee_init' : document.getElementById('melee-init').value,
-                'phys_init' : document.getElementById('physical-init').value,
-                'ranged_init' : document.getElementById('ranged-init').value,
-                'aggdef' : document.getElementById('aggdef').value,
-                'aao' : document.getElementById('aao').value,
-                'add_dmg' : document.getElementById('add-damage').value,
-                'target_ac' : document.getElementById('target-ac').value,
-            }),
-            headers: {
-                'Accept' : 'application/json',
-                'Content-Type' : 'application/json',
-                'X-CSRFToken': csrftoken
-            }
-        }).then(response => response.json())
-        .then(data => {
-            update_data(data)
-        })
-    }
+    //     fetch('update_stats', {
+    //         method: 'post',
+    //         body: JSON.stringify({
+    //             'breed' : document.getElementById('breed').value, 
+    //             'profession' : document.getElementById('profession').value,
+    //             'level' : document.getElementById('level').value,
+    //             'subscription' : document.getElementById('subscription').value,
+    //             'crit' : document.getElementById('crit-chance').value,
+    //             '1h Blunt' : document.getElementById('1hb-skill').value,
+    //             '1h Edged' : document.getElementById('1he-skill').value,
+    //             '2h Blunt' : document.getElementById('2hb-skill').value,
+    //             '2h Edged' : document.getElementById('2he-skill').value,
+    //             'Martial arts' : document.getElementById('martial-arts-skill').value,
+    //             'Melee energy' : document.getElementById('melee-energy-skill').value,
+    //             'Piercing' : document.getElementById('piercing-skill').value,
+    //             'Time and space' : document.getElementById('time-and-space-skill').value,
+    //             'Assault rifle' : document.getElementById('assault-rifle-skill').value,
+    //             'Bow' : document.getElementById('bow-skill').value,
+    //             'Grenade' : document.getElementById('grenade-skill').value,
+    //             'Heavy weapons' : document.getElementById('heavy-weapons-skill').value,
+    //             'Smg' : document.getElementById('mg-smg-skill').value,
+    //             'Pistol' : document.getElementById('pistol-skill').value,
+    //             'Ranged energy' : document.getElementById('ranged-energy-skill').value,
+    //             'Rifle' : document.getElementById('rifle-skill').value,
+    //             'Shotgun' : document.getElementById('shotgun-skill').value,
+    //             'Aimed shot' : document.getElementById('aimed-shot-skill').value,
+    //             'Brawl' : document.getElementById('brawl-skill').value,
+    //             'Burst' : document.getElementById('burst-skill').value,
+    //             'Dimach' : document.getElementById('dimach-skill').value,
+    //             'Fast attack' : document.getElementById('fast-attack-skill').value,
+    //             'Fling shot' : document.getElementById('fling-shot-skill').value,
+    //             'Full auto' : document.getElementById('full-auto-skill').value,
+    //             'Sneak attack' : document.getElementById('sneak-attack-skill').value,
+    //             'melee_init' : document.getElementById('melee-init').value,
+    //             'phys_init' : document.getElementById('physical-init').value,
+    //             'ranged_init' : document.getElementById('ranged-init').value,
+    //             'aggdef' : document.getElementById('aggdef').value,
+    //             'aao' : document.getElementById('aao').value,
+    //             'add_dmg' : document.getElementById('add-damage').value,
+    //             'target_ac' : document.getElementById('target-ac').value,
+    //         }),
+    //         headers: {
+    //             'Accept' : 'application/json',
+    //             'Content-Type' : 'application/json',
+    //             'X-CSRFToken': csrftoken
+    //         }
+    //     }).then(response => response.json())
+    //     .then(data => {
+    //         update_data(data)
+    //     })
+    // }
 
-    function display_stats(data) {
-        stats = data['stats']
+    // function display_stats(data) {
+    //     stats = data['stats']
 
-        document.getElementById('breed').value = stats['breed']
-        document.getElementById('profession').value = stats['profession']
-        document.getElementById('level').value = stats['level']
-        document.getElementById('subscription').value = stats['subscription']
-        document.getElementById('crit-chance').value = stats['crit']
-        document.getElementById('1hb-skill').value = stats['1h Blunt']
-        document.getElementById('1he-skill').value = stats['1h Edged']
-        document.getElementById('2hb-skill').value = stats['2h Blunt']
-        document.getElementById('2he-skill').value = stats['2h Edged']
-        document.getElementById('martial-arts-skill').value = stats['Martial arts']
-        document.getElementById('melee-energy-skill').value = stats['Melee energy']
-        document.getElementById('piercing-skill').value = stats['Piercing']
-        document.getElementById('time-and-space-skill').value = stats['Time and space']
-        document.getElementById('assault-rifle-skill').value = stats['Assault rifle']
-        document.getElementById('bow-skill').value = stats['Bow']
-        document.getElementById('grenade-skill').value = stats['Grenade']
-        document.getElementById('heavy-weapons-skill').value = stats['Heavy weapons']
-        document.getElementById('mg-smg-skill').value = stats['Smg']
-        document.getElementById('pistol-skill').value = stats['Pistol']
-        document.getElementById('ranged-energy-skill').value = stats['Ranged energy']
-        document.getElementById('rifle-skill').value = stats['Rifle']
-        document.getElementById('shotgun-skill').value = stats['Shotgun']
-        document.getElementById('aimed-shot-skill').value = stats['Aimed shot']
-        document.getElementById('brawl-skill').value = stats['Brawl']
-        document.getElementById('burst-skill').value = stats['Burst']
-        document.getElementById('dimach-skill').value = stats['Dimach']
-        document.getElementById('fast-attack-skill').value = stats['Fast attack']
-        document.getElementById('fling-shot-skill').value = stats['Fling shot']
-        document.getElementById('full-auto-skill').value = stats['Full auto']
-        document.getElementById('sneak-attack-skill').value = stats['Sneak attack']
-        document.getElementById('melee-init').value = stats['melee_init']
-        document.getElementById('physical-init').value = stats['phys_init']
-        document.getElementById('ranged-init').value = stats['ranged_init']
-        document.getElementById('aggdef').value = stats['aggdef']
-        document.getElementById('aao').value = stats['aao']
-        document.getElementById('add-damage').value = stats['add_dmg']
-        document.getElementById('target-ac').value = stats['target_ac']
+    //     document.getElementById('breed').value = stats['breed']
+    //     document.getElementById('profession').value = stats['profession']
+    //     document.getElementById('level').value = stats['level']
+    //     document.getElementById('subscription').value = stats['subscription']
+    //     document.getElementById('crit-chance').value = stats['crit']
+    //     document.getElementById('1hb-skill').value = stats['1h Blunt']
+    //     document.getElementById('1he-skill').value = stats['1h Edged']
+    //     document.getElementById('2hb-skill').value = stats['2h Blunt']
+    //     document.getElementById('2he-skill').value = stats['2h Edged']
+    //     document.getElementById('martial-arts-skill').value = stats['Martial arts']
+    //     document.getElementById('melee-energy-skill').value = stats['Melee energy']
+    //     document.getElementById('piercing-skill').value = stats['Piercing']
+    //     document.getElementById('time-and-space-skill').value = stats['Time and space']
+    //     document.getElementById('assault-rifle-skill').value = stats['Assault rifle']
+    //     document.getElementById('bow-skill').value = stats['Bow']
+    //     document.getElementById('grenade-skill').value = stats['Grenade']
+    //     document.getElementById('heavy-weapons-skill').value = stats['Heavy weapons']
+    //     document.getElementById('mg-smg-skill').value = stats['Smg']
+    //     document.getElementById('pistol-skill').value = stats['Pistol']
+    //     document.getElementById('ranged-energy-skill').value = stats['Ranged energy']
+    //     document.getElementById('rifle-skill').value = stats['Rifle']
+    //     document.getElementById('shotgun-skill').value = stats['Shotgun']
+    //     document.getElementById('aimed-shot-skill').value = stats['Aimed shot']
+    //     document.getElementById('brawl-skill').value = stats['Brawl']
+    //     document.getElementById('burst-skill').value = stats['Burst']
+    //     document.getElementById('dimach-skill').value = stats['Dimach']
+    //     document.getElementById('fast-attack-skill').value = stats['Fast attack']
+    //     document.getElementById('fling-shot-skill').value = stats['Fling shot']
+    //     document.getElementById('full-auto-skill').value = stats['Full auto']
+    //     document.getElementById('sneak-attack-skill').value = stats['Sneak attack']
+    //     document.getElementById('melee-init').value = stats['melee_init']
+    //     document.getElementById('physical-init').value = stats['phys_init']
+    //     document.getElementById('ranged-init').value = stats['ranged_init']
+    //     document.getElementById('aggdef').value = stats['aggdef']
+    //     document.getElementById('aao').value = stats['aao']
+    //     document.getElementById('add-damage').value = stats['add_dmg']
+    //     document.getElementById('target-ac').value = stats['target_ac']
+    // }
+
+    // function clear_table(tbl) {
+    //     while(tbl.lastChild) {
+    //         tbl.removeChild(tbl.lastChild)
+    //     }
+    // }
+
+    function update_boss_info(data) {
+        
+        if (data.success) {
+            info = data['data']
+            console.log('hello')
+            document.getElementById('boss-name').textContent = info['name']
+            document.getElementById('boss-mobs').textContent = info['mobs']
+            document.getElementById('boss-playfield').textContent = info['playfield']
+            document.getElementById('boss-location').textContent = info['location']
+
+            table = document.getElementById('boss-drop-table')
+            clear_table(table)
+
+            info['drops'].forEach(function(drop) {
+                row = document.createElement('tr')
+                name_cell = document.createElement('td')
+                a = document.createElement('a')
+                a.appendChild(document.createTextNode(drop[1]))
+                a.href = "https://aoitems.com/item/" + drop[0]
+                a.target = '_blank'
+                name_cell.appendChild(a)
+                row.appendChild(name_cell)
+
+                ql_cell = document.createElement('td')
+                ql_cell.textContent = drop[2]
+                row.appendChild(ql_cell)
+                table.appendChild(row)
+            })
+
+        }
     }
 
     function clear_table(tbl) {
