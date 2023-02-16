@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'tinkerplants.apps.TinkerplantsConfig',
     'tinkernukes.apps.TinkernukesConfig',
     'tinkerfite.apps.TinkerfiteConfig',
-    'tinkertools.apps.TinkertoolsConfig'
+    'tinkerpocket.apps.TinkerpocketConfig',
+    'tinkertools.apps.TinkertoolsConfig',
 ]
 
 MIDDLEWARE = [

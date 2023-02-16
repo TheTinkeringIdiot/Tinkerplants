@@ -1,0 +1,238 @@
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#filter-table').DataTable({
+            order: [[ 1, 'desc' ]],
+            pageLength: 25
+        })
+
+        $('#match-table').DataTable({
+            order: [[ 2, 'desc' ]],
+            pageLength: 25
+        })
+    })
+
+    document.getElementById('bosses-submit').addEventListener('click', get_boss_info)
+
+    document.getElementById('filter-submit').addEventListener('click', filter_symbs)
+    document.getElementById('filter-reset').addEventListener('click', filter_reset)
+
+    document.getElementById('match-submit').addEventListener('click', match_symbs)
+    document.getElementById('match-reset').addEventListener('click', match_reset)
+
+    // document.getElementById('save-button').addEventListener('click', save_stats)
+
+    function get_boss_info(evt) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch('boss_info', {
+            method: 'post',
+            body: JSON.stringify({
+                'name' : document.getElementById('boss-select').value
+            }),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_boss_info(data)
+        })
+    }
+
+    function filter_symbs(evt) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch('filter', {
+            method: 'post',
+            body: JSON.stringify({
+                'low_ql' : document.getElementById('low-ql').value,
+                'high_ql' : document.getElementById('high-ql').value,
+                'artillery' : document.getElementById('filter-artillery-check').checked,
+                'control' : document.getElementById('filter-control-check').checked,
+                'extermination' : document.getElementById('filter-extermination-check').checked,
+                'infantry' : document.getElementById('filter-infantry-check').checked,
+                'support' : document.getElementById('filter-support-check').checked,
+                'eye' : document.getElementById('filter-eye-check').checked,
+                'head' : document.getElementById('filter-head-check').checked,
+                'ear' : document.getElementById('filter-ear-check').checked,
+                'right_arm' : document.getElementById('filter-right-arm-check').checked,
+                'chest' : document.getElementById('filter-chest-check').checked,
+                'left_arm' : document.getElementById('filter-left-arm-check').checked,
+                'right_wrist' : document.getElementById('filter-right-wrist-check').checked,
+                'waist' : document.getElementById('filter-waist-check').checked,
+                'left_wrist' : document.getElementById('filter-left-wrist-check').checked,
+                'right_hand' : document.getElementById('filter-right-hand-check').checked,
+                'leg' : document.getElementById('filter-leg-check').checked,
+                'left_hand' : document.getElementById('filter-left-hand-check').checked,
+                'feet' : document.getElementById('filter-feet-check').checked,
+
+            }),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_filter_info(data)
+        })
+    }
+
+    function filter_reset(evt) {
+        filter_table = $('#filter-table').DataTable()
+        filter_table.rows().remove().draw()
+
+        document.getElementById('low-ql').value = 1
+        document.getElementById('high-ql').value = 300
+        document.getElementById('filter-artillery-check').checked = false
+        document.getElementById('filter-control-check').checked = false
+        document.getElementById('filter-extermination-check').checked = false
+        document.getElementById('filter-infantry-check').checked = false
+        document.getElementById('filter-support-check').checked = false
+        document.getElementById('filter-eye-check').checked = false
+        document.getElementById('filter-head-check').checked = false
+        document.getElementById('filter-ear-check').checked = false
+        document.getElementById('filter-right-arm-check').checked = false
+        document.getElementById('filter-chest-check').checked = false
+        document.getElementById('filter-left-arm-check').checked = false
+        document.getElementById('filter-right-wrist-check').checked = false
+        document.getElementById('filter-waist-check').checked = false
+        document.getElementById('filter-left-wrist-check').checked = false
+        document.getElementById('filter-right-hand-check').checked = false
+        document.getElementById('filter-leg-check').checked = false
+        document.getElementById('filter-left-hand-check').checked = false
+        document.getElementById('filter-feet-check').checked = false
+    }
+
+    function match_symbs(evt) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch('match', {
+            method: 'post',
+            body: JSON.stringify({
+                'Profession' : document.getElementById('match-profession').value,
+                'Level' : document.getElementById('match-level').value,
+                'Strength' : document.getElementById('match-strength').value,
+                'Stamina' : document.getElementById('match-stamina').value,
+                'Sense' : document.getElementById('match-sense').value,
+                'Agility' : document.getElementById('match-agility').value,
+                'Intelligence' : document.getElementById('match-intelligence').value,
+                'Psychic' : document.getElementById('match-psychic').value,
+                'Treatment' : document.getElementById('match-treatment').value,
+            }),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_match_info(data)
+        })
+    }
+
+    function update_match_info(data) {
+        if (data.success) {
+            match_table = $('#match-table').DataTable()
+            match_table.rows().remove().draw()
+
+            info = data['data']
+
+            info.forEach(function(symb) {
+                droppers = ''
+
+                symb[4].forEach(function(dropper) {
+                    droppers += dropper + '<br>'
+                })
+
+                match_table.row.add([
+                    '<a href="https://aoitems.com/item/' + symb[0] + '">' + symb[1] + '</a>',
+                    symb[2],
+                    symb[3],
+                    droppers
+                ]).draw()
+            })
+        }
+    }
+
+    function match_reset(evt) {
+        match_table = $('#match-table').DataTable()
+        match_table.rows().remove().draw()
+
+        document.getElementById('match-profession').value = 0
+        document.getElementById('match-level').value = 1
+        document.getElementById('match-strength').value = 1
+        document.getElementById('match-stamina').value = 1
+        document.getElementById('match-sense').value = 1
+        document.getElementById('match-agility').value = 1
+        document.getElementById('match-intelligence').value = 1
+        document.getElementById('match-psychic').value = 1
+        document.getElementById('match-treatment').value = 1
+    }
+
+    function update_boss_info(data) {
+        
+        if (data.success) {
+            info = data['data']
+            document.getElementById('boss-name').textContent = info['name']
+            document.getElementById('boss-mobs').textContent = info['mobs']
+            document.getElementById('boss-playfield').textContent = info['playfield']
+            document.getElementById('boss-location').textContent = info['location']
+
+            table = document.getElementById('boss-drop-table')
+            clear_table(table)
+
+            info['drops'].forEach(function(drop) {
+                row = document.createElement('tr')
+                name_cell = document.createElement('td')
+                a = document.createElement('a')
+                a.appendChild(document.createTextNode(drop[1]))
+                a.href = "https://aoitems.com/item/" + drop[0]
+                a.target = '_blank'
+                name_cell.appendChild(a)
+                row.appendChild(name_cell)
+
+                ql_cell = document.createElement('td')
+                ql_cell.textContent = drop[2]
+                row.appendChild(ql_cell)
+                table.appendChild(row)
+            })
+
+        }
+    }
+
+    function update_filter_info(data) {
+        if (data.success) {
+            filter_table = $('#filter-table').DataTable()
+            filter_table.rows().remove().draw()
+
+            info = data['data']
+
+            info.forEach(function(symb) {
+                droppers = ''
+
+                symb[4].forEach(function(dropper) {
+                    droppers += dropper + '<br>'
+                })
+
+                filter_table.row.add([
+                    '<a href="https://aoitems.com/item/' + symb[0] + '">' + symb[2] + '</a>',
+                    symb[1],
+                    symb[3],
+                    droppers
+                ]).draw()
+            })
+        }
+    }
+
+    function clear_table(tbl) {
+        while(tbl.lastChild) {
+            tbl.removeChild(tbl.lastChild)
+        }
+    }
+
+   
+
+</script>

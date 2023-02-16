@@ -9,12 +9,15 @@ django.setup()
 from tinkerplants.models import *
 from tinkernukes.models import *
 from tinkerfite.models import *
+from tinkerpocket.models import *
 
 # Clear out the old data entirely
 Implant.objects.all().delete()
 Cluster.objects.all().delete()
 Nano.objects.all().delete()
 Weapon.objects.all().delete()
+Symbiant.objects.all().delete()
+Pocketboss.objects.all().delete()
 
 with open('data.json', 'r') as fd:
     data = json.loads(fd.read())
@@ -23,11 +26,15 @@ clusters = data['data']['clusters']
 implants = data['data']['implants']
 nanos = data['data']['nanos']
 weapons = data['data']['weapons']
+symbiants = data['data']['symbiants']
+bosses = data['data']['bosses']
 
 new_clusters = []
 new_implants = []
 new_nanos = []
 new_weapons = []
+new_symbs = []
+new_bosses = []
 
 for name, vals in clusters.items():
     if not vals.get('normal'): # what the....skip it
@@ -248,3 +255,32 @@ for aoid, vals in weapons.items():
     new_weapons.append(weapon)
 
 Weapon.objects.bulk_create(new_weapons)
+
+for aoid, vals in symbiants.items():
+    symb = Symbiant()
+    symb.aoid = aoid
+    symb.ql = vals['ql']
+    symb.name = vals['name']
+    symb.slot = vals['slot']
+    symb.family = vals['family']
+    symb.reqs = vals['reqs']
+    symb.effects = vals['effects']
+
+    new_symbs.append(symb)
+
+Symbiant.objects.bulk_create(new_symbs)
+
+for name, vals in bosses.items():
+    boss = Pocketboss()
+    boss.name = name
+    boss.level = vals['level']
+    boss.playfield = vals['playfield']
+    boss.location = vals['location']
+    boss.mobs = vals['mobs']
+
+    boss.save()
+
+    drops = Symbiant.objects.filter(aoid__in=vals['drops'])
+
+    boss.drops.add(*drops)
+    boss.save()

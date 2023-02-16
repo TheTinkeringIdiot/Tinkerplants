@@ -1,0 +1,36 @@
+{% load static %}
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="light dark">
+        <meta name="description" content="Tinkerfite is a player utility for sci-fi MMORPG Anarchy Online to help with understanding symbiants and the pocket bosses that drop them">
+        <meta name="keywords" content="anarchy online symbiant pocket boss help tool utility">
+        <title>TinkerPocket</title>
+        <link rel="shortcut icon" type="image/png" href="{% static 'image/pocket_favicon.ico' %}"/>
+        <link rel="stylesheet" href="{% static 'css/bootstrap-night.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/datatables.min.css' %}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+        <script src="{% static 'js/datatables.min.js' %}"></script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-EYLFZB8K50"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-EYLFZB8K50');
+        </script>
+    </head>
+
+    <body>
+        {% block content %}
+        {% endblock content %}
+    </body>
+
+</html>
