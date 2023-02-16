@@ -327,7 +327,7 @@ def parse_xml(in_name):
             except:
                 pass
 
-        elif aoid in SYMBIANT_IDS or (item_type == 3 and 'Xan' in name) or (item_type == 3 and 'Intelligent' in name): # Item is a symbiant
+        elif aoid in SYMBIANT_IDS or (item_type == 3 and 'Xan' in name and ('Alpha' in name or 'Beta' in name)) or (item_type == 3 and 'Intelligent' in name): # Item is a symbiant
             ql = int(item.find('ql').text)
 
             symbiants[aoid] = {}
