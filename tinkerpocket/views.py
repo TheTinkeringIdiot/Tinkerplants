@@ -134,8 +134,6 @@ def match(request):
 
         candidates = Symbiant.objects.filter(reqs__Level__lte=level, reqs__Profession__contains=profession, reqs__Expansion_sets__lte=expansions)
 
-        breakpoint()
-
         retlist = []
 
         for candidate in candidates:
