@@ -136,6 +136,8 @@ def match(request):
 
         retlist = []
 
+        qual_symbs = {}
+
         for candidate in candidates:
             if check_requirements(candidate, stats):
                 entry = [
@@ -150,7 +152,21 @@ def match(request):
                     dropped_by.append(boss.name)
 
                 entry.append(dropped_by)
-                retlist.append(entry)
+                
+                if qual_symbs.get(candidate.slot) is None:
+                    qual_symbs[candidate.slot] = []
+
+                qual_symbs[candidate.slot].append(entry)
+
+        top_x = 6
+
+        for key, vals in qual_symbs.items():
+            sorted_list = sorted(qual_symbs[key], key=lambda x:x[3], reverse=True)
+
+            if len(sorted_list) > top_x:
+                retlist.extend(sorted_list[:top_x])
+            else:
+                retlist.extend(sorted_list)
 
         return JsonResponse({'success': True, 'data': retlist})
 
