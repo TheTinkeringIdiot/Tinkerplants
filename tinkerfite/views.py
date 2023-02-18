@@ -282,9 +282,10 @@ def calculate_dps(weapon, stats):
             cycle_time = ((weapon.rech_time / 100) * 40) + (fa_cycle / 100) - (stats['Full auto'] / 25)
             if cycle_time < cycle_cap: cycle_time = cycle_cap
 
-            num_rounds = 5 + (stats['Full auto'] / 100)
-            if num_rounds > 15: num_rounds = 15
-            if weapon.clipsize < num_rounds: num_rounds = weapon.clipsize
+            # num_rounds = 5 + (stats['Full auto'] / 100)
+            # if num_rounds > 15: num_rounds = 15
+            # if weapon.clipsize < num_rounds: num_rounds = weapon.clipsize
+            num_rounds = weapon.clipsize
 
             min_fa_dmg = calculate_fa_dmg(min_dmg, num_rounds)
             avg_fa_dmg = calculate_fa_dmg(avg_dmg, num_rounds)
