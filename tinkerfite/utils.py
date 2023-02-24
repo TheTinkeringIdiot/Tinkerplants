@@ -78,6 +78,7 @@ BANNED_IDS = [
     281185, # A.F.D. Twohander
     164638, # Andrew's Uber Test Weapon
     227455, # Bent Fuzzys Poke Technique
+    301934, # Mags' Powerglove
 ]
 
 SKIPPED_REQS = [
