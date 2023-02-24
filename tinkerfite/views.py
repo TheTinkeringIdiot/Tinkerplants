@@ -46,7 +46,7 @@ def restore_stats(request):
         return HttpResponseRedirect('/tinkerfite')
 
 def update_display(request):
-    breakpoint() 
+    # breakpoint() 
     if request.session.get('stats') is None:
         return JsonResponse({'success': False, 'message': 'Session timed out', 'next': ''})
 
