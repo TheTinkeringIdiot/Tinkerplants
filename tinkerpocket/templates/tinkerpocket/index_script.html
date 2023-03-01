@@ -181,6 +181,7 @@
         if (data.success) {
             info = data['data']
             document.getElementById('boss-name').textContent = info['name']
+            document.getElementById('boss-level').textContent = info['level']
             document.getElementById('boss-mobs').textContent = info['mobs']
             document.getElementById('boss-playfield').textContent = info['playfield']
             document.getElementById('boss-location').textContent = info['location']
