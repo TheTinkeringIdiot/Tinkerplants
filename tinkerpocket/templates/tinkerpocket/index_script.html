@@ -47,6 +47,9 @@
     document.getElementById('match-submit').addEventListener('click', match_symbs)
     document.getElementById('match-reset').addEventListener('click', match_reset)
 
+    document.getElementById('compare-submit').addEventListener('click', compare_symbs)
+    document.getElementById('compare-reset').addEventListener('click', compare_reset)
+
     // document.getElementById('save-button').addEventListener('click', save_stats)
 
     function symb_match(params, data) {
@@ -225,6 +228,71 @@
         document.getElementById('match-intelligence').value = 1
         document.getElementById('match-psychic').value = 1
         document.getElementById('match-treatment').value = 1
+    }
+
+    function compare_symbs(evt) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch('compare', {
+            method: 'post',
+            body: JSON.stringify({
+                'symb1' : document.getElementById('compare-1').value,
+                'symb2' : document.getElementById('compare-2').value,
+                'symb3' : document.getElementById('compare-3').value,
+            }),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_compare_info(data)
+        })
+    }
+
+    function update_compare_info(data) {
+        info = data['data']
+
+        tbl = document.getElementById('compare-head')
+        clear_table(tbl)
+        tbl = document.getElementById('compare-body')
+        clear_table(tbl)
+
+        header = document.getElementById('compare-head')
+        th = document.createElement('th')
+        th.textContent = 'Skill'
+        header.appendChild(th)
+        info.names.forEach(function(name) {
+            th = document.createElement('th')
+            th.textContent = name
+            header.appendChild(th)
+        })
+
+        body = document.getElementById('compare-body')
+        for (let [benefit, vals] of Object.entries(info.benefits)) {
+            tr = document.createElement('tr')
+            td = document.createElement('td')
+            td.textContent = benefit
+            tr.appendChild(td)
+
+            vals.forEach(function(val) {
+                td = document.createElement('td')
+                if (val == 0) {
+                    td.textContent = ''
+                }
+                else {
+                    td.textContent = val
+                }
+                tr.appendChild(td)
+            })
+
+            body.appendChild(tr)
+        }
+    }
+
+    function compare_reset(evt) {
+
     }
 
     function update_boss_info(data) {

@@ -172,6 +172,47 @@ def match(request):
 
     else:
         return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+    
+def compare(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        retlist = {}
+        benefit_list = []
+        symbs = []
+
+        retlist['names'] = []
+        retlist['benefits'] = {}
+
+        for key, val in data.items():
+            if val is not None and len(val) > 0:
+                symb = Symbiant.objects.get(name=val)
+
+                if symb is not None:
+                    symbs.append(symb)
+                    retlist['names'].append(val)
+
+        for symb in symbs:
+            benefit_list += symb.effects.keys()
+
+        benefit_list = list(set(benefit_list)) # strip out duplicates
+        benefit_list = sorted(benefit_list)
+
+        for benefit in benefit_list:
+            if retlist['benefits'].get(benefit) is None:
+                retlist['benefits'][benefit] = []
+
+            for symb in symbs:
+                benefit_value = symb.effects.get(benefit)
+                if benefit_value is None:
+                    retlist['benefits'][benefit].append(0)
+                else:
+                    retlist['benefits'][benefit].append(benefit_value)
+
+        return JsonResponse({'success': True, 'data': retlist})
+    
+    else:
+        return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
 
 def check_requirements(symb, stats):
     for key, val in symb.reqs.items():
