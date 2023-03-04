@@ -161,10 +161,8 @@ def get_nano_list(stats):
             continue
         if db_nano.spec == 0:
             nano.append('')
-        elif db_nano.spec == 8:
-            nano.append(4)
         else:
-            nano.append(db_nano.spec)
+            nano.append(SPECS[db_nano.spec])
 
         if stats['dmg_type'] != 0:
             if db_nano.ac != DAMAGE_TYPES[stats['dmg_type']]:

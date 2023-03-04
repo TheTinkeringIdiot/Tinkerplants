@@ -15,6 +15,14 @@ DECKS = {
     8 : 'Izgimmer Modified Cyberdeck'
 }
 
+SPECS = {
+    0 : 0,
+    1 : 1,
+    2 : 2,
+    4 : 3,
+    8 : 4
+}
+
 HUMIDITY = {
     0 : 0,
     1 : 0.333333,
