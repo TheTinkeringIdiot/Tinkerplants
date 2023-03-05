@@ -114,6 +114,7 @@ def match(request):
 
         level = int(data.get('Level', 1))
         profession = int(data.get('Profession', 0))
+        slot = data.get('Slot')
         if data.get('Sloob'):
             expansions = 2
         else:
@@ -132,7 +133,9 @@ def match(request):
         if profession == 0:
             return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
 
-        candidates = Symbiant.objects.filter(reqs__Level__lte=level, reqs__Profession__contains=profession, reqs__Expansion_sets__lte=expansions)
+        candidates = Symbiant.objects.filter(reqs__Level__lte=level, reqs__Profession__contains=profession, reqs__Expansion_sets__lte=expansions, slot=slot)
+
+        breakpoint()
 
         retlist = []
 
@@ -178,7 +181,6 @@ def compare(request):
         data = json.loads(request.body)
 
         retlist = {}
-        benefit_list = []
         symbs = []
 
         retlist['names'] = []
@@ -192,27 +194,37 @@ def compare(request):
                     symbs.append(symb)
                     retlist['names'].append(val)
 
-        for symb in symbs:
-            benefit_list += symb.effects.keys()
+        retlist['benefits'] = build_compare(symbs)
 
-        benefit_list = list(set(benefit_list)) # strip out duplicates
-        benefit_list = sorted(benefit_list)
-
-        for benefit in benefit_list:
-            if retlist['benefits'].get(benefit) is None:
-                retlist['benefits'][benefit] = []
-
-            for symb in symbs:
-                benefit_value = symb.effects.get(benefit)
-                if benefit_value is None:
-                    retlist['benefits'][benefit].append(0)
-                else:
-                    retlist['benefits'][benefit].append(benefit_value)
+        breakpoint()
 
         return JsonResponse({'success': True, 'data': retlist})
     
     else:
         return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+    
+def build_compare(symbs):
+    benefit_list = []
+
+    for symb in symbs:
+        benefit_list += symb.effects.keys()
+
+    benefit_list = list(set(benefit_list)) # strip out duplicates
+    benefit_list = sorted(benefit_list)
+    benefits = {}
+
+    for benefit in benefit_list:
+        if benefits.get(benefit) is None:
+            benefits[benefit] = []
+
+        for symb in symbs:
+            benefit_value = symb.effects.get(benefit)
+            if benefit_value is None:
+                benefits[benefit].append(0)
+            else:
+                benefits[benefit].append(benefit_value)
+
+    return benefits
 
 def check_requirements(symb, stats):
     for key, val in symb.reqs.items():
