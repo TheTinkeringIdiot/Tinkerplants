@@ -7,6 +7,16 @@ from tinkerpocket.models import *
 
 import json
 
+class reverser:
+    def __init__(self, obj):
+        self.obj = obj
+
+    def __eq__(self, other):
+        return self.obj == other.obj
+    
+    def __lt__(self, other):
+        return other.obj< self.obj
+
 # Create your views here.
 def index(request):
     if request.session.get('stats') is None:
@@ -114,6 +124,7 @@ def match(request):
 
         level = int(data.get('Level', 1))
         profession = int(data.get('Profession', 0))
+        slot = data.get('Slot')
         if data.get('Sloob'):
             expansions = 2
         else:
@@ -132,41 +143,29 @@ def match(request):
         if profession == 0:
             return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
 
-        candidates = Symbiant.objects.filter(reqs__Level__lte=level, reqs__Profession__contains=profession, reqs__Expansion_sets__lte=expansions)
+        candidates = Symbiant.objects.filter(reqs__Level__lte=level, reqs__Profession__contains=profession, reqs__Expansion_sets__lte=expansions, slot=slot)
 
-        retlist = []
+        retlist = {}
+        retlist['names'] = []
+        retlist['drops'] = []
+        retlist['qls'] = []
 
-        qual_symbs = {}
+        qual_symbs = []
 
         for candidate in candidates:
             if check_requirements(candidate, stats):
-                entry = [
-                    candidate.aoid,
-                    candidate.name,
-                    candidate.slot,
-                    candidate.ql,
-                ]
+                qual_symbs.append(candidate)
 
-                dropped_by = []
-                for boss in candidate.dropped_by.all():
-                    dropped_by.append(boss.name)
+        top_x = 3
+        qual_symbs = sorted(qual_symbs, key=lambda x: (x.ql, x.name.split()[0], reverser(x.name.split()[5])), reverse=True)
+        qual_symbs = qual_symbs[:top_x]
 
-                entry.append(dropped_by)
-                
-                if qual_symbs.get(candidate.slot) is None:
-                    qual_symbs[candidate.slot] = []
+        for symb in qual_symbs:
+            retlist['names'].append(symb.name)
+            retlist['drops'].append(', '.join(boss.name for boss in symb.dropped_by.all()))
+            retlist['qls'].append(symb.ql)
 
-                qual_symbs[candidate.slot].append(entry)
-
-        top_x = 6
-
-        for key, vals in qual_symbs.items():
-            sorted_list = sorted(qual_symbs[key], key=lambda x:x[3], reverse=True)
-
-            if len(sorted_list) > top_x:
-                retlist.extend(sorted_list[:top_x])
-            else:
-                retlist.extend(sorted_list)
+        retlist['benefits'] = build_compare(qual_symbs)
 
         return JsonResponse({'success': True, 'data': retlist})
 
@@ -178,7 +177,6 @@ def compare(request):
         data = json.loads(request.body)
 
         retlist = {}
-        benefit_list = []
         symbs = []
 
         retlist['names'] = []
@@ -192,27 +190,37 @@ def compare(request):
                     symbs.append(symb)
                     retlist['names'].append(val)
 
-        for symb in symbs:
-            benefit_list += symb.effects.keys()
+        retlist['benefits'] = build_compare(symbs)
 
-        benefit_list = list(set(benefit_list)) # strip out duplicates
-        benefit_list = sorted(benefit_list)
-
-        for benefit in benefit_list:
-            if retlist['benefits'].get(benefit) is None:
-                retlist['benefits'][benefit] = []
-
-            for symb in symbs:
-                benefit_value = symb.effects.get(benefit)
-                if benefit_value is None:
-                    retlist['benefits'][benefit].append(0)
-                else:
-                    retlist['benefits'][benefit].append(benefit_value)
+        breakpoint()
 
         return JsonResponse({'success': True, 'data': retlist})
     
     else:
         return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+    
+def build_compare(symbs):
+    benefit_list = []
+
+    for symb in symbs:
+        benefit_list += symb.effects.keys()
+
+    benefit_list = list(set(benefit_list)) # strip out duplicates
+    benefit_list = sorted(benefit_list)
+    benefits = {}
+
+    for benefit in benefit_list:
+        if benefits.get(benefit) is None:
+            benefits[benefit] = []
+
+        for symb in symbs:
+            benefit_value = symb.effects.get(benefit)
+            if benefit_value is None:
+                benefits[benefit].append(0)
+            else:
+                benefits[benefit].append(benefit_value)
+
+    return benefits
 
 def check_requirements(symb, stats):
     for key, val in symb.reqs.items():

@@ -6,11 +6,6 @@
             pageLength: 25
         })
 
-        $('#match-table').DataTable({
-            order: [[ 2, 'desc' ]],
-            pageLength: 25
-        })
-
         $('#compare-1').select2({
             data: select_data,
             matcher: symb_match,
@@ -170,6 +165,7 @@
             body: JSON.stringify({
                 'Profession' : document.getElementById('match-profession').value,
                 'Level' : document.getElementById('match-level').value,
+                'Slot' : document.getElementById('match-slot').value,
                 'Sloob' : document.getElementById('match-sloob-check').checked,
                 'Strength' : document.getElementById('match-strength').value,
                 'Stamina' : document.getElementById('match-stamina').value,
@@ -191,26 +187,64 @@
     }
 
     function update_match_info(data) {
-        if (data.success) {
-            match_table = $('#match-table').DataTable()
-            match_table.rows().remove().draw()
+        info = data['data']
 
-            info = data['data']
+        tbl = document.getElementById('match-head')
+        clear_table(tbl)
+        tbl = document.getElementById('match-body')
+        clear_table(tbl)
 
-            info.forEach(function(symb) {
-                droppers = ''
+        header = document.getElementById('match-head')
+        th = document.createElement('th')
+        th.textContent = 'Skill'
+        header.appendChild(th)
+        info.names.forEach(function(name) {
+            th = document.createElement('th')
+            th.textContent = name
+            header.appendChild(th)
+        })
 
-                symb[4].forEach(function(dropper) {
-                    droppers += dropper + '<br>'
-                })
+        body = document.getElementById('match-body')
+        tr = document.createElement('tr')
+        td = document.createElement('td')
+        td.textContent = 'QL'
+        tr.appendChild(td)
+        info.qls.forEach(function(ql) {
+            td = document.createElement('td')
+            td.textContent = ql
+            tr.appendChild(td)
+        })
+        body.appendChild(tr)
 
-                match_table.row.add([
-                    '<a href="https://aoitems.com/item/' + symb[0] + '">' + symb[1] + '</a>',
-                    symb[2],
-                    symb[3],
-                    droppers
-                ]).draw()
+        tr = document.createElement('tr')
+        td = document.createElement('td')
+        td.textContent = 'Dropped By'
+        tr.appendChild(td)
+        info.drops.forEach(function(drop) {
+            td = document.createElement('td')
+            td.textContent = drop
+            tr.appendChild(td)
+        })
+        body.appendChild(tr)
+
+        for (let [benefit, vals] of Object.entries(info.benefits)) {
+            tr = document.createElement('tr')
+            td = document.createElement('td')
+            td.textContent = benefit
+            tr.appendChild(td)
+
+            vals.forEach(function(val) {
+                td = document.createElement('td')
+                if (val == 0) {
+                    td.textContent = ''
+                }
+                else {
+                    td.textContent = val
+                }
+                tr.appendChild(td)
             })
+
+            body.appendChild(tr)
         }
     }
 
@@ -220,6 +254,7 @@
 
         document.getElementById('match-profession').value = 0
         document.getElementById('match-level').value = 1
+        document.getElementById('match-slot').value = 0
         document.getElementById('match-sloob-check').checked = false
         document.getElementById('match-strength').value = 1
         document.getElementById('match-stamina').value = 1
