@@ -211,6 +211,26 @@
                                         </li>
                                         <div class="row">&nbsp</div>
                                         <li class="nav-item">
+                                            <span class="fw-bold">Slot:</span>
+                                            <select class="form-select" id="match-slot">
+                                                <option selected value="0">-- Select --</option>
+                                                <option value="Eye">Eye</option>
+                                                <option value="Head">Head</option>
+                                                <option value="Ear">Ear</option>
+                                                <option value="Right arm">Right arm</option>
+                                                <option value="Chest">Chest</option>
+                                                <option value="Left arm">Left arm</option>
+                                                <option value="Right wrist">Right wrist</option>
+                                                <option value="Waist">Waist</option>
+                                                <option value="Left wrist">Left wrist</option>
+                                                <option value="Right hand">Right hand</option>
+                                                <option value="Leg">Leg</option>
+                                                <option value="Left hand">Left hand</option>
+                                                <option value="Feet">Feet</option>
+                                            </select>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                        <li class="nav-item">
                                             <div class="row">
                                                 <div class="col col-md-1"><input type="checkbox" id="match-sloob-check"></div>
                                                 <div class="col">Shadowlands Only (Sloob)</div>
@@ -253,13 +273,10 @@
                     </div>
                     <div class="col col-md-9 col-lg-10">
                         <table class="table table-striped" id="match-table">
-                            <thead>
-                                <th>Name</th>
-                                <th>Slot</th>
-                                <th>QL</th>
-                                <th>Dropped By</th>
+                            <thead id="match-head">
+
                             </thead>
-                            <tbody>
+                            <tbody id="match-body">
 
                             </tbody>
                         </table>
