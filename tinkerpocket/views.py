@@ -192,8 +192,6 @@ def compare(request):
 
         retlist['benefits'] = build_compare(symbs)
 
-        breakpoint()
-
         return JsonResponse({'success': True, 'data': retlist})
     
     else:
