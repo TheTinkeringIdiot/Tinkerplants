@@ -350,7 +350,10 @@ def parse_xml(in_name):
             symbiants[aoid]['ql'] = ql
 
             slot = item.find('slots').text
-            symbiants[aoid]['slot'] = slot
+            if slot == 'Body':
+                symbiants[aoid]['slot'] = 'Chest'
+            else:
+                symbiants[aoid]['slot'] = slot
 
             tokens = name.split(',')
             tokens = tokens[1].split()
