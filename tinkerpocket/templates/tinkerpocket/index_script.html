@@ -47,6 +47,180 @@
 
     // document.getElementById('save-button').addEventListener('click', save_stats)
 
+    let match_txts = document.querySelectorAll('input[type="number"][id^="match-"]');
+
+    for (let i = 0; i < match_txts.length; i++) {
+        match_txts[i].addEventListener('change', function() {
+            
+            clearBuffs();
+        })
+    }
+
+    document.getElementById('match-comp-attrib').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-strength').value = parseInt(document.getElementById('match-strength').value) + 12;
+            document.getElementById('match-stamina').value = parseInt(document.getElementById('match-stamina').value) + 12;
+            document.getElementById('match-sense').value = parseInt(document.getElementById('match-sense').value) + 12;
+            document.getElementById('match-agility').value = parseInt(document.getElementById('match-agility').value) + 12;
+            document.getElementById('match-intelligence').value = parseInt(document.getElementById('match-intelligence').value) + 12;
+            document.getElementById('match-psychic').value = parseInt(document.getElementById('match-psychic').value) + 12;
+        }
+        else {
+            document.getElementById('match-strength').value = parseInt(document.getElementById('match-strength').value) - 12;
+            document.getElementById('match-stamina').value = parseInt(document.getElementById('match-stamina').value) - 12;
+            document.getElementById('match-sense').value = parseInt(document.getElementById('match-sense').value) - 12;
+            document.getElementById('match-agility').value = parseInt(document.getElementById('match-agility').value) - 12;
+            document.getElementById('match-intelligence').value = parseInt(document.getElementById('match-intelligence').value) - 12;
+            document.getElementById('match-psychic').value = parseInt(document.getElementById('match-psychic').value) - 12;
+        }
+    })
+
+    document.getElementById('match-behe').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-strength').value = parseInt(document.getElementById('match-strength').value) + 27;
+            document.getElementById('match-stamina').value = parseInt(document.getElementById('match-stamina').value) + 27;
+            if (document.getElementById('match-ibehe').checked) {
+                document.getElementById('match-ibehe').click();
+            } 
+        }
+        else {
+            document.getElementById('match-strength').value = parseInt(document.getElementById('match-strength').value) - 27;
+            document.getElementById('match-stamina').value = parseInt(document.getElementById('match-stamina').value) - 27;
+        }
+    })
+
+    document.getElementById('match-ibehe').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-strength').value = parseInt(document.getElementById('match-strength').value) + 54;
+            document.getElementById('match-stamina').value = parseInt(document.getElementById('match-stamina').value) + 54;
+            if (document.getElementById('match-behe').checked) {
+                document.getElementById('match-behe').click();
+            } 
+        }
+        else {
+            document.getElementById('match-strength').value = parseInt(document.getElementById('match-strength').value) - 54;
+            document.getElementById('match-stamina').value = parseInt(document.getElementById('match-stamina').value) - 54;
+        }
+    })
+
+    document.getElementById('match-ic').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-strength').value = parseInt(document.getElementById('match-strength').value) + 20;
+            document.getElementById('match-stamina').value = parseInt(document.getElementById('match-stamina').value) + 20;
+            if (document.getElementById('match-prod-str').checked) {
+                document.getElementById('match-prod-str').click();
+            } 
+        }
+        else {
+            document.getElementById('match-strength').value = parseInt(document.getElementById('match-strength').value) - 20;
+            document.getElementById('match-stamina').value = parseInt(document.getElementById('match-stamina').value) - 20;
+        }
+    })
+
+    document.getElementById('match-prod-str').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-strength').value = parseInt(document.getElementById('match-strength').value) + 40;
+            if (document.getElementById('match-ic').checked) {
+                document.getElementById('match-ic').click();
+            } 
+        }
+        else {
+            document.getElementById('match-strength').value = parseInt(document.getElementById('match-strength').value) - 40;
+        }
+    })
+
+    document.getElementById('match-es').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-sense').value = parseInt(document.getElementById('match-sense').value) + 15;
+        }
+        else {
+            document.getElementById('match-sense').value = parseInt(document.getElementById('match-sense').value) - 15;
+        }
+    })
+
+    document.getElementById('match-fg').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-agility').value = parseInt(document.getElementById('match-agility').value) + 25;
+        }
+        else {
+            document.getElementById('match-agility').value = parseInt(document.getElementById('match-agility').value) - 25;
+        }
+    })
+
+    document.getElementById('match-ns').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-intelligence').value = parseInt(document.getElementById('match-intelligence').value) + 20;
+            document.getElementById('match-psychic').value = parseInt(document.getElementById('match-psychic').value) + 20;
+        }
+        else {
+            document.getElementById('match-intelligence').value = parseInt(document.getElementById('match-intelligence').value) - 20;
+            document.getElementById('match-psychic').value = parseInt(document.getElementById('match-psychic').value) - 20;
+        }
+    })
+
+    document.getElementById('match-comp-util').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-treatment').value = parseInt(document.getElementById('match-treatment').value) + 20;
+        }
+        else {
+            document.getElementById('match-treatment').value = parseInt(document.getElementById('match-treatment').value) - 20;
+        }
+    })
+
+    document.getElementById('match-sfa').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-treatment').value = parseInt(document.getElementById('match-treatment').value) + 80;
+        }
+        else {
+            document.getElementById('match-treatment').value = parseInt(document.getElementById('match-treatment').value) - 80;
+        }
+    })
+
+    document.getElementById('match-tt').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-treatment').value = parseInt(document.getElementById('match-treatment').value) + 60;
+        }
+        else {
+            document.getElementById('match-treatment').value = parseInt(document.getElementById('match-treatment').value) - 60;
+        }
+    })
+
+    function clearBuffs() {
+        if (document.getElementById('match-comp-attrib').checked) {
+            document.getElementById('match-comp-attrib').click();
+        }
+        if (document.getElementById('match-behe').checked) {
+            document.getElementById('match-behe').click();
+        }
+        if (document.getElementById('match-ibehe').checked) {
+            document.getElementById('match-ibehe').click();
+        }
+        if (document.getElementById('match-ic').checked) {
+            document.getElementById('match-ic').click();
+        }
+        if (document.getElementById('match-prod-str').checked) {
+            document.getElementById('match-prod-str').click();
+        }
+        if (document.getElementById('match-es').checked) {
+            document.getElementById('match-es').click();
+        }
+        if (document.getElementById('match-fg').checked) {
+            document.getElementById('match-fg').click();
+        }
+        if (document.getElementById('match-ns').checked) {
+            document.getElementById('match-ns').click();
+        }
+        if (document.getElementById('match-comp-util').checked) {
+            document.getElementById('match-comp-util').click();
+        }
+        if (document.getElementById('match-sfa').checked) {
+            document.getElementById('match-sfa').click();
+        }
+        if (document.getElementById('match-tt').checked) {
+            document.getElementById('match-tt').click();
+        }
+    }
+
     function symb_match(params, data) {
         if ($.trim(params.term) === '') {
             return data;
