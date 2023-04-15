@@ -167,6 +167,15 @@
         }
     })
 
+    document.getElementById('match-surgery').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('match-treatment').value = parseInt(document.getElementById('match-treatment').value) + 100;
+        }
+        else {
+            document.getElementById('match-treatment').value = parseInt(document.getElementById('match-treatment').value) - 100;
+        }
+    })
+
     document.getElementById('match-sfa').addEventListener('change', function() {
         if (this.checked) {
             document.getElementById('match-treatment').value = parseInt(document.getElementById('match-treatment').value) + 80;
@@ -212,6 +221,9 @@
         }
         if (document.getElementById('match-comp-util').checked) {
             document.getElementById('match-comp-util').click();
+        }
+        if (document.getElementById('match-surgery').checked) {
+            document.getElementById('match-surgery').click();
         }
         if (document.getElementById('match-sfa').checked) {
             document.getElementById('match-sfa').click();
