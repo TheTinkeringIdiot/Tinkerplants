@@ -54,6 +54,26 @@ DMG_TYPES = {
     97 : 'Fire'
 }
 
+WEAPON_SKILLS = [
+    '1h Blunt',
+    '2h Blunt',
+    '1h Edged',
+    '2h Edged',
+    'Martial arts',
+    'Melee energy',
+    'Piercing',
+    'Time and space',
+    'Assault rifle',
+    'Bow',
+    'Grenade',
+    'Heavy weapons',
+    'Smg',
+    'Pistol',
+    'Ranged energy',
+    'Rifle',
+    'Shotgun'
+]
+
 BANNED_IDS = [
     303423, 303424, # Junior Ofab Bear
     303405, 303406, # Junior Ofab Boar
@@ -137,4 +157,5 @@ def initial_weapons():
         'aao' : 0,
         'add_dmg' : 0,
         'target_ac' : 1,
+        'wrangle' : 0
     }
