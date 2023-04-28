@@ -24,6 +24,34 @@
         })
     })
 
+    let wrangles = document.querySelectorAll('input[type="checkbox"][id^="wrangle-"]');
+
+    for (let i = 0; i < wrangles.length; i++) {
+        wrangles[i].addEventListener('change', function(evt) {
+            was_checked = this.checked
+            clear_wrangles()
+            if (was_checked) {
+                this.checked = true
+            }
+            else {
+                this.checked = false
+            }
+        })
+    }
+
+    function clear_wrangles() {
+        document.getElementById('wrangle-131').checked = false
+        document.getElementById('wrangle-132').checked = false
+        document.getElementById('wrangle-153').checked = false
+    }
+
+    function update_wrangles(wrangle) {
+        if (wrangle == 0) {}
+        else if (wrangle == 131) { document.getElementById('wrangle-131').checked = true }
+        else if (wrangle == 132) { document.getElementById('wrangle-132').checked = true }
+        else if (wrangle == 153) { document.getElementById('wrangle-153').checked = true }
+    }
+
     // var selectElements = Array.from(document.getElementsByTagName('select'))
     // selectElements.forEach(function(elem) {
     //     elem.addEventListener('change', update_stats);
@@ -123,6 +151,11 @@
 
     function update_stats(evt) {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        wrangle = 0
+        if (document.getElementById('wrangle-131').checked) { wrangle += 131 }
+        else if (document.getElementById('wrangle-132').checked) { wrangle += 132 }
+        else if (document.getElementById('wrangle-153').checked) { wrangle += 153 }
         
         fetch('update_stats', {
             method: 'post',
@@ -164,6 +197,7 @@
                 'aao' : document.getElementById('aao').value,
                 'add_dmg' : document.getElementById('add-damage').value,
                 'target_ac' : document.getElementById('target-ac').value,
+                'wrangle' : wrangle,
             }),
             headers: {
                 'Accept' : 'application/json',
@@ -216,6 +250,8 @@
         document.getElementById('aao').value = stats['aao']
         document.getElementById('add-damage').value = stats['add_dmg']
         document.getElementById('target-ac').value = stats['target_ac']
+        
+        update_wrangles(stats['wrangle'])
     }
 
     function clear_table(tbl) {
@@ -268,6 +304,8 @@
         document.getElementById('aao').value = stats['aao']
         document.getElementById('add-damage').value = stats['add_dmg']
         document.getElementById('target-ac').value = stats['target_ac']
+
+        update_wrangles(stats['wrangle'])
         
         weapons = JSON.parse(data.weapons)
 
