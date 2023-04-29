@@ -157,13 +157,13 @@ def update_stats(request):
 
             try: melee_init = int(data.get('melee_init'))
             except: melee_init = 1
-            if melee_init is not None and melee_init >= 1: request.session['stats']['melee_init'] = melee_init
+            if melee_init is not None and melee_init >= -3000: request.session['stats']['melee_init'] = melee_init
             try: phys_init = int(data.get('phys_init'))
             except: phys_init = 1
-            if phys_init is not None and phys_init >= 1: request.session['stats']['phys_init'] = phys_init
+            if phys_init is not None and phys_init >= -3000: request.session['stats']['phys_init'] = phys_init
             try: ranged_init = int(data.get('ranged_init'))
             except: ranged_init
-            if ranged_init is not None and ranged_init >= 1: request.session['stats']['ranged_init'] = ranged_init
+            if ranged_init is not None and ranged_init >= -3000: request.session['stats']['ranged_init'] = ranged_init
             try: aggdef = int(data.get('aggdef'))
             except: aggdef = 75
             if aggdef is not None and -100 <= aggdef <= 100: request.session['stats']['aggdef'] = aggdef
