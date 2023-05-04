@@ -157,13 +157,13 @@ def update_stats(request):
 
             try: melee_init = int(data.get('melee_init'))
             except: melee_init = 1
-            if melee_init is not None and melee_init >= 1: request.session['stats']['melee_init'] = melee_init
+            if melee_init is not None and melee_init >= -3000: request.session['stats']['melee_init'] = melee_init
             try: phys_init = int(data.get('phys_init'))
             except: phys_init = 1
-            if phys_init is not None and phys_init >= 1: request.session['stats']['phys_init'] = phys_init
+            if phys_init is not None and phys_init >= -3000: request.session['stats']['phys_init'] = phys_init
             try: ranged_init = int(data.get('ranged_init'))
             except: ranged_init
-            if ranged_init is not None and ranged_init >= 1: request.session['stats']['ranged_init'] = ranged_init
+            if ranged_init is not None and ranged_init >= -3000: request.session['stats']['ranged_init'] = ranged_init
             try: aggdef = int(data.get('aggdef'))
             except: aggdef = 75
             if aggdef is not None and -100 <= aggdef <= 100: request.session['stats']['aggdef'] = aggdef
@@ -178,6 +178,10 @@ def update_stats(request):
             try: target_ac = int(data.get('target_ac'))
             except: target_ac = 1
             if target_ac is not None and target_ac >= 1: request.session['stats']['target_ac'] = target_ac
+
+            try: wrangle = int(data.get('wrangle'))
+            except: wrangle = 0
+            if wrangle is not None and wrangle >= 0: request.session['stats']['wrangle'] = wrangle
 
             weapon_list = get_weapon_list(request.session.get('stats'))
 
@@ -575,7 +579,12 @@ def check_requirements(weapon, stats):
         elif key == 'NPC type':
             return False
 
+        elif key in WEAPON_SKILLS:
+            if not stats.get(key) + stats['wrangle'] >= val:
+                return False
+
         else:
+            
             try:
                 if not stats.get(key) >= val:
                     return False
@@ -592,24 +601,25 @@ def get_candidate_weapons(atk_skill):
     return weapons
 
 def get_weapon_skill(stats): 
+    wrangle = stats['wrangle']
     weapon_skills = {
-        '1h Blunt' : stats['1h Blunt'],
-        '1h Edged' : stats['1h Edged'],
-        '2h Blunt' : stats['2h Blunt'],
-        '2h Edged' : stats['2h Edged'],
-        'Martial arts' : stats['Martial arts'],
-        'Melee energy' : stats['Melee energy'],
-        'Piercing' : stats['Piercing'],
-        'Time and space' : stats['Time and space'],
-        'Assault rifle' : stats['Assault rifle'],
-        'Bow' : stats['Bow'],
-        'Grenade' : stats['Grenade'],
-        'Heavy weapons' : stats['Heavy weapons'],
-        'Smg' : stats['Smg'],
-        'Pistol' : stats['Pistol'],
-        'Ranged energy' : stats['Ranged energy'],
-        'Rifle' : stats['Rifle'],
-        'Shotgun' : stats['Shotgun']
+        '1h Blunt' : stats['1h Blunt'] + wrangle,
+        '1h Edged' : stats['1h Edged'] + wrangle,
+        '2h Blunt' : stats['2h Blunt'] + wrangle,
+        '2h Edged' : stats['2h Edged'] + wrangle,
+        'Martial arts' : stats['Martial arts'] + wrangle,
+        'Melee energy' : stats['Melee energy'] + wrangle,
+        'Piercing' : stats['Piercing'] + wrangle,
+        'Time and space' : stats['Time and space'] + wrangle,
+        'Assault rifle' : stats['Assault rifle'] + wrangle,
+        'Bow' : stats['Bow'] + wrangle,
+        'Grenade' : stats['Grenade'] + wrangle,
+        'Heavy weapons' : stats['Heavy weapons'] + wrangle,
+        'Smg' : stats['Smg'] + wrangle,
+        'Pistol' : stats['Pistol'] + wrangle,
+        'Ranged energy' : stats['Ranged energy'] + wrangle,
+        'Rifle' : stats['Rifle'] + wrangle,
+        'Shotgun' : stats['Shotgun'] + wrangle
     }
 
     return max(weapon_skills, key=weapon_skills.get)
