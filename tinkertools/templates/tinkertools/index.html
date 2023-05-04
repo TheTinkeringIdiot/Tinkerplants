@@ -18,6 +18,15 @@
     </div>
     <div class="row">&nbsp</div>
     <div class="row">
+        <div class="row align-items-center justify-content-center">
+            Current Time on Rubi-Ka (Athen Standard Time)
+        </div>
+        <div id="rk-clock" class="row align-items-center justify-content-center">
+            
+        </div>
+    </div>
+    <div class="row">&nbsp</div>
+    <div class="row">
         <span class="h2"><a href="/tinkerplants">Tinkerplants</a></span>
         <span class="text-justify">In 2022, many existing implant design tools are either majorly out-of-date, no longer supported, or require download and installation. I've set out to create an updated, accurate tool that allows players to plan out their implants in a web-browser, with a few extra features that I've always wished other tools supported (JOBE clusters, refined implants, QL bumping, etc). </span>
     </div>
@@ -37,4 +46,17 @@
         <span class="text-justify">In February of 2023, one of AO's greatest resources, <a href="http://aopocket.tngk.com">http://aopocket.tngk.com</a> went offline. While we all hope this is a temporary situation, Tinkerpocket serves as a less-awesome backup to make that information available to players until it returns. </span>
     </div>
 </div>  
+
+<script type="text/javascript">
+    var time_span = document.getElementById('rk-clock')
+
+    function time() {
+        var rk_date = new Date()
+        rk_date.setFullYear(rk_date.getFullYear() + 27474)
+                            
+        time_span.textContent = rk_date.toUTCString().slice(0, -4)
+    }
+
+    setInterval(time, 1000)
+</script>
 {% endblock content %}
