@@ -384,9 +384,12 @@
         th = document.createElement('th')
         th.textContent = 'Skill'
         header.appendChild(th)
-        info.names.forEach(function(name) {
+        info.names.forEach(function(name, idx) {
             th = document.createElement('th')
-            th.textContent = name
+            link = document.createElement('a')
+            link.textContent = name
+            link.href = 'https://aoitems.com/item/' + info.ids[idx]
+            th.appendChild(link)
             header.appendChild(th)
         })
 

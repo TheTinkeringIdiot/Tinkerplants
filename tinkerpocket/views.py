@@ -147,6 +147,7 @@ def match(request):
 
         retlist = {}
         retlist['names'] = []
+        retlist['ids'] = []
         retlist['drops'] = []
         retlist['qls'] = []
 
@@ -162,6 +163,7 @@ def match(request):
 
         for symb in qual_symbs:
             retlist['names'].append(symb.name)
+            retlist['ids'].append(symb.aoid)
             retlist['drops'].append(', '.join(boss.name for boss in symb.dropped_by.all()))
             retlist['qls'].append(symb.ql)
 
