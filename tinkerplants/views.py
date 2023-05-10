@@ -172,6 +172,7 @@ def lookup_cluster(request):
             if request.session.get('implants') is None:
                 return JsonResponse({'success': False, 'message': 'Session timed out', 'next': ''})
 
+            imps = request.session.get('implants')
             data = json.loads(request.body)
 
             try:
@@ -184,8 +185,10 @@ def lookup_cluster(request):
                 for cluster_slot, skill_list in val.items():
                     if cluster in IMP_SKILLS[imp_slot][cluster_slot]:
                         loc_results.append('{}-{}'.format(imp_slot, cluster_slot))
+                        if imps[imp_slot][cluster_slot] == 'Empty':
+                            imps[imp_slot][cluster_slot] = cluster
 
-            return JsonResponse({'success': True, 'found' : json.dumps(loc_results)})
+            return JsonResponse({'success': True, 'found' : json.dumps(loc_results), 'implants' : request.session.get('implants')})
         except:
             if DEBUG:
                 import traceback
