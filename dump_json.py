@@ -3,13 +3,11 @@ import argparse
 import csv
 import json
 import os
-import sqlite3
 import sys
 import re
 
 from tinkerplants.utils import *
 
-PB_DB = 'pb.db'
 CSV_FILE = 'symbiants.csv'
 
 NANODELTA_JOBE_MOD = {'Shiny' : 5.25, 'Bright' : 4.0, 'Faded' : 2.75}
@@ -628,30 +626,6 @@ def parse_nanos(in_name, crystals):
 
     return nanos
 
-def parse_pbdb(database):
-    con = sqlite3.connect(database)
-    cur = con.cursor()
-
-    res = cur.execute('SELECT pb.id, pb.name, pb.mob_type, pb.level, pf.long_name, pb.location FROM pocketboss AS pb JOIN playfields AS pf ON pb.playfield_id=pf.id')
-    bosses = res.fetchall()
-
-    pocketbosses = {}
-
-    for boss in bosses:
-        id = boss[0]
-        name = boss[1]
-        res = cur.execute('SELECT item_id FROM pocketboss_loot WHERE pocketboss_id={}'.format(id))
-        drops = res.fetchall()
-
-        pocketbosses[name] = {}
-        pocketbosses[name]['level'] = boss[3]
-        pocketbosses[name]['playfield'] = boss[4]
-        pocketbosses[name]['location'] = boss[5]
-        pocketbosses[name]['mobs'] = boss[2]
-        pocketbosses[name]['drops'] = [x[0] for x in drops]
-
-    return pocketbosses
-
 def parse_pocketbosses(pbcsv):
     pocketbosses = {}
 
@@ -701,7 +675,6 @@ if __name__ == '__main__':
         remove_old(args.output)
         implants, clusters, crystals, weapons, symbiants = parse_xml(args.items)
         nanos = parse_nanos(args.nanos, crystals)
-        # bosses = parse_pbdb(PB_DB)
         bosses = parse_pocketbosses(CSV_FILE)
         write_json(clusters, implants, nanos, weapons, symbiants, bosses, args.output)
 
