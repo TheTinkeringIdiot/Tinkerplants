@@ -38,7 +38,7 @@ See requirements.txt for the full list. Tinkertools is built and runs on Ubuntu 
 
 ## Updating the database
 
-This repo includes up-to-date data for the latest AO client as of June 2023. This will be kept up to the best of my ability, but future updates can be accomplished by anyone using these steps:
+This repo includes up-to-date data (data.json) for the latest AO client as of June 2023. This will be kept up to the best of my ability, but future updates can be accomplished by anyone using these steps:
 
 1. Update your AO client.
 
