@@ -107,10 +107,13 @@ def filter(request):
             entry.append(symb.ql)
 
             dropped_by = []
+            pattern = []
             for boss in symb.dropped_by.all():
                 dropped_by.append(boss.name)
+                pattern.append('{}, {}, {}'.format( boss.playfield, boss.location, boss.mobs))
 
             entry.append(dropped_by)
+            entry.append(pattern)
             retlist.append(entry)
 
         return JsonResponse({'success': True, 'data': retlist})

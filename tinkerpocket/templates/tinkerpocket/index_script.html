@@ -3,7 +3,14 @@
     $(document).ready(function() {
         $('#filter-table').DataTable({
             order: [[ 1, 'desc' ]],
-            pageLength: 25
+            pageLength: 25,
+            columnDefs: [
+                {"width": "25%", "targets": [0]},
+                {"width": "5%", "targets": [1, 2]},
+                {"width": "18%", "targets": [3]},
+
+            ]
+
         })
 
         $('#compare-1').select2({
@@ -594,6 +601,8 @@
 
             info = data['data']
 
+            console.log(data)
+
             info.forEach(function(symb) {
                 droppers = ''
 
@@ -601,11 +610,17 @@
                     droppers += dropper + '<br>'
                 })
 
+                patterns = ''
+                symb[5].forEach(function(pattern) {
+                    patterns += pattern + '<br>'
+                })
+
                 filter_table.row.add([
                     '<a href="https://aoitems.com/item/' + symb[0] + '">' + symb[2] + '</a>',
                     symb[1],
                     symb[3],
-                    droppers
+                    droppers,
+                    patterns
                 ]).draw()
             })
         }
