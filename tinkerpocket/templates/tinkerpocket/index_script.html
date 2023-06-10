@@ -3,7 +3,14 @@
     $(document).ready(function() {
         $('#filter-table').DataTable({
             order: [[ 1, 'desc' ]],
-            pageLength: 25
+            pageLength: 25,
+            columnDefs: [
+                {"width": "25%", "targets": [0]},
+                {"width": "5%", "targets": [1, 2]},
+                {"width": "18%", "targets": [3]},
+
+            ]
+
         })
 
         $('#compare-1').select2({
@@ -44,6 +51,8 @@
 
     document.getElementById('compare-submit').addEventListener('click', compare_symbs)
     document.getElementById('compare-reset').addEventListener('click', compare_reset)
+
+    document.getElementById('filter-all-check').addEventListener('change', filter_toggle_all)
 
     // document.getElementById('save-button').addEventListener('click', save_stats)
 
@@ -276,6 +285,39 @@
         })
     }
 
+    function filter_toggle_all(evt) {
+        if (this.checked) {
+            document.getElementById('filter-eye-check').checked = true
+            document.getElementById('filter-head-check').checked = true
+            document.getElementById('filter-ear-check').checked = true
+            document.getElementById('filter-right-arm-check').checked = true
+            document.getElementById('filter-chest-check').checked = true
+            document.getElementById('filter-left-arm-check').checked = true
+            document.getElementById('filter-right-wrist-check').checked = true
+            document.getElementById('filter-waist-check').checked = true
+            document.getElementById('filter-left-wrist-check').checked = true
+            document.getElementById('filter-right-hand-check').checked = true
+            document.getElementById('filter-leg-check').checked = true
+            document.getElementById('filter-left-hand-check').checked = true
+            document.getElementById('filter-feet-check').checked = true
+        }
+        else {
+            document.getElementById('filter-eye-check').checked = false
+            document.getElementById('filter-head-check').checked = false
+            document.getElementById('filter-ear-check').checked = false
+            document.getElementById('filter-right-arm-check').checked = false
+            document.getElementById('filter-chest-check').checked = false
+            document.getElementById('filter-left-arm-check').checked = false
+            document.getElementById('filter-right-wrist-check').checked = false
+            document.getElementById('filter-waist-check').checked = false
+            document.getElementById('filter-left-wrist-check').checked = false
+            document.getElementById('filter-right-hand-check').checked = false
+            document.getElementById('filter-leg-check').checked = false
+            document.getElementById('filter-left-hand-check').checked = false
+            document.getElementById('filter-feet-check').checked = false
+        }
+    }
+
     function filter_symbs(evt) {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
 
@@ -328,6 +370,7 @@
         document.getElementById('filter-extermination-check').checked = false
         document.getElementById('filter-infantry-check').checked = false
         document.getElementById('filter-support-check').checked = false
+        document.getElementById('filter-all-check').checked = false
         document.getElementById('filter-eye-check').checked = false
         document.getElementById('filter-head-check').checked = false
         document.getElementById('filter-ear-check').checked = false
@@ -558,6 +601,8 @@
 
             info = data['data']
 
+            console.log(data)
+
             info.forEach(function(symb) {
                 droppers = ''
 
@@ -565,11 +610,17 @@
                     droppers += dropper + '<br>'
                 })
 
+                patterns = ''
+                symb[5].forEach(function(pattern) {
+                    patterns += pattern + '<br>'
+                })
+
                 filter_table.row.add([
                     '<a href="https://aoitems.com/item/' + symb[0] + '">' + symb[2] + '</a>',
                     symb[1],
                     symb[3],
-                    droppers
+                    droppers,
+                    patterns
                 ]).draw()
             })
         }
