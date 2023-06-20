@@ -415,7 +415,7 @@ def calculate_ar_bonus(weapon, stats):
     if ar_cap is not None and atk_skill > ar_cap: # MBS
         atk_skill = ar_cap
 
-    ar_bonus = 1 + (atk_skill / 400)
+    ar_bonus = 1 + (min(atk_skill, 1000) / 400)
     if atk_skill > 1000:
         ar_bonus += (atk_skill - 1000) / 1200
 
