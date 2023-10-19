@@ -187,6 +187,18 @@ def write_json(clusters, implants, nanos, weapons, symbiants, bosses, out_name):
     with open(out_name, 'w') as fd:
         fd.write(json.dumps(writeme))
 
+def write_sql(items):
+    with open('aou_update.sql', 'w') as fd:
+
+        for item in items:
+            aoid = item[0]
+            name = re.sub(r"\"", "\\\"", item[1])
+            ql = item[2]
+            icon = item[3]
+            isnano = item[4]
+            fd.write(f'INSERT INTO items (aoid, name, ql, icon, isnano) VALUES ({aoid}, "{name}", {ql}, {icon}, {isnano}) ON DUPLICATE KEY UPDATE name="{name}", ql={ql}, icon={icon}, isnano={isnano};\n')
+
+
 def parse_xml(in_name):
     tree = ET.parse(in_name)
 
@@ -197,6 +209,7 @@ def parse_xml(in_name):
     crystals = {}
     weapons = {}
     symbiants = {}
+    aou_items = []
 
     symb_count = 0
 
@@ -210,6 +223,14 @@ def parse_xml(in_name):
         item_type = int(item.find('type').text)
         icon = int(item.find('icon').text)
 
+        ql = int(item.find('ql').text)
+        if ql < 1:
+            aou_ql = 1
+        else:
+            aou_ql = ql
+
+        aou_items.append((aoid, name, aou_ql, icon, 0))
+
         if item_type == 0 and 'Cluster' in name: # Item is a cluster, store it
             idx = name.find(' - ')
             if idx <= 0:
@@ -221,8 +242,6 @@ def parse_xml(in_name):
                 continue
             clusterslot = slots[0]
             impslot = IMP_SLOT_INDEX.get(slots[1].strip('()'))
-
-            ql = int(item.find('ql').text)
 
             if 'Refined' in name:
                 idx = name.find('Refined')
@@ -529,7 +548,7 @@ def parse_xml(in_name):
 
     print(symb_count)
                 
-    return implants, clusters, crystals, weapons, symbiants
+    return implants, clusters, crystals, weapons, symbiants, aou_items
 
 def parse_nanos(in_name, crystals):
     tree = ET.parse(in_name)
@@ -537,11 +556,20 @@ def parse_nanos(in_name, crystals):
     root = tree.getroot()
 
     nanos = {}
+    aou_nanos = []
 
     for item in root.findall('item'):
         aoid = item.get('aoid')
         nano = {}
-        nano['name'] = item.find('name').text
+        name = item.find('name').text
+        nano['name'] = name
+        try:
+            ql = crystals[aoid]
+        except:
+            ql = 1
+        icon = item.find('icon').text
+
+        aou_nanos.append((aoid, name, ql, icon, 1))
 
         nt_nano = False
 
@@ -624,7 +652,7 @@ def parse_nanos(in_name, crystals):
         if nt_nano:
             nanos[aoid] = nano
 
-    return nanos
+    return nanos, aou_nanos
 
 def parse_pocketbosses(pbcsv):
     pocketbosses = {}
@@ -673,9 +701,12 @@ if __name__ == '__main__':
 
     else:
         remove_old(args.output)
-        implants, clusters, crystals, weapons, symbiants = parse_xml(args.items)
-        nanos = parse_nanos(args.nanos, crystals)
+        implants, clusters, crystals, weapons, symbiants, aou_items = parse_xml(args.items)
+        nanos, aou_nanos = parse_nanos(args.nanos, crystals)
         bosses = parse_pocketbosses(CSV_FILE)
         write_json(clusters, implants, nanos, weapons, symbiants, bosses, args.output)
+
+        aou_items += aou_nanos
+        write_sql(aou_items)
 
 
