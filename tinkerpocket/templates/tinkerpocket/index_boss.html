@@ -1,0 +1,762 @@
+{% extends "tinkerpocket/base.html" %}
+
+{% block content %}
+
+{% include "tinkerpocket/navbar.html" %}
+
+<div class="container-fluid">
+    {% csrf_token %}
+    <ul class="nav nav-tabs nav-fill">
+        <li class="nav-item">
+            <a class="nav-link" href="#filter" data-bs-toggle="tab">Symbiant Lookup</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#match" data-bs-toggle="tab">Match</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="#bosses" data-bs-toggle="tab">Pocket Bosses</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#compare" data-bs-toggle="tab">Compare</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#profession" data-bs-toggle="tab">Profession</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane border border-top-0 rounded-bottom fade" id="filter">
+            <div class="container-fluid">
+                <div class="row">&nbsp</div>
+                <div class="row">
+                    <div class="col col-md-3 col-lg-2">
+                        <div class="container">
+                            <div class="row">
+                                <button id="filter-submit" type="button" class="btn btn-outline-success">Filter</button>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <button id="filter-reset" type="button" class="btn btn-outline-secondary">Reset</button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="accordion" id="filter-accordion">
+                            <div class="accordion-item">
+                               
+                                <div id="filter" class="accordion-collapse collapse show" aria-expanded="true">
+                                    <ul class="nav nav-pills flex-column mb-auto">
+                                        <li class="nav-item">
+                                            <span class="fw-bold">QL:</span>
+                                            <div class="row">
+                                                <div class="col col-md-5"><input type="number" id="low-ql" min=1 max=300 class="form-control" value="1"></div>
+                                                <div class="col col-md-1">-</div>
+                                                <div class="col col-md-5"><input type="number" id="high-ql" min=1 max=300 class="form-control" value="300"></div>
+                                            </div>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                        <li class="nav-item">
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-sloob-check"></div>
+                                                <div class="col">Sloob Account</div>
+                                            </div>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Symbiant Family:</span>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-artillery-check"></div>
+                                                <div class="col">Artillery</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-control-check"></div>
+                                                <div class="col">Control</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-extermination-check"></div>
+                                                <div class="col">Extermination</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-infantry-check"></div>
+                                                <div class="col">Infantry</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-support-check"></div>
+                                                <div class="col">Support</div>
+                                            </div>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                        <li class="navitem">
+                                            <span class="fw-bold">Slot:</span>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-all-check"></div>
+                                                <div class="col">All</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-eye-check"></div>
+                                                <div class="col">Eye / Ocular</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-head-check"></div>
+                                                <div class="col">Head / Brain</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-ear-check"></div>
+                                                <div class="col">Ear</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-right-arm-check"></div>
+                                                <div class="col">Right Arm</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-chest-check"></div>
+                                                <div class="col">Chest</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-left-arm-check"></div>
+                                                <div class="col">Left Arm</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-right-wrist-check"></div>
+                                                <div class="col">Right Wrist</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-waist-check"></div>
+                                                <div class="col">Waist</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-left-wrist-check"></div>
+                                                <div class="col">Left Wrist</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-right-hand-check"></div>
+                                                <div class="col">Right Hand</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-leg-check"></div>
+                                                <div class="col">Leg / Thigh</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-left-hand-check"></div>
+                                                <div class="col">Left Hand</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="filter-feet-check"></div>
+                                                <div class="col">Feet</div>
+                                            </div>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-9 col-lg-10">
+                        <table class="table table-striped" id="filter-table">
+                            <thead>
+                                <th>Name</th>
+                                <th>Slot</th>
+                                <th>QL</th>
+                                <th>Dropped By</th>
+                                <th>Pattern Drops</th>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" id="spacer_row">&nbsp</div>
+            </div>
+        </div>
+        <div class="tab-pane border border-top-0 rounded-bottom fade" id="match">
+            <div class="container-fluid" id="match-container">
+                <div class="row">&nbsp</div>
+                <div class="row">
+                    <div class="col col-md-3 col-lg-2">
+                        <div class="container">
+                            <div class="row">
+                                <button id="match-submit" type="button" class="btn btn-outline-success">Search</button>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <button id="match-reset" type="button" class="btn btn-outline-secondary">Reset</button>
+                            </div>
+                        </div>
+                        <hr>
+                        <!-- <div class="container"> -->
+                            <div class="row">
+                                <span class="fw-bold">Character Info:</span>
+                            </div>
+                        <!-- </div> -->
+                        <div class="row">&nbsp</div>
+                        <div class="accordion" id="filter-accordion">
+                            <div class="accordion-item">
+                               
+                                <div id="match" class="accordion-collapse collapse show" aria-expanded="true">
+                                    <ul class="nav nav-pills flex-column mb-auto">
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Profession:</span>
+                                            <select class="form-select" id="match-profession">
+                                                <option selected value="0">-- Select --</option>
+                                                <option value="6">Adventurer</option>
+                                                <option value="5">Agent</option>
+                                                <option value="8">Bureaucrat</option>
+                                                <option value="10">Doctor</option>
+                                                <option value="9">Enforcer</option>
+                                                <option value="3">Engineer</option>
+                                                <option value="4">Fixer</option>
+                                                <option value="14">Keeper</option>
+                                                <option value="2">Martial Artist</option>
+                                                <option value="12">Meta-Physicist</option>
+                                                <option value="11">Nano-Technician</option>
+                                                <option value="15">Shade</option>
+                                                <option value="1">Soldier</option>
+                                                <option value="7">Trader</option>
+                                            </select>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                        <li class="nav-item">
+                                            <div class="row">
+                                                <div class="col col-md-1"><input type="checkbox" id="match-sloob-check"></div>
+                                                <div class="col">Sloob Account</div>
+                                            </div>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Level:</span>
+                                            <input type="number" id="match-level" min=1 max=220 class="form-control" value="1">
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Slot:</span>
+                                            <select class="form-select" id="match-slot">
+                                                <option selected value="0">-- Select --</option>
+                                                <option value="Eye">Eye</option>
+                                                <option value="Head">Head</option>
+                                                <option value="Ear">Ear</option>
+                                                <option value="Right arm">Right arm</option>
+                                                <option value="Chest">Chest</option>
+                                                <option value="Left arm">Left arm</option>
+                                                <option value="Right wrist">Right wrist</option>
+                                                <option value="Waist">Waist</option>
+                                                <option value="Left wrist">Left wrist</option>
+                                                <option value="Right hand">Right hand</option>
+                                                <option value="Legs">Legs</option>
+                                                <option value="Left hand">Left hand</option>
+                                                <option value="Feet">Feet</option>
+                                            </select>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Strength:</span>
+                                            <input type="number" id="match-strength" min=1 class="form-control" value="1">
+                                        </li>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Stamina:</span>
+                                            <input type="number" id="match-stamina" min=1 class="form-control" value="1">
+                                        </li>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Sense:</span>
+                                            <input type="number" id="match-sense" min=1 class="form-control" value="1">
+                                        </li>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Agility:</span>
+                                            <input type="number" id="match-agility" min=1 class="form-control" value="1">
+                                        </li>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Intelligence:</span>
+                                            <input type="number" id="match-intelligence" min=1 class="form-control" value="1">
+                                        </li>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Psychic:</span>
+                                            <input type="number" id="match-psychic" min=1 class="form-control" value="1">
+                                        </li>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Treatment:</span>
+                                            <input type="number" id="match-treatment" min=1 class="form-control" value="1">
+                                        </li>
+                                        <hr>
+                                        <span class="fw-bold">Buffs:</span>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-comp-attrib">
+                                            <span>Composite Attributes</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-behe">
+                                            <span>Essence of Behemoth</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-ibehe">
+                                            <span>Improved Essence of Behemoth</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-ic">
+                                            <span>Iron Circle</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-prod-str">
+                                            <span>Prodigious Strength</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-es">
+                                            <span>Enhanced Senses</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-fg">
+                                            <span>Feline Grace</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-ns">
+                                            <span>Neuronal Stimulator</span>
+                                        </li>
+                                        <hr>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-comp-util">
+                                            <span>Composite Utility Expertise</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-surgery">
+                                            <span>Surgery Clinic Effect</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-sfa">
+                                            <span>Superior First Aid</span>
+                                        </li>
+                                        <li class="nav-item">
+                                            <input type="checkbox" id="match-tt">
+                                            <span>Treatment Transfer</span>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-9 col-lg-10">
+                        <table class="table table-striped" id="match-table">
+                            <thead id="match-head">
+
+                            </thead>
+                            <tbody id="match-body">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" id="spacer_row">&nbsp</div>
+            </div>
+        </div>
+        <div class="tab-pane border border-top-0 rounded-bottom fade show active" id="bosses">
+            <div class="container-fluid" id="bosses-container">
+                <div class="row">&nbsp</div>
+                <div class="row">
+                    <div class="col col-md-3 col-lg-2">
+                        <div class="container">
+                            <div class="row">
+                                <button id="bosses-submit" type="button" class="btn btn-outline-success">Show</button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="accordion" id="filter-accordion">
+                            <div class="accordion-item">
+                               
+                                <div id="bosses" class="accordion-collapse collapse show" aria-expanded="true">
+                                    <ul class="nav nav-pills flex-column mb-auto">
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Bosses:</span>
+                                            <select class="form-select" id="boss-select">
+                                                <option selected value="0">-- Select --</option>
+                                                <option value="[Not a PB] Ahwere">[Not a PB] Ahwere</option>
+                                                <option value="[Not a PB] Anansi`s Adherent">[Not a PB] Anansi`s Adherent</option>
+                                                <option value="[Not a PB] Crippler Fiend">[Not a PB] Crippler Fiend</option>
+                                                <option value="[Not a PB] Demonic Subjugator">[Not a PB] Demonic Subjugator</option>
+                                                <option value="[Not a PB] Deranged Xan">[Not a PB] Deranged Xan</option>
+                                                <option value="[Not a PB] Dryad Watcher">[Not a PB] Dryad Watcher</option>
+                                                <option value="[Not a PB] Ground Chief Vortexx">[Not a PB] Ground Chief Vortexx</option>
+                                                <option value="[Not a PB] Hardened Mortiig">[Not a PB] Hardened Mortiig</option>
+                                                <option value="[Not a PB] Hateful Weaver">[Not a PB] Hateful Weaver</option>
+                                                <option value="[Not a PB] Heru-Maat">[Not a PB] Heru-Maat</option>
+                                                <option value="[Not a PB] Hesoas">[Not a PB] Hesoas</option>
+                                                <option value="[Not a PB] Leader of the Pack">[Not a PB] Leader of the Pack</option>
+                                                <option value="[Not a PB] Malah-Alinos">[Not a PB] Malah-Alinos</option>
+                                                <option value="[Not a PB] Massive Waggler">[Not a PB] Massive Waggler</option>
+                                                <option value="[Not a PB] Maynatsk">[Not a PB] Maynatsk</option>
+                                                <option value="[Not a PB] Mesut-Rat">[Not a PB] Mesut-Rat</option>
+                                                <option value="[Not a PB] Nesbaneb">[Not a PB] Nesbaneb</option>
+                                                <option value="[Not a PB] Predator Rager">[Not a PB] Predator Rager</option>
+                                                <option value="[Not a PB] Rainbow Feathers">[Not a PB] Rainbow Feathers</option>
+                                                <option value="[Not a PB] Remur-Nefer">[Not a PB] Remur-Nefer</option>
+                                                <option value="[Not a PB] Shadowleet of Powah">[Not a PB] Shadowleet of Powah</option>
+                                                <option value="[Not a PB] Starry Feathers">[Not a PB] Starry Feathers</option>
+                                                <option value="[Not a PB] Swiftwind">[Not a PB] Swiftwind</option>
+                                                <option value="[Not a PB] Takheperu">[Not a PB] Takheperu</option>
+                                                <option value="[Not a PB] Technomaster Sinuh">[Not a PB] Technomaster Sinuh</option>
+                                                <option value="[Not a PB] The Devastator">[Not a PB] The Devastator</option>
+                                                <option value="[Not a PB] The Night Heart">[Not a PB] The Night Heart</option>
+                                                <option value="[Not a PB] Urga-Pi Thrak">[Not a PB] Urga-Pi Thrak</option>
+                                                <option value="[Not a PB] Vile Weaver">[Not a PB] Vile Weaver</option>
+                                                <option value="Adobe Suzerain">Adobe Suzerain</option>
+                                                <option value="Aesma Daeva">Aesma Daeva</option>
+                                                <option value="Agent of Decay">Agent of Decay</option>
+                                                <option value="Ahpta">Ahpta</option>
+                                                <option value="Alatyr">Alatyr</option>
+                                                <option value="Anya">Anya</option>
+                                                <option value="Aray">Aray</option>
+                                                <option value="Arch Bigot Biap">Arch Bigot Biap</option>
+                                                <option value="Argil Suzerain">Argil Suzerain</option>
+                                                <option value="Asase Ya">Asase Ya</option>
+                                                <option value="Ashmara Ravin">Ashmara Ravin</option>
+                                                <option value="Ats (Ats`usk)">Ats (Ats`usk)</option>
+                                                <option value="Auger">Auger</option>
+                                                <option value="Awl">Awl</option>
+                                                <option value="Bagaspati">Bagaspati</option>
+                                                <option value="Beatific Spirit">Beatific Spirit</option>
+                                                <option value="Bellowing Chimera">Bellowing Chimera</option>
+                                                <option value="Bhinaji Navi">Bhinaji Navi</option>
+                                                <option value="Black Fang">Black Fang</option>
+                                                <option value="Blight">Blight</option>
+                                                <option value="Borer">Borer</option>
+                                                <option value="Breaker Teuvo">Breaker Teuvo</option>
+                                                <option value="Brutal Rafter">Brutal Rafter</option>
+                                                <option value="Brutal Soul Dredge">Brutal Soul Dredge</option>
+                                                <option value="Canceroid Cupid">Canceroid Cupid</option>
+                                                <option value="Captured Spirit">Captured Spirit</option>
+                                                <option value="Careening Blight">Careening Blight</option>
+                                                <option value="Careening Death">Careening Death</option>
+                                                <option value="Churn">Churn</option>
+                                                <option value="Circumbendibum">Circumbendibum</option>
+                                                <option value="Circumbendibus">Circumbendibus</option>
+                                                <option value="Contorted Soul Dredge">Contorted Soul Dredge</option>
+                                                <option value="Defiler of Scheol">Defiler of Scheol</option>
+                                                <option value="Devourer of Scheol">Devourer of Scheol</option>
+                                                <option value="Eidolean Soul Dredge">Eidolean Soul Dredge</option>
+                                                <option value="Exsequiae">Exsequiae</option>
+                                                <option value="Fester Leila">Fester Leila</option>
+                                                <option value="Flinty">Flinty</option>
+                                                <option value="Glitter">Glitter</option>
+                                                <option value="Gracious Soul Dredge">Gracious Soul Dredge</option>
+                                                <option value="Gunk">Gunk</option>
+                                                <option value="Hadur">Hadur</option>
+                                                <option value="Haqa">Haqa</option>
+                                                <option value="Hemut">Hemut</option>
+                                                <option value="Ho">Ho</option>
+                                                <option value="Ignis Fatuus">Ignis Fatuus</option>
+                                                <option value="Imk">Imk</option>
+                                                <option value="Iunmin">Iunmin</option>
+                                                <option value="Juma">Juma</option>
+                                                <option value="K">K</option>
+                                                <option value="Kaleva">Kaleva</option>
+                                                <option value="Kaoline Suzerain">Kaoline Suzerain</option>
+                                                <option value="Khemhet">Khemhet</option>
+                                                <option value="Lethargic Spirit">Lethargic Spirit</option>
+                                                <option value="Loessial Suzerain">Loessial Suzerain</option>
+                                                <option value="Loltonunon">Loltonunon</option>
+                                                <option value="Lurky">Lurky</option>
+                                                <option value="Lya">Lya</option>
+                                                <option value="Marem">Marem</option>
+                                                <option value="Marly Suzerain">Marly Suzerain</option>
+                                                <option value="Misery">Misery</option>
+                                                <option value="Moochy">Moochy</option>
+                                                <option value="Morrow">Morrow</option>
+                                                <option value="Odqan">Odqan</option>
+                                                <option value="Old Salty">Old Salty</option>
+                                                <option value="Ooze">Ooze</option>
+                                                <option value="Pazuzu">Pazuzu</option>
+                                                <option value="Quake">Quake</option>
+                                                <option value="Quondam">Quondam</option>
+                                                <option value="Rallies Fete">Rallies Fete</option>
+                                                <option value="Redeemed Gilthar">Redeemed Gilthar</option>
+                                                <option value="Relief Teals">Relief Teals</option>
+                                                <option value="Sabretooth Slicer">Sabretooth Slicer</option>
+                                                <option value="Sampsa">Sampsa</option>
+                                                <option value="Sasabonsam">Sasabonsam</option>
+                                                <option value="Sashu">Sashu</option>
+                                                <option value="Satkamear">Satkamear</option>
+                                                <option value="Scratch">Scratch</option>
+                                                <option value="Screech">Screech</option>
+                                                <option value="Shake">Shake</option>
+                                                <option value="Shake (Golem)">Shake (Golem)</option>
+                                                <option value="Shiver">Shiver</option>
+                                                <option value="Shullat">Shullat</option>
+                                                <option value="Silver Fang">Silver Fang</option>
+                                                <option value="Skulky">Skulky</option>
+                                                <option value="Slinky">Slinky</option>
+                                                <option value="Smee">Smee</option>
+                                                <option value="Spiritless Soul Dredge">Spiritless Soul Dredge</option>
+                                                <option value="Srahir">Srahir</option>
+                                                <option value="Taille Frees">Taille Frees</option>
+                                                <option value="Tcheser">Tcheser</option>
+                                                <option value="The Abysmal Lord">The Abysmal Lord</option>
+                                                <option value="The Abyssal Widow">The Abyssal Widow</option>
+                                                <option value="The Achbile Guardian">The Achbile Guardian</option>
+                                                <option value="The Adonian Soul Dredge">The Adonian Soul Dredge</option>
+                                                <option value="The Adonis Spirit Master">The Adonis Spirit Master</option>
+                                                <option value="The Archbile Queen">The Archbile Queen</option>
+                                                <option value="The Brobdingnagian Mother">The Brobdingnagian Mother</option>
+                                                <option value="The Dredge Driver">The Dredge Driver</option>
+                                                <option value="The Dryad Demigod">The Dryad Demigod</option>
+                                                <option value="The Dryad Shuffle">The Dryad Shuffle</option>
+                                                <option value="The Dune Suzerain">The Dune Suzerain</option>
+                                                <option value="The Elysian Soul Dredge">The Elysian Soul Dredge</option>
+                                                <option value="The Enrapt One">The Enrapt One</option>
+                                                <option value="The Indomitable Chimera">The Indomitable Chimera</option>
+                                                <option value="The Infernal Soul Dredge">The Infernal Soul Dredge</option>
+                                                <option value="The Maggot Lord">The Maggot Lord</option>
+                                                <option value="The Numb One">The Numb One</option>
+                                                <option value="The Penumbral Spirit Hunter">The Penumbral Spirit Hunter</option>
+                                                <option value="The Peristaltic Abomination">The Peristaltic Abomination</option>
+                                                <option value="The Peristaltic Aversion">The Peristaltic Aversion</option>
+                                                <option value="The Proprietrix">The Proprietrix</option>
+                                                <option value="The Scheolian Soul Dredge">The Scheolian Soul Dredge</option>
+                                                <option value="The Stupendous Breeder">The Stupendous Breeder</option>
+                                                <option value="The Talus Suzerain">The Talus Suzerain</option>
+                                                <option value="The Watchdog">The Watchdog</option>
+                                                <option value="The Worm King">The Worm King</option>
+                                                <option value="Thunderous Chimera">Thunderous Chimera</option>
+                                                <option value="Toss">Toss</option>
+                                                <option value="Tough">Tough</option>
+                                                <option value="Ungulera">Ungulera</option>
+                                                <option value="Upenpet">Upenpet</option>
+                                                <option value="Ushqa">Ushqa</option>
+                                                <option value="Viscious Visitant">Viscious Visitant</option>
+                                                <option value="Wacky Suzerain">Wacky Suzerain</option>
+                                                <option value="Waqa">Waqa</option>
+                                                <option value="White">White</option>
+                                                <option value="Xark the Battletoad">Xark the Battletoad</option>
+                                                <option value="Zoetic Oak">Zoetic Oak</option>
+                                            </select>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-3 col-lg-2">
+                        <table>
+                            <tr><span class="fw-bold">Boss Info</span></tr>
+                            <tr><td><span class="fw-bold">Name:</span></td></tr>
+                            <tr><td><span id="boss-name">{{ name }}</span></td></tr>
+                            <tr><td><span class="fw-bold">Level:</span></td></tr>
+                            <tr><td><span id="boss-level">{{ level }}</span></td></tr>
+                            <tr><td><span class="fw-bold">Pattern Dropped By:</span></td></tr>
+                            <tr><td><span id="boss-mobs">{{ mobs }}</span></td></tr>
+                            <tr><td><span class="fw-bold">Playfield:</span></td></tr>
+                            <tr><td><span id="boss-playfield">{{ playfield }}</span></td></tr>
+                            <tr><td><span class="fw-bold">Location:</span></td></tr>
+                            <tr><td><span id="boss-location">{{ location }}</span></td></tr>
+                        </table>
+                    </div>
+                    <div class="col col-md-6 col-lg-8">
+                        <table class="table table-striped">
+                            <thead>
+                                <th>Symbiant</th>
+                                <th>QL</th>
+                            </thead>
+                            <tbody id="boss-drop-table">
+                                {% for drop in drops %}
+                                    <tr>
+                                        <td><a href="https://auno.org/ao/db.php?id={{ drop.0 }}">{{ drop.1 }}</a></td>
+                                        <td>{{ drop.2 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" id="spacer_row">&nbsp</div>
+            </div>
+        </div>
+        <div class="tab-pane border border-top-0 rounded-bottom fade" id="compare">
+            <div class="container-fluid" id="compare-container">
+                <div class="row" id="spacer_row">&nbsp</div>
+                <div class="row">
+                    <div class="col col-md-4 col-lg-3">
+                        <div class="container">
+                            <div class="row">
+                                <button id="compare-submit" type="button" class="btn btn-outline-success">Compare</button>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <button id="compare-reset" type="button" class="btn btn-outline-secondary">Reset</button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="accordion" id="filter-accordion">
+                            <div class="accordion-item">
+                               
+                                <div id="compare" class="accordion-collapse collapse show" aria-expanded="true">
+                                    <ul class="nav nav-pills flex-column mb-auto">
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Symbiant 1:</span>
+                                            <select id="compare-1" class="form-select" data-placeholder="Choose..."><option></option></select>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Symbiant 2:</span>
+                                            <select id="compare-2" class="form-select" data-placeholder="Choose..."><option></option></select>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                        <li class="nav-item">
+                                            <span class="fw-bold">Symbiant 3:</span>
+                                            <select id="compare-3" class="form-select" data-placeholder="Choose..."><option></option></select>
+                                        </li>
+                                        <div class="row">&nbsp</div>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-8 col-lg-9">
+                        <table class="table table-striped" id="compare-table">
+                            <thead id="compare-head">
+                
+                            </thead>
+                            <tbody id="compare-body">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" id="spacer_row">&nbsp</div>
+            </div>
+        </div>
+        <div class="tab-pane border border-top-0 rounded-bottom fade" id="profession">
+            <div class="container-fluid" id="profession-container">
+                <div class="row" id="spacer_row">&nbsp</div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Profession</th>
+                            <th>Artillery</th>
+                            <th>Control</th>
+                            <th>Extermination</th>
+                            <th>Infantry</th>
+                            <th>Support</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Adventurer</td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Agent</td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Bureaucrat</td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Doctor</td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Enforcer</td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Engineer</td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Fixer</td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Keeper</td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Martial Artist</td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Meta-Physicist</td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Nano-Technician</td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Shade</td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Soldier</td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Trader</td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-x" style="color:red;font-size:25px"></i></td>
+                            <td><i class="bi bi-check" style="color:green;font-size:25px"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row" id="spacer_row">&nbsp</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'tinkerpocket/modals.html' %}
+{% include 'tinkerpocket/index_script.html' %}
+{% endblock content %}

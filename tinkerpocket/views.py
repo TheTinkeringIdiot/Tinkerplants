@@ -51,6 +51,30 @@ def boss_info(request):
         
         return JsonResponse({'success': True, 'data': info})
     
+    elif request.method == 'GET':
+
+        name = request.GET.get('name')
+
+        boss = Pocketboss.objects.filter(name__contains=name)
+        if boss is None or len(boss) != 1:
+            return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
+
+        boss = boss[0]
+
+        info = {}
+        info['name'] = boss.name
+        info['level'] = boss.level
+        info['mobs'] = boss.mobs
+        info['playfield'] = boss.playfield
+        info['location'] = boss.location
+        info['drops'] = []
+
+        for drop in boss.drops.all():
+            info['drops'].append([drop.aoid, drop.name, drop.ql])
+
+        # breakpoint()
+
+        return render(request, 'tinkerpocket/index_boss.html', info)
     else:
         return JsonResponse({'success': False, 'message': 'If you want to know how it works, just ask'})
 
