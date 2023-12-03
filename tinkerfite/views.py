@@ -436,6 +436,16 @@ def calculate_speeds(weapon, stats):
         rech_time = round(rech_time - (stats[INITS[init]] / 3))
         if rech_time < 100: rech_time = 100
 
+    atk_cap = weapon.other.get('Attack time cap')
+    rech_cap = weapon.other.get('Recharge time cap')
+    if atk_cap is not None:
+        if atk_time < atk_cap:
+            atk_time = atk_cap
+
+    if rech_cap is not None:
+        if rech_time < rech_cap:
+            rech_time = rech_cap
+
     return atk_time, rech_time
 
 def get_equipable_weapons(weapons, stats):
