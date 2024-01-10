@@ -181,8 +181,8 @@ SYMBIANT_IDS = [219135, 235792, 235825, 235826, 235827, 235842, 235586, 235711, 
 235951, 235901, 235780, 235745, 235746, 236281, 236163, 236251, 236183, 235508, 236040, 235729, 236487, 235932, 235645, 236091, 235847, 235444, 235865, 235831, 235846, 
 235508, 235934, 235967]
 
-def write_json(clusters, implants, nanos, weapons, symbiants, bosses, out_name):
-    writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nanos' : nanos, 'weapons' : weapons, 'symbiants' : symbiants, 'bosses' : bosses}}
+def write_json(clusters, implants, nt_nukes, weapons, symbiants, bosses, out_name):
+    writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nt_nukes' : nt_nukes, 'weapons' : weapons, 'symbiants' : symbiants, 'bosses' : bosses}}
 
     with open(out_name, 'w') as fd:
         fd.write(json.dumps(writeme))
@@ -674,8 +674,8 @@ if __name__ == '__main__':
     else:
         remove_old(args.output)
         implants, clusters, crystals, weapons, symbiants = parse_xml(args.items)
-        nanos = parse_nanos(args.nanos, crystals)
+        nt_nukes = parse_nanos(args.nanos, crystals)
         bosses = parse_pocketbosses(CSV_FILE)
-        write_json(clusters, implants, nanos, weapons, symbiants, bosses, args.output)
+        write_json(clusters, implants, nt_nukes, weapons, symbiants, bosses, args.output)
 
 

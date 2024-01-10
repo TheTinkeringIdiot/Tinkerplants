@@ -14,7 +14,7 @@ from tinkerpocket.models import *
 # Clear out the old data entirely
 Implant.objects.all().delete()
 Cluster.objects.all().delete()
-Nano.objects.all().delete()
+Nuke.objects.all().delete()
 Weapon.objects.all().delete()
 Symbiant.objects.all().delete()
 Pocketboss.objects.all().delete()
@@ -24,14 +24,14 @@ with open('data.json', 'r') as fd:
 
 clusters = data['data']['clusters']
 implants = data['data']['implants']
-nanos = data['data']['nanos']
+nt_nukes = data['data']['nt_nukes']
 weapons = data['data']['weapons']
 symbiants = data['data']['symbiants']
 bosses = data['data']['bosses']
 
 new_clusters = []
 new_implants = []
-new_nanos = []
+new_nukes = []
 new_weapons = []
 new_symbs = []
 new_bosses = []
@@ -173,67 +173,67 @@ for entry in bright_nd:
 
 Implant.objects.bulk_update(bright_nd_fixed, ['bright'])
 
-for aiod, vals in nanos.items():
-    nano = Nano()
-    nano.name = vals['name']
-    nano.ql = vals['ql']
-    nano.mc = vals['mc']
-    nano.attack = vals['attack']
-    nano.recharge = vals['recharge']
-    nano.cost = vals['cost']
-    nano.low_dmg = vals['low_dmg']
-    nano.high_dmg = vals['high_dmg']
-    nano.ac = vals['ac']
-    nano.nr_pct = vals['nr_pct']
+for aiod, vals in nt_nukes.items():
+    nuke = Nuke()
+    nuke.name = vals['name']
+    nuke.ql = vals['ql']
+    nuke.mc = vals['mc']
+    nuke.attack = vals['attack']
+    nuke.recharge = vals['recharge']
+    nuke.cost = vals['cost']
+    nuke.low_dmg = vals['low_dmg']
+    nuke.high_dmg = vals['high_dmg']
+    nuke.ac = vals['ac']
+    nuke.nr_pct = vals['nr_pct']
 
     if vals.get('nt_dot') is not None:
-        nano.nt_dot = vals['nt_dot']
+        nuke.nt_dot = vals['nt_dot']
     else:
-        nano.nt_dot = False
+        nuke.nt_dot = False
 
     if vals.get('nt_dot') is not None:
-        nano.nt_dot = vals['nt_dot']
+        nuke.nt_dot = vals['nt_dot']
     else:
-        nano.nt_dot = False
+        nuke.nt_dot = False
 
     if vals.get('level_req') is not None:
-        nano.level = vals['level_req']
+        nuke.level = vals['level_req']
     else:
-        nano.level = 0
+        nuke.level = 0
 
     if vals.get('spec') is not None:
-        nano.spec = vals['spec']
+        nuke.spec = vals['spec']
     else:
-        nano.spec = 0
+        nuke.spec = 0
 
     if vals.get('deck') is not None:
-        nano.deck = vals['deck']
+        nuke.deck = vals['deck']
     else:
-        nano.deck = 0
+        nuke.deck = 0
 
     if vals.get('atk_cap') is not None:
-        nano.atk_cap = vals['atk_cap']
+        nuke.atk_cap = vals['atk_cap']
     else:
-        nano.atk_cap = 0
+        nuke.atk_cap = 0
 
     if vals.get('dot_hits') is not None:
-        nano.dot_hits = vals['dot_hits']
+        nuke.dot_hits = vals['dot_hits']
     else:
-        nano.dot_hits = 0
+        nuke.dot_hits = 0
 
     if vals.get('dot_delay') is not None:
-        nano.dot_delay = vals['dot_delay']
+        nuke.dot_delay = vals['dot_delay']
     else:
-        nano.dot_delay = 0
+        nuke.dot_delay = 0
 
     if vals.get('strain_cd') is not None:
-        nano.strain_cd = vals['strain_cd']
+        nuke.strain_cd = vals['strain_cd']
     else:
-        nano.strain_cd = 0
+        nuke.strain_cd = 0
 
-    new_nanos.append(nano)
+    new_nukes.append(nuke)
 
-Nano.objects.bulk_create(new_nanos)
+Nuke.objects.bulk_create(new_nukes)
 
 for aoid, vals in weapons.items():
     weapon = Weapon()
