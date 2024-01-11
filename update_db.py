@@ -10,6 +10,7 @@ from tinkerplants.models import *
 from tinkernukes.models import *
 from tinkerfite.models import *
 from tinkerpocket.models import *
+from tinkernanos.models import *
 
 # Clear out the old data entirely
 Implant.objects.all().delete()
@@ -18,6 +19,7 @@ Nuke.objects.all().delete()
 Weapon.objects.all().delete()
 Symbiant.objects.all().delete()
 Pocketboss.objects.all().delete()
+Nano.objects.all().delete()
 
 with open('data.json', 'r') as fd:
     data = json.loads(fd.read())
@@ -25,6 +27,7 @@ with open('data.json', 'r') as fd:
 clusters = data['data']['clusters']
 implants = data['data']['implants']
 nt_nukes = data['data']['nt_nukes']
+nanos = data['data']['nanos']
 weapons = data['data']['weapons']
 symbiants = data['data']['symbiants']
 bosses = data['data']['bosses']
@@ -32,6 +35,7 @@ bosses = data['data']['bosses']
 new_clusters = []
 new_implants = []
 new_nukes = []
+new_nanos = []
 new_weapons = []
 new_symbs = []
 new_bosses = []
@@ -234,6 +238,52 @@ for aiod, vals in nt_nukes.items():
     new_nukes.append(nuke)
 
 Nuke.objects.bulk_create(new_nukes)
+
+for aoid, vals in nanos.items():
+    nano = Nano()
+    nano.aoid = int(aoid)
+    nano.name = vals['name']
+    nano.icon = vals['icon']
+    nano.school = vals['school']
+    nano.strain = vals['strain']
+    nano.strain_name = vals['strain_name']
+    nano.profession = vals['profession']
+    nano.ql = vals['ql']
+    nano.uploaded_by = vals['uploaded_by']
+
+    if vals.get('Specialization') is not None:
+        nano.spec = vals['Specialization']
+
+    if vals.get('Expansion sets') is not None:
+        nano.expansion = vals['Expansion sets']
+
+    if vals.get('level_req') is not None:
+        nano.level = vals['level_req']
+
+    if vals.get('location') is not None:
+        nano.location = vals['location']
+
+    if vals.get('Matter metamorphosis') is not None:
+        nano.mm = vals['Matter metamorphosis']
+
+    if vals.get('Biological metamorphosis') is not None:
+        nano.bm = vals['Biological metamorphosis']
+
+    if vals.get('Matter creation') is not None:
+        nano.mc = vals['Matter creation']
+
+    if vals.get('Time and space') is not None:
+        nano.ts = vals['Time and space']
+
+    if vals.get('Psychological modifications') is not None:
+        nano.pm = vals['Psychological modifications']
+
+    if vals.get('Sensory improvement') is not None:
+        nano.si = vals['Sensory improvement']
+
+    new_nanos.append(nano)
+
+Nano.objects.bulk_create(new_nanos)
 
 for aoid, vals in weapons.items():
     weapon = Weapon()
