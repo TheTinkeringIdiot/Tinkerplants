@@ -689,15 +689,7 @@ def parse_nanos(in_name, crystal_qls, crystal_ids, csv_nanos):
                     try:
                         nano['ql'] = crystal_qls[aoid]
                     except:
-                        # if 'Izgimmer\'s Cataclysm' in nano['name']:
-                        #     nano['ql'] = 220
-                        # elif 'Garuk\'s Improved Viral Assault' in nano['name']:
-                        #     nano['ql'] = 215
-                        if aoid in NONUPLOAD_NANOS: # Nanos that nothing uploads
-                            player_nano = False
-                            continue
-                        else:
-                            breakpoint()
+                        breakpoint()
 
                     try:
                         nano['uploaded_by'] = crystal_ids[aoid]
