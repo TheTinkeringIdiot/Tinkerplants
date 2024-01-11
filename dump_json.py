@@ -9,6 +9,7 @@ import re
 from tinkerplants.utils import *
 
 CSV_FILE = 'symbiants.csv'
+CSV_NANOS = 'nanos.csv'
 
 NANODELTA_JOBE_MOD = {'Shiny' : 5.25, 'Bright' : 4.0, 'Faded' : 2.75}
 
@@ -186,7 +187,10 @@ NONUPLOAD_NANOS = ['26310', '30742', '31405', '31556', '32019', '82837', '85050'
                    '258659', '260771', '266955', '266957', '266961', '266963', '266965', '266967', '266971', '266974', '267013', '267526', '267526', '270347', 
                    '270354', '275020', '275679', '275680', '275692', '275697', '275700', '275815', '275822', '275823', '275826', '275833', '275835', '275837', 
                    '275838', '275839', '275841', '275843', '275844', '275846', '275849', '275852', '275853', '275905', '285182', '285182', '285182', '295697', 
-                   '300505', '301609', '301610', '302107', '302108', '302860', '302864', '218166', '275692']
+                   '300505', '301609', '301610', '302107', '302108', '302860', '302864', '218166', '275692', '156284', '156285', '231023', '231012', '267533',
+                   '273059', '273061', '273062', '279354', '279361', '279368', '286993', '286995', '286997', '286999', '287001', '287002', '287005', '292504', 
+                   '293607', '293611', '293612', '293616', '293617', '293618', '293621', '293623', '293624', '293625', '293626', '295329', '295330', '302140', 
+                   '302144', '302148', '302154']
 
 def write_json(clusters, implants, nt_nukes, nanos, weapons, symbiants, bosses, out_name):
     writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nt_nukes' : nt_nukes, 'nanos' : nanos, 'weapons' : weapons, 'symbiants' : symbiants, 'bosses' : bosses}}
@@ -641,7 +645,7 @@ def parse_nukes(in_name, crystals):
 
     return nukes
 
-def parse_nanos(in_name, crystal_qls, crystal_ids):
+def parse_nanos(in_name, crystal_qls, crystal_ids, csv_nanos):
     tree = ET.parse(in_name)
 
     root = tree.getroot()
@@ -650,6 +654,10 @@ def parse_nanos(in_name, crystal_qls, crystal_ids):
 
     for item in root.findall('item'):
         aoid = item.get('aoid')
+
+        if aoid in NONUPLOAD_NANOS: # Nanos that nothing uploads
+            continue
+
         nano = {}
         nano['name'] = item.find('name').text
 
@@ -675,6 +683,8 @@ def parse_nanos(in_name, crystal_qls, crystal_ids):
                 if attrib == 'Profession' or attrib == 'Visual profession':
                     player_nano = True
                     nano['profession'] = int(req.get('value'))
+                    nano['location'] = csv_nanos[aoid]['location']
+                    nano['strain_name'] = csv_nanos[aoid]['strain_name']
 
                     try:
                         nano['ql'] = crystal_qls[aoid]
@@ -731,6 +741,22 @@ def parse_pocketbosses(pbcsv):
 
     return pocketbosses
 
+def parse_csv_nanos(nanocsv):
+    csv_nanos = {}
+
+    with open(nanocsv) as fp:
+
+        reader = csv.reader(fp, delimiter=',')
+        for line in reader:
+            nano_id = line[1]
+            nano = {}
+            nano['strain_name'] = line[6]
+            nano['location'] = line[10]
+
+            csv_nanos[nano_id] = nano
+
+    return csv_nanos
+
 def remove_old(out_name):
     if os.path.exists(out_name):
         os.remove(out_name)
@@ -754,7 +780,8 @@ if __name__ == '__main__':
         remove_old(args.output)
         implants, clusters, crystal_qls, crystal_ids, weapons, symbiants = parse_xml(args.items)
         nt_nukes = parse_nukes(args.nanos, crystal_qls)
-        nanos = parse_nanos(args.nanos, crystal_qls, crystal_ids)
+        csv_nanos = parse_csv_nanos(CSV_NANOS)
+        nanos = parse_nanos(args.nanos, crystal_qls, crystal_ids, csv_nanos)
         bosses = parse_pocketbosses(CSV_FILE)
         write_json(clusters, implants, nt_nukes, nanos, weapons, symbiants, bosses, args.output)
 
