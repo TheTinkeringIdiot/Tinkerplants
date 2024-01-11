@@ -531,19 +531,19 @@ def parse_xml(in_name):
                 
     return implants, clusters, crystals, weapons, symbiants
 
-def parse_nanos(in_name, crystals):
+def parse_nukes(in_name, crystals):
     tree = ET.parse(in_name)
 
     root = tree.getroot()
 
-    nanos = {}
+    nukes = {}
 
     for item in root.findall('item'):
         aoid = item.get('aoid')
-        nano = {}
-        nano['name'] = item.find('name').text
+        nuke = {}
+        nuke['name'] = item.find('name').text
 
-        nt_nano = False
+        nt_nuke = False
 
         nanoclass = item.find('nanoclass')
         if nanoclass is None:
@@ -557,33 +557,33 @@ def parse_nanos(in_name, crystals):
                 attrib = req.get('attribute')
                 if attrib == 'Profession' or attrib == 'Visual profession':
                     if req.get('value') == '11':
-                        nt_nano = True
+                        nt_nuke = True
                         try:
-                            nano['ql'] = crystals[aoid]
+                            nuke['ql'] = crystals[aoid]
                         except:
-                            if 'Izgimmer\'s Cataclysm' in nano['name']:
-                                nano['ql'] = 219
-                            elif 'Garuk\'s Improved Viral Assault' in nano['name']:
-                                nano['ql'] = 215
+                            if 'Izgimmer\'s Cataclysm' in nuke['name']:
+                                nuke['ql'] = 219
+                            elif 'Garuk\'s Improved Viral Assault' in nuke['name']:
+                                nuke['ql'] = 215
                             else:
                                 breakpoint()
 
                 elif attrib == 'Level':
-                    nano['level_req'] = int(req.get('value'))
+                    nuke['level_req'] = int(req.get('value'))
                 
                 elif attrib == 'Matter creation':
-                    nano['mc'] = int(req.get('value'))
+                    nuke['mc'] = int(req.get('value'))
 
                 elif attrib == 'Specialization':
-                    nano['spec'] = int(req.get('value'))
+                    nuke['spec'] = int(req.get('value'))
 
                 elif attrib == 'Cyberdeck':
-                    nano['deck'] = int(req.get('value'))
+                    nuke['deck'] = int(req.get('value'))
 
         times = item.find('times')
-        nano['attack'] = int(times.get('attack'))
-        nano['recharge'] = int(times.get('recharge'))
-        nano['cost'] = int(item.find('nanodata').get('nanocost'))
+        nuke['attack'] = int(times.get('attack'))
+        nuke['recharge'] = int(times.get('recharge'))
+        nuke['cost'] = int(item.find('nanodata').get('nanocost'))
 
         effects = item.find('effects')
         if effects is not None:
@@ -591,40 +591,40 @@ def parse_nanos(in_name, crystals):
                 if eff.find('requirements') is None and eff.get('action') == 'Hit':
                     vals = eff.get('value').split()
                     if len(vals) >= 4:
-                        nano['low_dmg'] = abs(int(vals[0]))
-                        nano['high_dmg'] = abs(int(vals[2]))
-                        nano['ac'] = vals[3]
+                        nuke['low_dmg'] = abs(int(vals[0]))
+                        nuke['high_dmg'] = abs(int(vals[2]))
+                        nuke['ac'] = vals[3]
 
                     if eff.get('hits') is not None:
                         hits = int(eff.get('hits'))
-                        nano['dot_hits'] = hits
+                        nuke['dot_hits'] = hits
                         if hits > 1:
-                            nano['nt_dot'] = True
+                            nuke['nt_dot'] = True
 
                     if eff.get('delay') is not None:
-                        nano['dot_delay'] = int(eff.get('delay'))
+                        nuke['dot_delay'] = int(eff.get('delay'))
 
-        if nano.get('low_dmg') is None: # not a nuke, skip it
-            nt_nano = False
+        if nuke.get('low_dmg') is None: # not a nuke, skip it
+            nt_nuke = False
             continue
 
         skillmaps = item.findall('skillmap')
         for sm in skillmaps:
             if sm.get('type') == 'defense':
-                nano['nr_pct'] = int(sm.find('skill').get('percentage'))
+                nuke['nr_pct'] = int(sm.find('skill').get('percentage'))
 
         other = item.find('other')
         if other is not None:
             for attrib in other:
                 if attrib.get('key') == 'Attack time cap':
-                    nano['atk_cap'] = int(attrib.get('value'))
+                    nuke['atk_cap'] = int(attrib.get('value'))
                 if attrib.get('key') == '643': # School cooldown
-                    nano['strain_cd'] = int(attrib.get('value'))
+                    nuke['strain_cd'] = int(attrib.get('value'))
 
-        if nt_nano:
-            nanos[aoid] = nano
+        if nt_nuke:
+            nukes[aoid] = nuke
 
-    return nanos
+    return nukes
 
 def parse_pocketbosses(pbcsv):
     pocketbosses = {}
@@ -674,7 +674,7 @@ if __name__ == '__main__':
     else:
         remove_old(args.output)
         implants, clusters, crystals, weapons, symbiants = parse_xml(args.items)
-        nt_nukes = parse_nanos(args.nanos, crystals)
+        nt_nukes = parse_nukes(args.nanos, crystals)
         bosses = parse_pocketbosses(CSV_FILE)
         write_json(clusters, implants, nt_nukes, weapons, symbiants, bosses, args.output)
 
