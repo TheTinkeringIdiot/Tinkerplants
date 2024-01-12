@@ -27,9 +27,42 @@ def update_stats(request):
             try: profession = int(data.get('profession'))
             except: profession = 0
             if profession is not None and 0 <= profession <= 15: request.session['stats']['profession'] = profession
+
+            try: level = int(data.get('level'))
+            except: level = 1
+            if level is not None and 1 <= level <= 220: request.session['stats']['level'] = level
+
+            try: spec = int(data.get('specialization'))
+            except: spec = 0
+            if spec is not None and 0 <= spec <= 8: request.session['stats']['specialization'] = spec
+
             try: subscription = int(data.get('subscription'))
             except: subscription = 0
             if subscription is not None and 0 <= subscription <= 128: request.session['stats']['subscription'] = subscription
+
+            try: mm = int(data.get('mm'))
+            except: mm = 0
+            if mm is not None and 0 <= mm : request.session['stats']['mm'] = mm
+
+            try: bm = int(data.get('bm'))
+            except: bm = 0
+            if bm is not None and 0 <= bm : request.session['stats']['bm'] = bm
+
+            try: mc = int(data.get('mc'))
+            except: mc = 0
+            if mc is not None and 0 <= mc : request.session['stats']['mc'] = mc
+
+            try: ts = int(data.get('ts'))
+            except: ts = 0
+            if ts is not None and 0 <= ts : request.session['stats']['ts'] = ts
+
+            try: pm = int(data.get('pm'))
+            except: pm = 0
+            if pm is not None and 0 <= pm : request.session['stats']['pm'] = pm
+
+            try: si = int(data.get('si'))
+            except: si = 0
+            if si is not None and 0 <= si : request.session['stats']['si'] = si
 
             prof = request.session['stats']['profession']
             sub = request.session['stats']['subscription']
@@ -51,7 +84,7 @@ def update_stats(request):
 
                 retlist.append(nano)
 
-            return JsonResponse({'success': True, 'message': '', 'data' : retlist})
+            return JsonResponse({'success': True, 'message': '', 'stats' : request.session['stats'], 'nanos' : retlist})
             
         except Exception as e:
             #if DEBUG:
