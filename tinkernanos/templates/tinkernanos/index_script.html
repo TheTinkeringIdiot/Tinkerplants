@@ -1,27 +1,48 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        $('#nuke-table').DataTable({
-            order: [[ 14, 'desc' ]],
-            pageLength: 25
+        $('#nano-table').DataTable({
+            columns: [
+                {
+                    className: 'details-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                },
+                {data: 'name'},
+                {data: 'ql'},
+                {data: 'spec'},
+                {data: 'level'},
+                {data: 'expansion'},
+                {data: 'mm'},
+                {data: 'bm'},
+                {data: 'mc'},
+                {data: 'ts'},
+                {data: 'pm'},
+                {data: 'si'}
+            ],
+            order: [[ 2, 'desc' ]],
+            paging: false,
+            info: false,
+            ordering: false
         })
     })
 
     window.addEventListener('load', function () {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
-        fetch('update_display', {
-            method: 'post',
-            body: JSON.stringify({}),
-            headers: {
-                'Accept' : 'application/json',
-                'Content-Type' : 'application/json',
-                'X-CSRFToken': csrftoken
-            }
-        }).then(response => response.json())
-        .then(data => {
-            display_stats(data)
-            update_stats()
-        })
+        // fetch('update_display', {
+        //     method: 'post',
+        //     body: JSON.stringify({}),
+        //     headers: {
+        //         'Accept' : 'application/json',
+        //         'Content-Type' : 'application/json',
+        //         'X-CSRFToken': csrftoken
+        //     }
+        // }).then(response => response.json())
+        // .then(data => {
+        //     display_stats(data)
+        //     update_stats()
+        // })
     })
 
     var selectElements = Array.from(document.getElementsByTagName('select'))
@@ -34,55 +55,22 @@
         elem.addEventListener('change', update_stats);
     })
 
+    var selectedElements = Array.from(document.getElementsByTagName('tr'))
+    selectElements.forEach(function(elem) {
+        elem.addEventListener('click', show_details);
+    })
+
     function update_stats(evt) {
-        breed = document.getElementById('breed').value
-        level = document.getElementById('level').value
-        mc = document.getElementById('mc').value
-        nano_init = document.getElementById('nano_init').value
-        max_nano = document.getElementById('max_nano').value
-        aggdef = document.getElementById('aggdef').value
-        spec = document.getElementById('spec').value
-        deck = document.getElementById('deck').value
-        he = document.getElementById('he').value
-        crunchcom = document.getElementById('crunchcom').value
-        con = document.getElementById('CoN').value
-        end = document.getElementById('END').value
-        ns = document.getElementById('NS').value
-        am = document.getElementById('AM').value
-        nano_dmg = document.getElementById('nano_dmg').value
-        cost_pct = document.getElementById('cost_pct').value
-        body_dev = document.getElementById('body_dev').value
-        psychic = document.getElementById('psychic').value
-        nano_delta = document.getElementById('nano_delta').value
-        target_ac = document.getElementById('target-ac').value
-        dmg_type = document.getElementById('dmg-type').value
+        profession = document.getElementById('profession').value
+        subscription = document.getElementById('subscription').value
 
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
         
         fetch('update_stats', {
             method: 'post',
             body: JSON.stringify({
-                'breed' : breed, 
-                'level' : level,
-                'mc' : mc,
-                'nano_init' : nano_init,
-                'max_nano' : max_nano,
-                'aggdef' : aggdef,
-                'spec' : spec,
-                'deck' : deck,
-                'he' : he,
-                'crunchcom' : crunchcom,
-                'con' : con,
-                'end' : end,
-                'ns' : ns,
-                'am' : am,
-                'nano_dmg' : nano_dmg,
-                'cost_pct' : cost_pct,
-                'body_dev' : body_dev,
-                'psychic' : psychic,
-                'nano_delta' : nano_delta,
-                'target_ac' : target_ac,
-                'dmg_type' : dmg_type
+                'profession' : profession, 
+                'subscription' : subscription,
             }),
             headers: {
                 'Accept' : 'application/json',
@@ -91,31 +79,11 @@
             }
         }).then(response => response.json())
         .then(data => {
-            update_data(data)
+            if(data.success) {
+                update_data(data)
+            }
+            
         })
-    }
-
-    function display_stats(data) {
-        stats = data['stats']
-
-        document.getElementById('breed').value = stats['breed']
-        document.getElementById('level').value = stats['level']
-        document.getElementById('mc').value = stats['mc']
-        document.getElementById('nano_init').value = stats['nano_init']
-        document.getElementById('max_nano').value = stats['max_nano']
-        document.getElementById('aggdef').value = stats['aggdef']
-        document.getElementById('spec').value = stats['spec']
-        document.getElementById('deck').value = stats['deck']
-        document.getElementById('he').value = stats['he']
-        document.getElementById('crunchcom').value = stats['crunchcom']
-        document.getElementById('CoN').value = stats['CoN']
-        document.getElementById('END').value = stats['END']
-        document.getElementById('NS').value = stats['NS']
-        document.getElementById('AM').value = stats['AM']
-        document.getElementById('nano_dmg').value = stats['nano_dmg']
-        document.getElementById('body_dev').value = stats['body_dev']
-        document.getElementById('psychic').value = stats['psychic']
-        document.getElementById('nano_delta').value = stats['nano_delta']
     }
 
     function clear_table(tbl) {
@@ -124,43 +92,216 @@
         }
     }
 
+    function show_details(evt) {
+        console.log(evt)
+    }
+
     function update_data(data) {
-        if (data.next) {
-            document.location = data.next;
-        }
 
-        stats = JSON.parse(data['stats'])
+        // stats = JSON.parse(data['stats'])
 
-        document.getElementById('breed').value = stats['breed']
-        document.getElementById('level').value = stats['level']
-        document.getElementById('mc').value = stats['mc']
-        document.getElementById('nano_init').value = stats['nano_init']
-        document.getElementById('max_nano').value = stats['max_nano']
-        document.getElementById('aggdef').value = stats['aggdef']
-        document.getElementById('spec').value = stats['spec']
-        document.getElementById('deck').value = stats['deck']
-        document.getElementById('he').value = stats['he']
-        document.getElementById('crunchcom').value = stats['crunchcom']
-        document.getElementById('CoN').value = stats['CoN']
-        document.getElementById('END').value = stats['END']
-        document.getElementById('NS').value = stats['NS']
-        document.getElementById('AM').value = stats['AM']
-        document.getElementById('nano_dmg').value = stats['nano_dmg']
-        document.getElementById('body_dev').value = stats['body_dev']
-        document.getElementById('psychic').value = stats['psychic']
-        document.getElementById('nano_delta').value = stats['nano_delta']
+        // document.getElementById('breed').value = stats['breed']
+        // document.getElementById('level').value = stats['level']
+        // document.getElementById('mc').value = stats['mc']
+        // document.getElementById('nano_init').value = stats['nano_init']
+        // document.getElementById('max_nano').value = stats['max_nano']
+        // document.getElementById('aggdef').value = stats['aggdef']
+        // document.getElementById('spec').value = stats['spec']
+        // document.getElementById('deck').value = stats['deck']
+        // document.getElementById('he').value = stats['he']
+        // document.getElementById('crunchcom').value = stats['crunchcom']
+        // document.getElementById('CoN').value = stats['CoN']
+        // document.getElementById('END').value = stats['END']
+        // document.getElementById('NS').value = stats['NS']
+        // document.getElementById('AM').value = stats['AM']
+        // document.getElementById('nano_dmg').value = stats['nano_dmg']
+        // document.getElementById('body_dev').value = stats['body_dev']
+        // document.getElementById('psychic').value = stats['psychic']
+        // document.getElementById('nano_delta').value = stats['nano_delta']
         
-        nukes = JSON.parse(data.nukes)
+        nanos = data.data
 
-        nuke_table = $('#nuke-table').DataTable()
-        nuke_table.rows().remove()
+        region = document.getElementById('nano-region')
+        remove_children(region)
 
-        nukes.forEach(function(nuke) {
-            nuke_table.row.add(nuke).draw()
+        last_strain = ''
+        table = null
+        nanos.forEach(function(nano) {
+            if(nano.strain_name != last_strain) {
+                spacer = create_spacer()
+                region.appendChild(spacer)
+
+                header = table_header(nano.strain_name)
+                region.appendChild(header)
+
+                table = create_table()
+                region.appendChild(table)
+                last_strain = nano.strain_name
+            }
+            tbody = table.getElementsByTagName('tbody')[0]
+
+            row = create_row(nano)
+            tbody.appendChild(row)
         })
 
         
     }
+
+    function create_row(nano) {
+        nano_width = '60px'
+
+        tr = document.createElement('tr')
+        tr.setAttribute('data-toggle', 'collapse')
+        tr.setAttribute('data-target', '.' + nano.aoid)
+
+        td = document.createElement('td')
+        td.style.width = '50px'
+        td.innerHTML = '<img src=https://icons.aogalaxy.com/' + nano.icon + '.png>'
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = '450px'
+        td.innerHTML = '<a href=https://auno.org/ao/db.php?id=' + nano.aoid + '>' + nano.name + '</a>'
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.innerHTML = nano.ql
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = '360px'
+        td.innerHTML = nano.location
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        if(nano.spec === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.spec }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        if(nano.level === 1) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.level }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        if(nano.expansion === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.expansion }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.mm === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.mm }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.bm === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.bm }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.mc === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.mc }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.ts === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.ts }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.pm === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.pm }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.si === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.si }
+        tr.appendChild(td)
+
+        return tr
+    }
+
+    function create_table() {
+        table = document.createElement('table')
+        table.classList.add('table')
+        table.classList.add('table-striped')
+        thead = document.createElement('thead')
+        tbody = document.createElement('tbody')
+
+        table.appendChild(thead)
+        table.appendChild(tbody)
+
+        th = document.createElement('th')
+        th.text = ''
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'Name'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'QL'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'Location'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'Spec'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'Level'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'Xpac'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'MM'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'BM'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'MC'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'TS'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'PM'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'SI'
+        thead.appendChild(th)
+
+        return table
+    }
+
+    function table_header(label) {
+        div = document.createElement('div')
+        div.classList.add('row')
+        div.innerHTML = '<p class="fw-bold">' + label + '</p>'
+        
+        return div
+    }
+
+    function create_spacer() {
+        div = document.createElement('div')
+        div.classList.add('row')
+        div.innerHTML = '&nbsp;'
+
+        return div
+    }
+
+    function remove_children(parent) {
+        while(parent.lastChild) {
+            parent.removeChild(parent.lastChild)
+        }
+    }
+
 
     
 

@@ -22,4 +22,27 @@ class Nano(models.Model):
     pm = models.IntegerField(default=0)
     si = models.IntegerField(default=0)
 
+    def json(self):
+        return {
+            'aoid' : self.aoid,
+            'name' : self.name,
+            'icon' : self.icon,
+            'school' : self.school,
+            'strain' : self.strain,
+            'strain_name' : self.strain_name,
+            'profession' : self.profession,
+            'location' : self.location,
+            'ql' : self.ql,
+            'spec' : self.spec,
+            'level' : self.level,
+            'expansion' : self.expansion,
+            'uploaded_by' : self.uploaded_by,
+            'mm' : self.mm,
+            'bm' : self.bm,
+            'mc' : self.mc,
+            'ts' : self.ts,
+            'pm' : self.pm,
+            'si' : self.si
+        }
+
 

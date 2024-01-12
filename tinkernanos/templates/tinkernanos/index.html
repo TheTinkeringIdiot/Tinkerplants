@@ -1,4 +1,4 @@
-{% extends "tinkernukes/base.html" %}
+{% extends "tinkernanos/base.html" %}
 
 {% block content %}
 
@@ -6,33 +6,36 @@
     {% csrf_token %}
     <div class="row">
         <div class="col col-md-3 col-lg-2">
-            <span class="fs-4">Tinkernukes</span>
+            <span class="fs-4">Tinkernanos</span>
             <hr>
-            <div class="accordion" id="nuke-accordion">
+            <div class="accordion" id="nano-accordion">
                 <div class="accordion-item">
-                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#stats">Character</button>
-                    <div id="stats" class="accordion-collapse collapse" data-bs-parent="#nuke-accordion">
+                    <button type="button" class="accordion-button bg-dark" data-bs-toggle="collapse" data-bs-target="#stats">Character</button>
+                    <div id="stats" class="accordion-collapse" data-bs-parent="#nano-accordion">
                         <ul class="nav nav-pills flex-column mb-auto">
-                            <li class="nav-item">
-                                <span class="fw-bold">Breed:</span>
-                                <select class="form-select" id="breed">
-                                    <option selected value="0">Solitus</option>
-                                    <option value="1">Opifex</option>
-                                    <option value="2">Nanomage</option>
-                                    <option value="3">Atrox</option>
+                            <li class="navitem">
+                                <span class="fw-bold">Profession:</span>
+                                <select class="form-select" id="profession">
+                                    <option selected value="0">-- Choose --</option>
+                                    <option value="6">Adventurer</option>
+                                    <option value="5">Agent</option>
+                                    <option value="8">Bureaucrat</option>
+                                    <option value="10">Doctor</option>
+                                    <option value="9">Enforcer</option>
+                                    <option value="3">Engineer</option>
+                                    <option value="4">Fixer</option>
+                                    <option value="14">Keeper</option>
+                                    <option value="2">Martial Artist</option>
+                                    <option value="12">Meta-Physicist</option>
+                                    <option value="11">Nano-Technician</option>
+                                    <option value="15">Shade</option>
+                                    <option value="1">Soldier</option>
+                                    <option value="7">Trader</option>
                                 </select>
                             </li>
                             <li class="nav-item">
                                 <span class="fw-bold">Level:</span>
                                 <input type="number" id="level" min=1 max=220 class="form-control" value="1">
-                            </li>
-                            <li class="nav-item">
-                                <span class="fw-bold">Matter&nbsp;Creation:</span>
-                                <input type="number" id="mc" min=1 class="form-control" value="1">
-                            </li>
-                            <li>
-                                <span class="fw-bold">Max&nbsp;Nano:</span>
-                                <input type="number" id="max_nano" min=1 class="form-control" value="1">
                             </li>
                             <li>
                                 <span class="fw-bold">Specialization:</span>
@@ -44,23 +47,44 @@
                                     <option value="8">4</option>
                                 </select>
                             </li>
-                            <li>
-                                <span class="fw-bold">Cyberdeck:</span>
-                                <select class="form-select" id="deck">
-                                    <option selected value="0">None</option>
-                                    <option value="0">Worn Cyberdeck</option>
-                                    <option value="1">Basic Cyberdeck</option>
-                                    <option value="2">Augmented Cyberdeck</option>
-                                    <option value="4">Jobe-chipped Cyberdeck</option>
-                                    <option value="8">Izgimmer Modified Cyberdeck</option>
+                            <li class="navitem">
+                                <span class="fw-bold">Subscription:</span>
+                                <select class="form-select" id="subscription">
+                                    <option selected value="0">Free (Froob)</option>
+                                    <option value="2">Shadowlands (Sloob)</option>
+                                    <option value="128">Paid</option>
                                 </select>
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Matter&nbsp;Metamorphosis (MM):</span>
+                                <input type="number" id="mm" min=1 class="form-control" value="1">
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Biological&nbsp;Metamorphosis (BM):</span>
+                                <input type="number" id="bm" min=1 class="form-control" value="1">
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Matter&nbsp;Creation (MC):</span>
+                                <input type="number" id="mc" min=1 class="form-control" value="1">
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Time&nbsp;and&nbsp;Space (TS):</span>
+                                <input type="number" id="ts" min=1 class="form-control" value="1">
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Psychological&nbsp;Modification (PM):</span>
+                                <input type="number" id="pm" min=1 class="form-control" value="1">
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Sensory&nbsp;Improvement (SI):</span>
+                                <input type="number" id="si" min=1 class="form-control" value="1">
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#cast-speed">Casting Speed</button>
-                    <div id="cast-speed" class="accordion-collapse collapse" data-bs-parent="#nuke-accordion">
+                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#cast-speed">Buffs</button>
+                    <div id="cast-speed" class="accordion-collapse" data-bs-parent="#nano-accordion">
                         <li>
                             <span class="fw-bold">Nano&nbsp;Init:</span>
                             <input type="number" id="nano_init" min=1 class="form-control" value="1">
@@ -74,146 +98,6 @@
                         </li>
                     </div>
                 </div>
-                <div class="accordion-item">
-                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#nano-cost">Nano Cost</button>
-                    <div id="nano-cost" class="accordion-collapse collapse" data-bs-parent="#nuke-accordion">
-                        <li>
-                            <span class="fw-bold">Nano Cost Buff:</span>
-                            <select class="form-select" id="crunchcom">
-                                <option selected value="0">None</option>
-                                <option value="1">CrunchCom Code Sieve</option>
-                                <option value="2">Run-Time Recompiler</option>
-                                <option value="3">CrunchCom Nano Compressor</option>
-                                <option value="4">On-The-Fly Compression</option>
-                                <option value="5">CrunchCom Nano Compressor Pro</option>
-                                <option value="6">Jobe Nano Libraries</option>
-                                <option value="7">Izgimmer's Obfuscated Recompiler</option>
-                            </select>
-                        </li>
-                        <li>
-                            <span class="fw-bold">Nano Cost Reduction %:</span>
-                            <input type="number" id="cost_pct" min=0 class="form-control" value="0">
-                        </li>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#nano-regen">Nano Regeneration</button>
-                    <div id="nano-regen" class="accordion-collapse collapse" data-bs-parent="#nuke-accordion">
-                        <li>
-                            <span class="fw-bold">Body Dev:</span>
-                            <input type="number" id="body_dev" min=1 class="form-control" value="1">
-                        </li>
-                        <li>
-                            <span class="fw-bold">Psychic:</span>
-                            <input type="number" id="psychic" min=1 class="form-control" value="1">
-                        </li>
-                        <li>
-                            <span class="fw-bold">Nano Delta:</span>
-                            <input type="number" id="nano_delta" min=0 class="form-control" value="0">
-                        </li>
-                        <li>
-                            <span class="fw-bold">Humidity Extractor:</span>
-                            <select class="form-select" id="he">
-                                <option selected value="0">None</option>
-                                <option value="1">Rudimentary Humidity Extractor</option>
-                                <option value="2">Basic Humidity Extractor</option>
-                                <option value="3">Humidity Extractor</option>
-                                <option value="4">Efficient Humidity Extractor</option>
-                                <option value="5">Superior Humidity Extractor</option>
-                                <option value="6">Boundless Humidity Extractor</option>
-                                <option value="7">Personal Notum Harvester</option>
-                            </select>
-                        </li>
-                        <li>
-                            <span class="fw-bold">Channeling of Notum:</span>
-                            <select class="form-select" id="CoN">
-                                <option selected value="0">None</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                            </select>
-                        </li>
-                        <li>
-                            <span class="fw-bold">Notum Siphon:</span>
-                            <select class="form-select" id="NS">
-                                <option selected value="0">None</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                            </select>
-                        </li>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#nano-dmg">Nano Damage</button>
-                    <div id="nano-dmg" class="accordion-collapse collapse" data-bs-parent="#nuke-accordion">
-                        <li>
-                            <span class="fw-bold">Enhanced Nano Damage:</span>
-                            <select class="form-select" id="END">
-                                <option selected value="0">None</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                            </select>
-                        </li>
-                        <li>
-                            <span class="fw-bold">Ancient Matrix:</span>
-                            <select class="form-select" id="AM">
-                                <option selected value="0">None</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                            </select>
-                        </li>
-                        <li>
-                            <span class="fw-bold">Nano Dmg Efficiency %:</span>
-                            <input type="number" id="nano_dmg" min=0 class="form-control" value="0">
-                        </li>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <button type="button" class="accordion-button collapsed bg-dark" data-bs-toggle="collapse" data-bs-target="#target">Target</button>
-                    <div id="target" class="accordion-collapse collapse" data-bs-parent="#nuke-accordion">
-                        <li>
-                            <span class="fw-bold">Target AC:</span>
-                            <input type="number" id="target-ac" min=0 class="form-control" value="0">
-                        </li>
-                        <li>
-                            <span class="fw-bold">Damage Type:</span>
-                            <select class="form-select" id="dmg-type">
-                                <option selected value="0">All</option>
-                                <option value="1">Chemical</option>
-                                <option value="2">Cold</option>
-                                <option value="3">Energy</option>
-                                <option value="4">Fire</option>
-                                <option value="5">Melee</option>
-                                <option value="6">Poison</option>
-                                <option value="7">Projectile</option>
-                                <option value="8">Radiation</option>
-                            </select>
-                        </li>
-                        
-                    </div>
-                </div>
-                
             </div>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li>&nbsp;</li>
@@ -223,36 +107,22 @@
             </ul>
         </div>
         <div class="col" style="width: 85%;">
-            <table id="nuke-table" class="table table-sm table-striped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>MC</th>
-                        <th>NR%</th>
-                        <th>AC</th>
-                        <th>QL</th>
-                        <th>Deck</th>
-                        <th>Level</th>
-                        <th>Spec</th>
-                        <th>Cost</th>
-                        <th>Atk/Rch</th>
-                        <th>Min</th>
-                        <th>Avg.</th>
-                        <th>Max</th>
-                        <th>Min DPS</th>
-                        <th>Avg. DPS</th>
-                        <th>Max DPS</th>
-                        <th>NPS</th>
-                        <th>OON</th>
-                    </tr>
-                </thead>
-                <tbody id="nukes">
+            <div class="container-fluid" id="nano-region">
 
-                </tbody>
-            </table>
+            </div>
         </div>
     </div>
 </div>
-{% include 'tinkernukes/modals.html' %}
-{% include 'tinkernukes/index_script.html' %}
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="flyover" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="flyover-label">Offcanvas right</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="flyover-body">
+
+    </div>
+</div>
+{% include 'tinkernanos/modals.html' %}
+{% include 'tinkernanos/index_script.html' %}
 {% endblock content %}

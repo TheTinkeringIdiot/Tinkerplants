@@ -1,4 +1,12 @@
 
+SHORT_EXPANSIONS = {
+    0 : '',
+    2 : 'SL',
+    8 : 'AI',
+    32 : 'LE',
+    128 : 'LoX'
+}
+
 def initial_nanos():
     return {
         'profession' : 0,
