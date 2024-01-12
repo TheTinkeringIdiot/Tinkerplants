@@ -699,6 +699,13 @@ def parse_nanos(in_name, crystal_qls, crystal_ids, csv_nanos):
                 elif attrib == 'Level':
                     nano['level_req'] = int(req.get('value'))
 
+                elif attrib == 'Specialization':
+                    if 'Grove Custodian' in nano['name']:
+                        nano[attrib] = 4
+                    else:
+                        nano[attrib] = int(req.get('value'))
+
+
                 else:
                     nano[attrib] = int(req.get('value'))
                 
