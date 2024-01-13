@@ -68,7 +68,7 @@ def update_stats(request):
             sub = request.session['stats']['subscription']
 
             if sub <= 0:
-                class_nanos = Nano.objects.filter(profession=prof, expansion__lte=sub, level__lte=200, spec__lte=0).all()
+                class_nanos = Nano.objects.filter(profession=prof, expansion__lte=sub, level__lte=200).all()
             else:
                 class_nanos = Nano.objects.filter(profession=prof, expansion__lte=sub).all()
 
