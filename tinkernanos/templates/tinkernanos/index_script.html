@@ -8,6 +8,79 @@
         8 : 4
     }
 
+    let wrangles = document.querySelectorAll('input[type="checkbox"][id^="wrangle-"]');
+    wrangle_amt = 0
+
+    for (let i = 0; i < wrangles.length; i++) {
+        wrangles[i].addEventListener('change', function(evt) {
+            was_checked = this.checked
+            clear_wrangles()
+            if (was_checked) {
+                this.checked = true
+                update_buffs(0 - wrangle_amt) //undo the last wrangle
+                wrangle_amt = 0
+                if(this.id === 'wrangle-131') { wrangle_amt += 131 }
+                else if (this.id === 'wrangle-132') { wrangle_amt += 132 }
+                else if (this.id === 'wrangle-153') { wrangle_amt += 153 }
+                update_buffs(wrangle_amt)
+            }
+            else {
+                this.checked = false
+                update_buffs(0 - wrangle_amt) //undo the last wrangle
+                wrangle_amt = 0
+            }
+        })
+    }
+
+    function clear_wrangles() {
+        document.getElementById('wrangle-131').checked = false
+        document.getElementById('wrangle-132').checked = false
+        document.getElementById('wrangle-153').checked = false
+    }
+
+    let mochams = document.querySelectorAll('input[type="checkbox"][id^="mocham-"]');
+    mocham_amt = 0
+
+    for (let i = 0; i < mochams.length; i++) {
+        mochams[i].addEventListener('change', function(evt) {
+            was_checked = this.checked
+            clear_mochams()
+            if (was_checked) {
+                this.checked = true
+                update_buffs(0 - mocham_amt) //undo the last mocham
+                mocham_amt = 0
+                if(this.id === 'mocham-25') { mocham_amt += 25 }
+                else if (this.id === 'mocham-50') { mocham_amt += 50 }
+                else if (this.id === 'mocham-90') { mocham_amt += 90 }
+                else if (this.id === 'mocham-140') { mocham_amt += 140 }
+                update_buffs(mocham_amt)
+            }
+            else {
+                this.checked = false
+                update_buffs(0 - mocham_amt) //undo the last mocham
+                mocham_amt = 0
+            }
+        })
+    }
+
+    function clear_mochams() {
+        document.getElementById('mocham-25').checked = false
+        document.getElementById('mocham-50').checked = false
+        document.getElementById('mocham-90').checked = false
+        document.getElementById('mocham-140').checked = false
+    }
+
+    function update_buffs(amt) {
+        document.getElementById('mm').value = parseInt(document.getElementById('mm').value) + amt
+        document.getElementById('bm').value = parseInt(document.getElementById('bm').value) + amt
+        document.getElementById('mc').value = parseInt(document.getElementById('mc').value) + amt
+        document.getElementById('ts').value = parseInt(document.getElementById('ts').value) + amt
+        document.getElementById('pm').value = parseInt(document.getElementById('pm').value) + amt
+        document.getElementById('si').value = parseInt(document.getElementById('si').value) + amt
+
+        update_tables()
+    }
+
     var selectElements = Array.from(document.getElementsByTagName('select'))
     selectElements.forEach(function(elem) {
         elem.addEventListener('change', update_tables);
@@ -70,6 +143,18 @@
     }
 
     function get_stats() {
+
+        wrangle = 0
+        if (document.getElementById('wrangle-131').checked) { wrangle += 131 }
+        else if (document.getElementById('wrangle-132').checked) { wrangle += 132 }
+        else if (document.getElementById('wrangle-153').checked) { wrangle += 153 }
+
+        mocham = 0
+        if (document.getElementById('mocham-25').checked) { mocham += 25 }
+        else if (document.getElementById('mocham-50').checked) { mocham += 50 }
+        else if (document.getElementById('mocham-90').checked) { mocham += 90 }
+        else if (document.getElementById('mocham-140').checked) { mocham += 140 }
+
         level = parseInt(document.getElementById('level').value)
         specialization = parseInt(document.getElementById('specialization').value)
         mm = parseInt(document.getElementById('mm').value)
@@ -111,7 +196,7 @@
             nano.ts <= stats['ts'] &&
             nano.pm <= stats['pm'] &&
             nano.si <= stats['si']
-        ) { console.log(nano, stats); return true }
+        ) { return true }
         else { return false }
     }
 
