@@ -14,7 +14,7 @@ class Nano(models.Model):
     spec = models.IntegerField(default=0)
     level = models.IntegerField(default=1)
     expansion = models.IntegerField(default=0)
-    uploaded_by = models.JSONField(default=list)
+    fp_able = models.BooleanField(default=False)
     mm = models.IntegerField(default=0)
     bm = models.IntegerField(default=0)
     mc = models.IntegerField(default=0)
@@ -36,7 +36,7 @@ class Nano(models.Model):
             'spec' : self.spec,
             'level' : self.level,
             'expansion' : self.expansion,
-            'uploaded_by' : self.uploaded_by,
+            'fp_able' : self.fp_able,
             'mm' : self.mm,
             'bm' : self.bm,
             'mc' : self.mc,
