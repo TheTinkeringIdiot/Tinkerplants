@@ -40,6 +40,16 @@ new_weapons = []
 new_symbs = []
 new_bosses = []
 
+TITLE_LEVELS = {
+    '1' : 5,
+    '2' : 15,
+    '3' : 50,
+    '4' : 100,
+    '5' : 150,
+    '6' : 190,
+    '7' : 205
+}
+
 for name, vals in clusters.items():
     if not vals.get('normal'): # what the....skip it
         continue
@@ -247,9 +257,14 @@ for aoid, vals in nanos.items():
     nano.school = vals['school']
     nano.strain = vals['strain']
     nano.strain_name = vals['strain_name']
-    nano.profession = vals['profession']
     nano.ql = vals['ql']
-    nano.uploaded_by = vals['uploaded_by']
+
+    if vals.get('Profession') is not None:
+        nano.profession = vals['Profession']
+        nano.fp_able = False
+    elif vals.get('Visual profession') is not None:
+        nano.profession = vals['Visual profession']
+        nano.fp_able = True
 
     if vals.get('Specialization') is not None:
         nano.spec = vals['Specialization']
@@ -257,8 +272,10 @@ for aoid, vals in nanos.items():
     if vals.get('Expansion sets') is not None:
         nano.expansion = vals['Expansion sets']
 
-    if vals.get('level_req') is not None:
-        nano.level = vals['level_req']
+    if vals.get('Level') is not None:
+        nano.level = vals['Level']
+    elif vals.get('Title level') is not None:
+        nano.level = TITLE_LEVELS[vals['Title level']]
 
     if vals.get('location') is not None:
         nano.location = vals['location']
