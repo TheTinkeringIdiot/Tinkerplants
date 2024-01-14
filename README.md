@@ -6,6 +6,10 @@ A set of web-based utilities for the sci-fi MMORPG Anarchy Online.
 
 Implant design and planning, with full requirements to build and equip
 
+### Tinkernanos
+
+Profession-specific nano program list with skill-based filtering
+
 ### Tinkernukes
 
 Nanotechnician nuke table that suggests best available nukes for your setup

@@ -1,0 +1,34 @@
+{% load static %}
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="light dark">
+        <meta name="description" content="Tinkernanos is a player utility for sci-fi MMORPG Anarchy Online to help with understanding and choosing nano programs">
+        <meta name="keywords" content="anarchy online nano program help tool utility">
+        <title>TinkerNanos</title>
+        <link rel="shortcut icon" type="image/png" href="{% static 'image/nanos_favicon.ico' %}"/>
+        <link rel="stylesheet" href="{% static 'css/bootstrap-night.min.css' %}">
+        <!-- <script src="{% static 'js/bootstrap.min.js' %}"></script> -->
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    </head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-41ZK5KTPF7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-41ZK5KTPF7');
+</script>
+
+
+    <body>
+        {% block content %}
+        {% endblock content %}
+    </body>
+
+</html>

@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Nano(models.Model):
+class Nuke(models.Model):
     name = models.CharField(max_length=64)
     ql = models.IntegerField()
     mc = models.IntegerField(default=0)

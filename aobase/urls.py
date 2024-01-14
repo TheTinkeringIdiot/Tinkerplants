@@ -21,5 +21,6 @@ urlpatterns = [
     path('tinkernukes/', include('tinkernukes.urls')),
     path('tinkerfite/', include('tinkerfite.urls')),
     path('tinkerpocket/', include('tinkerpocket.urls')),
+    path('tinkernanos/', include('tinkernanos.urls')),
     path('', include('tinkertools.urls')),
 ]

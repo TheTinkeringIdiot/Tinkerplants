@@ -9,6 +9,7 @@ import re
 from tinkerplants.utils import *
 
 CSV_FILE = 'symbiants.csv'
+CSV_NANOS = 'nanos.csv'
 
 NANODELTA_JOBE_MOD = {'Shiny' : 5.25, 'Bright' : 4.0, 'Faded' : 2.75}
 
@@ -181,8 +182,18 @@ SYMBIANT_IDS = [219135, 235792, 235825, 235826, 235827, 235842, 235586, 235711, 
 235951, 235901, 235780, 235745, 235746, 236281, 236163, 236251, 236183, 235508, 236040, 235729, 236487, 235932, 235645, 236091, 235847, 235444, 235865, 235831, 235846, 
 235508, 235934, 235967]
 
-def write_json(clusters, implants, nanos, weapons, symbiants, bosses, out_name):
-    writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nanos' : nanos, 'weapons' : weapons, 'symbiants' : symbiants, 'bosses' : bosses}}
+NONUPLOAD_NANOS = ['26310', '30742', '31405', '31556', '32019', '82837', '85050', '85061', '85063', '85068', '85069', '85071', '85090', '85091', '85092', 
+                   '85093', '85094', '144617', '144620', '162357', '204199', '207284', '217672', '217674', '217676', '217678', '218166', '225281', '258222', 
+                   '258659', '260771', '266955', '266957', '266961', '266963', '266965', '266967', '266971', '266974', '267013', '267526', '267526', '270347', 
+                   '270354', '275020', '275679', '275680', '275692', '275697', '275700', '275815', '275822', '275823', '275826', '275833', '275835', '275837', 
+                   '275838', '275839', '275841', '275843', '275844', '275846', '275849', '275852', '275853', '275905', '285182', '285182', '285182', '295697', 
+                   '300505', '301609', '301610', '302107', '302108', '302860', '302864', '218166', '275692', '156284', '156285', '231023', '231012', '267533',
+                   '273059', '273061', '273062', '279354', '279361', '279368', '286993', '286995', '286997', '286999', '287001', '287002', '287005', '292504', 
+                   '293607', '293611', '293612', '293616', '293617', '293618', '293621', '293623', '293624', '293625', '293626', '295329', '295330', '302140', 
+                   '302144', '302148', '302154']
+
+def write_json(clusters, implants, nt_nukes, nanos, weapons, symbiants, bosses, out_name):
+    writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nt_nukes' : nt_nukes, 'nanos' : nanos, 'weapons' : weapons, 'symbiants' : symbiants, 'bosses' : bosses}}
 
     with open(out_name, 'w') as fd:
         fd.write(json.dumps(writeme))
@@ -195,6 +206,8 @@ def parse_xml(in_name):
     implants = {}
     clusters = {}
     crystals = {}
+    crystal_qls = {}
+    crystal_ids = {}
     weapons = {}
     symbiants = {}
 
@@ -387,8 +400,12 @@ def parse_xml(in_name):
                         symbiants[aoid]['effects'][attrib] = int(child.get('value'))
                     
 
-        elif item_type == 0 and ('Crystal' in name or 'Nano Cube' in name) and not 'Supercharged' in name: # Item is a nano crystal, grab the QL
+        elif item_type == 0 and ('NanoCrystal' in name or 'Nano Crystal' in name or 'Nano Cube' in name or 'Startup Crystal' in name) and not 'Supercharged' in name: # Item is a nano crystal, grab the QL
+            player_nano = False
+            
             ql = int(item.find('ql').text)
+            crystal = {}
+            crystal['ql'] = ql
 
             requires = item.find('requirements')
 
@@ -396,16 +413,25 @@ def parse_xml(in_name):
             #     breakpoint()
 
             if requires is not None:
+
                 for req in requires:
                     attrib = req.get('attribute')
                     value = req.get('value')
+                    crystal[attrib] = value
                     if attrib == 'Visual profession' or attrib == 'Profession':
-                        if value == '11':
-                            effects = item.find('effects')
-                            for eff in effects:
-                                if eff.get('action') == 'Upload':
-                                    val = eff.get('value')
-                                    crystals[val] = ql
+                        #This is a player nano
+                        player_nano = True
+
+            effects = item.find('effects')
+            if effects is not None:
+                for eff in effects:
+                    if eff.get('action') == 'Upload':
+                        val = eff.get('value')
+                        
+                        if player_nano:
+                            crystals[val] = crystal
+                        
+                        crystal_qls[val] = ql
 
         elif item.find('skillmap') is not None and icon != 0: # Item is a weapon
             # if int(item.get('aoid')) == 211404: breakpoint()
@@ -529,21 +555,21 @@ def parse_xml(in_name):
 
     print(symb_count)
                 
-    return implants, clusters, crystals, weapons, symbiants
+    return implants, clusters, crystal_qls, crystals, weapons, symbiants
 
-def parse_nanos(in_name, crystals):
+def parse_nukes(in_name, crystals):
     tree = ET.parse(in_name)
 
     root = tree.getroot()
 
-    nanos = {}
+    nukes = {}
 
     for item in root.findall('item'):
         aoid = item.get('aoid')
-        nano = {}
-        nano['name'] = item.find('name').text
+        nuke = {}
+        nuke['name'] = item.find('name').text
 
-        nt_nano = False
+        nt_nuke = False
 
         nanoclass = item.find('nanoclass')
         if nanoclass is None:
@@ -557,33 +583,36 @@ def parse_nanos(in_name, crystals):
                 attrib = req.get('attribute')
                 if attrib == 'Profession' or attrib == 'Visual profession':
                     if req.get('value') == '11':
-                        nt_nano = True
+                        nt_nuke = True
                         try:
-                            nano['ql'] = crystals[aoid]
+                            nuke['ql'] = crystals[aoid]
                         except:
-                            if 'Izgimmer\'s Cataclysm' in nano['name']:
-                                nano['ql'] = 219
-                            elif 'Garuk\'s Improved Viral Assault' in nano['name']:
-                                nano['ql'] = 215
+                            if aoid in NONUPLOAD_NANOS: # Nanos that nothing uploads
+                                nt_nuke = False
+                                continue
+                            # if 'Izgimmer\'s Cataclysm' in nuke['name']:
+                            #     nuke['ql'] = 220
+                            # elif 'Garuk\'s Improved Viral Assault' in nuke['name']:
+                            #     nuke['ql'] = 215
                             else:
                                 breakpoint()
 
                 elif attrib == 'Level':
-                    nano['level_req'] = int(req.get('value'))
+                    nuke['level_req'] = int(req.get('value'))
                 
                 elif attrib == 'Matter creation':
-                    nano['mc'] = int(req.get('value'))
+                    nuke['mc'] = int(req.get('value'))
 
                 elif attrib == 'Specialization':
-                    nano['spec'] = int(req.get('value'))
+                    nuke['spec'] = int(req.get('value'))
 
                 elif attrib == 'Cyberdeck':
-                    nano['deck'] = int(req.get('value'))
+                    nuke['deck'] = int(req.get('value'))
 
         times = item.find('times')
-        nano['attack'] = int(times.get('attack'))
-        nano['recharge'] = int(times.get('recharge'))
-        nano['cost'] = int(item.find('nanodata').get('nanocost'))
+        nuke['attack'] = int(times.get('attack'))
+        nuke['recharge'] = int(times.get('recharge'))
+        nuke['cost'] = int(item.find('nanodata').get('nanocost'))
 
         effects = item.find('effects')
         if effects is not None:
@@ -591,37 +620,124 @@ def parse_nanos(in_name, crystals):
                 if eff.find('requirements') is None and eff.get('action') == 'Hit':
                     vals = eff.get('value').split()
                     if len(vals) >= 4:
-                        nano['low_dmg'] = abs(int(vals[0]))
-                        nano['high_dmg'] = abs(int(vals[2]))
-                        nano['ac'] = vals[3]
+                        nuke['low_dmg'] = abs(int(vals[0]))
+                        nuke['high_dmg'] = abs(int(vals[2]))
+                        nuke['ac'] = vals[3]
 
                     if eff.get('hits') is not None:
                         hits = int(eff.get('hits'))
-                        nano['dot_hits'] = hits
+                        nuke['dot_hits'] = hits
                         if hits > 1:
-                            nano['nt_dot'] = True
+                            nuke['nt_dot'] = True
 
                     if eff.get('delay') is not None:
-                        nano['dot_delay'] = int(eff.get('delay'))
+                        nuke['dot_delay'] = int(eff.get('delay'))
 
-        if nano.get('low_dmg') is None: # not a nuke, skip it
-            nt_nano = False
+        if nuke.get('low_dmg') is None: # not a nuke, skip it
+            nt_nuke = False
             continue
 
         skillmaps = item.findall('skillmap')
         for sm in skillmaps:
             if sm.get('type') == 'defense':
-                nano['nr_pct'] = int(sm.find('skill').get('percentage'))
+                nuke['nr_pct'] = int(sm.find('skill').get('percentage'))
 
         other = item.find('other')
         if other is not None:
             for attrib in other:
                 if attrib.get('key') == 'Attack time cap':
-                    nano['atk_cap'] = int(attrib.get('value'))
+                    nuke['atk_cap'] = int(attrib.get('value'))
                 if attrib.get('key') == '643': # School cooldown
-                    nano['strain_cd'] = int(attrib.get('value'))
+                    nuke['strain_cd'] = int(attrib.get('value'))
 
-        if nt_nano:
+        if nt_nuke:
+            nukes[aoid] = nuke
+
+    return nukes
+
+def parse_nanos(in_name, crystals, csv_nanos):
+    tree = ET.parse(in_name)
+
+    root = tree.getroot()
+
+    nanos = {}
+
+    for item in root.findall('item'):
+        aoid = item.get('aoid')
+
+        if aoid in NONUPLOAD_NANOS: # Nanos that nothing uploads
+            continue
+
+        nano = {}
+        nano['name'] = item.find('name').text
+
+        player_nano = False
+
+        icon = item.find('icon')
+        if icon is not None:
+            nano['icon'] = icon.text
+        else:
+            continue
+
+        nanoclass = item.find('nanoclass')
+        if nanoclass is not None:
+            nano['school'] = nanoclass.get('school')
+            nano['strain'] = int(nanoclass.get('strain'))
+
+            
+
+        else:
+            continue
+
+        crystal = crystals.get(aoid)
+        if crystal is not None:
+            player_nano = True
+            nano = nano | crystal
+        
+            nano['location'] = csv_nanos[aoid]['location']
+            nano['strain_name'] = csv_nanos[aoid]['strain_name']
+
+            if 'Grove Custodian' in nano['name']: # fix stupid data
+                nano['Specialization'] = 4
+            elif 'The Incensed Subordinate' in nano['name']:
+                nano['Specialization'] = 2
+            elif 'Team Empowered Voice of Truth' in nano['name']:
+                nano['Specialization'] = 2
+
+        # requires = item.find('requirements')
+        # if requires is not None:
+        #     for req in requires:
+        #         attrib = req.get('attribute')
+        #         if attrib == 'Profession' or attrib == 'Visual profession':
+        #             player_nano = True
+        #             nano['profession'] = int(req.get('value'))
+        #             nano['location'] = csv_nanos[aoid]['location']
+        #             nano['strain_name'] = csv_nanos[aoid]['strain_name']
+
+        #             try:
+        #                 nano['ql'] = crystal_qls[aoid]
+        #             except:
+        #                 breakpoint()
+
+        #             try:
+        #                 nano['uploaded_by'] = crystal_ids[aoid]
+        #             except:
+        #                 breakpoint()
+
+        #         elif attrib == 'Level':
+        #             nano['level_req'] = int(req.get('value'))
+
+        #         elif attrib == 'Specialization':
+        #             if 'Grove Custodian' in nano['name']:
+        #                 nano[attrib] = 4
+        #             else:
+        #                 nano[attrib] = int(req.get('value'))
+
+
+        #         else:
+        #             nano[attrib] = int(req.get('value'))
+                
+        if player_nano:
             nanos[aoid] = nano
 
     return nanos
@@ -652,6 +768,22 @@ def parse_pocketbosses(pbcsv):
 
     return pocketbosses
 
+def parse_csv_nanos(nanocsv):
+    csv_nanos = {}
+
+    with open(nanocsv) as fp:
+
+        reader = csv.reader(fp, delimiter=',')
+        for line in reader:
+            nano_id = line[1]
+            nano = {}
+            nano['strain_name'] = line[6]
+            nano['location'] = line[10]
+
+            csv_nanos[nano_id] = nano
+
+    return csv_nanos
+
 def remove_old(out_name):
     if os.path.exists(out_name):
         os.remove(out_name)
@@ -673,9 +805,11 @@ if __name__ == '__main__':
 
     else:
         remove_old(args.output)
-        implants, clusters, crystals, weapons, symbiants = parse_xml(args.items)
-        nanos = parse_nanos(args.nanos, crystals)
+        implants, clusters, crystal_qls, crystals, weapons, symbiants = parse_xml(args.items)
+        nt_nukes = parse_nukes(args.nanos, crystal_qls)
+        csv_nanos = parse_csv_nanos(CSV_NANOS)
+        nanos = parse_nanos(args.nanos, crystals, csv_nanos)
         bosses = parse_pocketbosses(CSV_FILE)
-        write_json(clusters, implants, nanos, weapons, symbiants, bosses, args.output)
+        write_json(clusters, implants, nt_nukes, nanos, weapons, symbiants, bosses, args.output)
 
 
