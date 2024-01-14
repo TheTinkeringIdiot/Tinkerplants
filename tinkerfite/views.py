@@ -176,8 +176,8 @@ def update_stats(request):
             if add_dmg is not None and add_dmg >= 1: request.session['stats']['add_dmg'] = add_dmg
 
             try: target_ac = int(data.get('target_ac'))
-            except: target_ac = 1
-            if target_ac is not None and target_ac >= 1: request.session['stats']['target_ac'] = target_ac
+            except: target_ac = 0
+            if target_ac is not None and target_ac >= 0: request.session['stats']['target_ac'] = target_ac
 
             try: wrangle = int(data.get('wrangle'))
             except: wrangle = 0
