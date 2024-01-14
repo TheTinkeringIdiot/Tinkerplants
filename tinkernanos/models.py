@@ -7,7 +7,7 @@ class Nano(models.Model):
     icon = models.CharField(max_length=12)
     school = models.CharField(max_length=24)
     strain = models.IntegerField()
-    strain_name = models.CharField(max_length=32)
+    strain_name = models.CharField(max_length=64)
     profession = models.IntegerField(default=0)
     location = models.CharField(max_length=256)
     ql = models.IntegerField(default=1)
