@@ -207,6 +207,9 @@
         nanos = JSON.parse(sessionStorage.getItem('nanos'))
         stats = get_stats()
 
+        fp_only = document.getElementById('fp-only').checked
+        hide_unusable = document.getElementById('hide-unusable').checked
+
         last_strain = ''
         table = null
         nanos.forEach(function(nano) {
@@ -223,12 +226,28 @@
             }
             tbody = table.getElementsByTagName('tbody')[0]
 
-            row = create_row(nano)
-            if( !meet_reqs(nano, stats)) 
-            { 
-                row.style.opacity = 0.3
+            if ( fp_only ) {
+                if ( !nano.fp_able ) { return } //weird syntax for continue becuase JS
             }
-            tbody.appendChild(row)
+
+            row = create_row(nano)
+
+            if( !meet_reqs(nano, stats)) 
+            {
+                if ( !hide_unusable ) {
+                    row.style.opacity = 0.3
+                    tbody.appendChild(row)
+                } 
+            }
+            else {
+                if ( fp_only ) {
+                    console.log(nano)
+                    if ( nano.fp_able ) { tbody.appendChild(row) }
+                }
+                else {
+                    tbody.appendChild(row)
+                }
+            }
         })
     }
 
