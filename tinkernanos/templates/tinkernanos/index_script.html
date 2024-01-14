@@ -200,6 +200,14 @@
         else { return false }
     }
 
+    function create_collapse(title) {
+        div = document.createElement('div')
+        div.classList.add('collapse')
+        div.classList.add('show')
+        div.id = 's' + title
+        return div
+    }
+
     function update_tables() {
         region = document.getElementById('nano-region')
         remove_children(region)
@@ -217,11 +225,13 @@
                 spacer = create_spacer()
                 region.appendChild(spacer)
 
-                header = table_header(nano.strain_name)
+                header = table_header(nano.strain_name, nano.strain)
                 region.appendChild(header)
-
+                
+                collapse = create_collapse(nano.strain)
                 table = create_table()
-                region.appendChild(table)
+                collapse.appendChild(table)
+                region.appendChild(collapse)
                 last_strain = nano.strain_name
             }
             tbody = table.getElementsByTagName('tbody')[0]
@@ -382,12 +392,17 @@
         return table
     }
 
-    function table_header(label) {
-        div = document.createElement('div')
-        div.classList.add('row')
-        div.innerHTML = '<p class="fw-bold">' + label + '</p>'
+    function table_header(label, strain) {
+        a = document.createElement('button')
+        a.classList.add('btn')
+        a.setAttribute('type', 'button')
+        a.setAttribute('data-bs-toggle', 'collapse')
+        a.setAttribute('data-bs-target', '#s' + strain)
+        a.innerHTML = label
+        // div.classList.add('row')
+        // div.innerHTML = '<p class="fw-bold">' + label + '</p>'
         
-        return div
+        return a
     }
 
     function create_spacer() {
