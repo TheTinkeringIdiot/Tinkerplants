@@ -64,13 +64,13 @@ def update_stats(request):
             except: si = 0
             if si is not None and 0 <= si : request.session['stats']['si'] = si
 
-            prof = request.session['stats']['profession']
-            sub = request.session['stats']['subscription']
+            prof = int(request.session['stats']['profession'])
+            sub = int(request.session['stats']['subscription'])
 
             if sub <= 0:
-                class_nanos = Nano.objects.filter(profession=prof, expansion__lte=sub, level__lte=200).all()
+                class_nanos = Nano.objects.filter(profession__contains=prof, expansion__lte=sub, level__lte=200, nanodeck=False).all()
             else:
-                class_nanos = Nano.objects.filter(profession=prof, expansion__lte=sub).all()
+                class_nanos = Nano.objects.filter(profession__contains=prof, expansion__lte=sub).all()
 
             nanolist = [x.json() for x in class_nanos]
             nanolist = sorted(nanolist, key=lambda x: (x['strain_name'], -x['ql']))
