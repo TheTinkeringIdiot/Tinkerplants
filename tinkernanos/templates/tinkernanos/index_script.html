@@ -236,6 +236,8 @@
             }
             tbody = table.getElementsByTagName('tbody')[0]
 
+            if ( nano.location === 'No longer drops') { return }
+
             if ( fp_only ) {
                 if ( !nano.fp_able ) { return } //weird syntax for continue becuase JS
             }
