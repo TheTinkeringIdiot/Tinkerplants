@@ -316,8 +316,14 @@
 
         td = document.createElement('td')
         td.style.width = nano_width
-        if(nano.mc === 0) { td.innerHTML = '&nbsp;' }
-        else { td.innerHTML = nano.mc }
+        if(nano.pm === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.pm }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.si === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.si }
         tr.appendChild(td)
 
         td = document.createElement('td')
@@ -328,14 +334,8 @@
 
         td = document.createElement('td')
         td.style.width = nano_width
-        if(nano.pm === 0) { td.innerHTML = '&nbsp;' }
-        else { td.innerHTML = nano.pm }
-        tr.appendChild(td)
-
-        td = document.createElement('td')
-        td.style.width = nano_width
-        if(nano.si === 0) { td.innerHTML = '&nbsp;' }
-        else { td.innerHTML = nano.si }
+        if(nano.mc === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.mc }
         tr.appendChild(td)
 
         return tr
@@ -379,18 +379,18 @@
         th.innerHTML = 'BM'
         thead.appendChild(th)
         th = document.createElement('th')
-        th.innerHTML = 'MC'
-        thead.appendChild(th)
-        th = document.createElement('th')
-        th.innerHTML = 'TS'
-        thead.appendChild(th)
-        th = document.createElement('th')
         th.innerHTML = 'PM'
         thead.appendChild(th)
         th = document.createElement('th')
         th.innerHTML = 'SI'
         thead.appendChild(th)
-
+        th = document.createElement('th')
+        th.innerHTML = 'TS'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'MC'
+        thead.appendChild(th)
+        
         return table
     }
 
