@@ -272,6 +272,9 @@ for aoid, vals in nanos.items():
     if vals.get('Expansion sets') is not None:
         nano.expansion = vals['Expansion sets']
 
+    if vals.get('Cyberdeck') is not None:
+        nano.nanodeck = vals['Cyberdeck']
+
     if vals.get('Level') is not None:
         nano.level = vals['Level']
     elif vals.get('Title level') is not None:

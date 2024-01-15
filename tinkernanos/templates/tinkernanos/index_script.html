@@ -275,7 +275,12 @@
 
         td = document.createElement('td')
         td.style.width = '450px'
-        td.innerHTML = '<a href=https://auno.org/ao/db.php?id=' + nano.aoid + '>' + nano.name + '</a>'
+
+        a = document.createElement('a')
+        a.style.color = 'white'
+        a.setAttribute('href', 'https://auno.org/ao/db.php?id=' + nano.aoid)
+        a.text = nano.name
+        td.appendChild(a)
         tr.appendChild(td)
 
         td = document.createElement('td')

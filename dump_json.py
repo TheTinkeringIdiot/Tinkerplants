@@ -184,13 +184,19 @@ SYMBIANT_IDS = [219135, 235792, 235825, 235826, 235827, 235842, 235586, 235711, 
 
 NONUPLOAD_NANOS = ['26310', '30742', '31405', '31556', '32019', '82837', '85050', '85061', '85063', '85068', '85069', '85071', '85090', '85091', '85092', 
                    '85093', '85094', '144617', '144620', '162357', '204199', '207284', '217672', '217674', '217676', '217678', '218166', '225281', '258222', 
-                   '258659', '260771', '266955', '266957', '266961', '266963', '266965', '266967', '266971', '266974', '267013', '267526', '267526', '270347', 
-                   '270354', '275020', '275679', '275680', '275692', '275697', '275700', '275815', '275822', '275823', '275826', '275833', '275835', '275837', 
-                   '275838', '275839', '275841', '275843', '275844', '275846', '275849', '275852', '275853', '275905', '285182', '285182', '285182', '295697', 
-                   '300505', '301609', '301610', '302107', '302108', '302860', '302864', '218166', '275692', '156284', '156285', '231023', '231012', '267533',
-                   '273059', '273061', '273062', '279354', '279361', '279368', '286993', '286995', '286997', '286999', '287001', '287002', '287005', '292504', 
-                   '293607', '293611', '293612', '293616', '293617', '293618', '293621', '293623', '293624', '293625', '293626', '295329', '295330', '302140', 
-                   '302144', '302148', '302154']
+                   '266955', '266957', '266961', '266963', '266965', '266967', '266971', '266974', '267013', '267526', '267526', '270347', 
+                   '270354', '285182', '285182', '285182', '295697', '300505', '301609', '301610', '302107', '302108', '302860', '302864', '218166', 
+                   '156284', '156285', '231023', '231012', '267533', '273059', '273061', '273062', '279354', '279361', '279368', '286993', '286995', '286997', 
+                   '286999', '287001', '287002', '287005', '292504', '293607', '293611', '293612', '293616', '293617', '293618', '293621', '293623', '293624', 
+                   '293625', '293626', '295329', '295330', '302140', '302144', '302148', '302154', '267391', '267531', '269908']
+
+ALIEN_MATRIX = ['275817', '275822', '275824', '275701', '275830', '275815', '275679', '275837', '275698', '275849', '275852', '275692', '275839', '275841',
+                    '275844', '275846', '275821', '275823', '275826', '275829', '275833', '275835', '275680', '275838', '275700', '275853', '275697', '275843',
+                    '275905', '270714']
+
+MP_SUMMON_NANOS = ['263298', '260771', '275020']
+
+
 
 def write_json(clusters, implants, nt_nukes, nanos, weapons, symbiants, bosses, out_name):
     writeme = {'data' : {'clusters' : clusters, 'implants' : implants, 'nt_nukes' : nt_nukes, 'nanos' : nanos, 'weapons' : weapons, 'symbiants' : symbiants, 'bosses' : bosses}}
@@ -207,7 +213,6 @@ def parse_xml(in_name):
     clusters = {}
     crystals = {}
     crystal_qls = {}
-    crystal_ids = {}
     weapons = {}
     symbiants = {}
 
@@ -400,7 +405,7 @@ def parse_xml(in_name):
                         symbiants[aoid]['effects'][attrib] = int(child.get('value'))
                     
 
-        elif item_type == 0 and ('NanoCrystal' in name or 'Nano Crystal' in name or 'Nano Cube' in name or 'Startup Crystal' in name) and not 'Supercharged' in name: # Item is a nano crystal, grab the QL
+        elif item_type == 0 and ('NanoCrystal' in name or 'Nano Crystal' in name or 'Nano Cube' in name or 'Startup Crystal' in name or 'Business Card' in name) and not 'Supercharged' in name: # Item is a nano crystal, grab the QL
             player_nano = False
             
             ql = int(item.find('ql').text)
@@ -414,13 +419,10 @@ def parse_xml(in_name):
 
             if requires is not None:
 
-                for req in requires:
-                    attrib = req.get('attribute')
-                    value = req.get('value')
-                    crystal[attrib] = value
-                    if attrib == 'Visual profession' or attrib == 'Profession':
-                        #This is a player nano
-                        player_nano = True
+                reqs = parse_nano_requirements(item)
+                crystal = crystal | reqs
+                if reqs.get('Profession') is not None or reqs.get('Visual profession') is not None:
+                    player_nano = True
 
             effects = item.find('effects')
             if effects is not None:
@@ -590,12 +592,6 @@ def parse_nukes(in_name, crystals):
                             if aoid in NONUPLOAD_NANOS: # Nanos that nothing uploads
                                 nt_nuke = False
                                 continue
-                            # if 'Izgimmer\'s Cataclysm' in nuke['name']:
-                            #     nuke['ql'] = 220
-                            # elif 'Garuk\'s Improved Viral Assault' in nuke['name']:
-                            #     nuke['ql'] = 215
-                            else:
-                                breakpoint()
 
                 elif attrib == 'Level':
                     nuke['level_req'] = int(req.get('value'))
@@ -684,60 +680,45 @@ def parse_nanos(in_name, crystals, csv_nanos):
             nano['school'] = nanoclass.get('school')
             nano['strain'] = int(nanoclass.get('strain'))
 
-            
-
         else:
             continue
 
-        crystal = crystals.get(aoid)
-        if crystal is not None:
+        if aoid in ALIEN_MATRIX:
             player_nano = True
-            nano = nano | crystal
-        
-            nano['location'] = csv_nanos[aoid]['location']
-            nano['strain_name'] = csv_nanos[aoid]['strain_name']
+            nano['ql'] = 215
+            reqs = parse_nano_requirements(item)
 
-            if 'Grove Custodian' in nano['name']: # fix stupid data
-                nano['Specialization'] = 4
-            elif 'The Incensed Subordinate' in nano['name']:
-                nano['Specialization'] = 2
-            elif 'Team Empowered Voice of Truth' in nano['name']:
-                nano['Specialization'] = 2
+            nano = nano | reqs
 
-        # requires = item.find('requirements')
-        # if requires is not None:
-        #     for req in requires:
-        #         attrib = req.get('attribute')
-        #         if attrib == 'Profession' or attrib == 'Visual profession':
-        #             player_nano = True
-        #             nano['profession'] = int(req.get('value'))
-        #             nano['location'] = csv_nanos[aoid]['location']
-        #             nano['strain_name'] = csv_nanos[aoid]['strain_name']
+        elif aoid in MP_SUMMON_NANOS:
+            player_nano = True
+            if 'Mesmerizing' in nano['name']:
+                nano['ql'] = 125
+            elif 'Aggressive' in nano['name']:
+                nano['ql'] = 215
+            else:
+                nano['ql'] = 205
 
-        #             try:
-        #                 nano['ql'] = crystal_qls[aoid]
-        #             except:
-        #                 breakpoint()
+            reqs = parse_nano_requirements(item)
 
-        #             try:
-        #                 nano['uploaded_by'] = crystal_ids[aoid]
-        #             except:
-        #                 breakpoint()
+            nano = nano | reqs
 
-        #         elif attrib == 'Level':
-        #             nano['level_req'] = int(req.get('value'))
-
-        #         elif attrib == 'Specialization':
-        #             if 'Grove Custodian' in nano['name']:
-        #                 nano[attrib] = 4
-        #             else:
-        #                 nano[attrib] = int(req.get('value'))
-
-
-        #         else:
-        #             nano[attrib] = int(req.get('value'))
+        else:
+            crystal = crystals.get(aoid)
+            if crystal is not None:
+                player_nano = True
+                nano = nano | crystal
+            
+                if 'Grove Custodian' in nano['name']: # fix stupid data
+                    nano['Specialization'] = 4
+                elif 'The Incensed Subordinate' in nano['name']:
+                    nano['Specialization'] = 2
+                elif 'Team Empowered Voice of Truth' in nano['name']:
+                    nano['Specialization'] = 2
                 
         if player_nano:
+            nano['location'] = csv_nanos[aoid]['location']
+            nano['strain_name'] = csv_nanos[aoid]['strain_name']
             nanos[aoid] = nano
 
     return nanos
@@ -783,6 +764,32 @@ def parse_csv_nanos(nanocsv):
             csv_nanos[nano_id] = nano
 
     return csv_nanos
+
+def parse_nano_requirements(item):
+    reqs = {}
+
+    requires = item.find('requirements')
+
+    if requires is not None:
+
+        for req in requires:
+            attrib = req.get('attribute')
+            value = req.get('value')
+            
+            if attrib == 'Visual profession' or attrib == 'Profession':
+                if reqs.get(attrib) is None:
+                    reqs[attrib] = []
+                
+                reqs[attrib].append(int(value))
+                
+            elif attrib == 'Cyberdeck':
+                if int(value) == 64:
+                    reqs['Cyberdeck'] = True
+            else:
+                reqs[attrib] = value
+
+    return reqs
+            
 
 def remove_old(out_name):
     if os.path.exists(out_name):
