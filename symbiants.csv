@@ -225,6 +225,7 @@
 130;Right Hand;Extermination;Ignis Fatuus;Scheol Lower;Rock Bottom;Shadows and Demons;125;;;<a href=http://aomainframe.info/showitem.asp?AOID=235996>QL 130 Residing Right Hand Symbiant, Extermination Unit Aban</A>;
 140;Right Hand;Extermination;Ignis Fatuus;Scheol Lower;Rock Bottom;Shadows and Demons;125;;;<a href=http://aomainframe.info/showitem.asp?AOID=235997>QL 140 Running Right Hand Symbiant, Extermination Unit Aban</A>;
 160;Right Hand;Extermination;Ignis Fatuus;Scheol Lower;Rock Bottom;Shadows and Demons;125;;;<a href=http://aomainframe.info/showitem.asp?AOID=235998>QL 160 Working Right Hand Symbiant, Extermination Unit Aban</A>;
+160;Right Arm;Artillery;Ignis Fatuus;Scheol Lower;Rock Bottom;Shadows and Demons;125;;;<a href=http://aomainframe.info/showitem.asp?AOID=235453>QL 160 Working Right Arm Symbiant, Artillery Unit Aban</A>;
 140;Legs;Extermination;Ignis Fatuus;Scheol Lower;Rock Bottom;Shadows and Demons;125;;;<a href=http://aomainframe.info/showitem.asp?AOID=236015>QL 140 Running Thigh Symbiant, Extermination Unit Aban</A>;
 120;Eye;Infantry;Ignis Fatuus;Scheol Lower;Rock Bottom;Shadows and Demons;125;;;<a href=http://aomainframe.info/showitem.asp?AOID=235622>QL 120 Prevailing Ocular Symbiant, Infantry Unit Aban</A>;
 170;Right Hand;Extermination;Ignis Fatuus;Scheol Lower;Rock Bottom;Shadows and Demons;125;;;<a href=http://aomainframe.info/showitem.asp?AOID=235999>QL 170 Active Right Hand Symbiant, Extermination Unit Aban</A>;
@@ -489,6 +490,7 @@
 110;Feet;Infantry;The Dune Suzerain;Elysium Northwest;The Brink - Tinker Tower - Shell Beach;Coiling Eremite and Others (310x1260);90;;;<a href=http://aomainframe.info/showitem.asp?AOID=235823>QL 110 Operative Feet Symbiant, Infantry Unit Aban</A>;
 70;Legs;Extermination;The Elysian Soul Dredge;East Elysium;Linger Echo;Spirit Soul Dredge;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=236011>QL 70 Animated Thigh Symbiant, Extermination Unit Aban</A>;
 80;Legs;Extermination;The Elysian Soul Dredge;East Elysium;Linger Echo;Spirit Soul Dredge;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=236012>QL 80 Moving Thigh Symbiant, Extermination Unit Aban</A>;
+90;Legs;Extermination;The Elysian Soul Dredge;East Elysium;Linger Echo;Spirit Soul Dredge;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=236013>QL 90 Vibrating Thigh Symbiant, Extermination Unit Aban</A>;
 100;Legs;Extermination;The Elysian Soul Dredge;East Elysium;Linger Echo;Spirit Soul Dredge;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=236014>QL 100 Breathing Thigh Symbiant, Extermination Unit Aban</A>;
 70;Left Hand;Extermination;The Elysian Soul Dredge;East Elysium;Linger Echo;Spirit Soul Dredge;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=236029>QL 70 Animated Left Hand Symbiant, Extermination Unit Aban</A>;
 70;Right Arm;Artillery;The Elysian Soul Dredge;East Elysium;Linger Echo;Spirit Soul Dredge;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=235448>QL 70 Animated Right Arm Symbiant, Artillery Unit Aban</A>;
@@ -572,6 +574,7 @@
 140;Right Hand;Support;Tough;Scheol Lower;The Approach (South of Necropolis);Rigid Solid Robust Girders;125;;;<a href=http://aomainframe.info/showitem.asp?AOID=236229>QL 140 Running Right Hand Symbiant, Support Unit Aban</A>;
 80;Right Hand;Extermination;Ungulera;East Elysium;Fission Fissure;Named Hiathlin;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=235993>QL 80 Moving Right Hand Symbiant, Extermination Unit Aban</A>;
 110;Ear;Artillery;Ungulera;East Elysium;Fission Fissure;Named Hiathlin;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=235432>QL 110 Operative Ear Symbiant, Artillery Unit Aban</A>;
+110;Right Hand;Extermination;Ungulera;East Elysium;Fission Fissure;Named Hiathlin;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=235994>QL 110 Breathing Right Hand Symbiant, Extermination Unit Aban</A>;
 80;Legs;Artillery;Ungulera;East Elysium;Fission Fissure;Named Hiathlin;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=235568>QL 80 Moving Thigh Symbiant, Artillery Unit Aban</A>;
 90;Waist;Extermination;Ungulera;East Elysium;Fission Fissure;Named Hiathlin;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=235959>QL 90 Vibrating Waist Symbiant, Extermination Unit Aban</A>;
 90;Left Wrist;Extermination;Ungulera;East Elysium;Fission Fissure;Named Hiathlin;90;;;<a href=http://aomainframe.info/showitem.asp?AOID=235975>QL 90 Vibrating Left Wrist Symbiant, Extermination Unit Aban</A>;
@@ -593,8 +596,11 @@
 150;Left Hand;Support;Wacky Suzerain;Scheol Upper;NW from West Incarnator;Named Eremites: Coiling, Sparkling, Bending...;125;;;<a href=http://aomainframe.info/showitem.asp?AOID=236263>QL 150 Surviving Left Hand Symbiant, Support Unit Aban</A>;
 100;Feet;Support;Wacky Suzerain;Scheol Upper;NW from West Incarnator;Named Eremites: Coiling, Sparkling, Bending...;125;;;<a href=http://aomainframe.info/showitem.asp?AOID=236275>QL 100 Breathing Feet Symbiant, Support Unit Aban</A>;
 110;Left Arm;Infantry;White;Elysium South;White Pass (The Scoop);Chill Spider & 2 Named Bosses;120;;;<a href=http://aomainframe.info/showitem.asp?AOID=235707>QL 110 Operative Left Arm Symbiant, Infantry Unit Aban</A>;
+120;Left Wrist;Artillery;White;Elysium South;White Pass (The Scoop);Chill Spider & 2 Named Bosses;120;;;<a href=http://aomainframe.info/showitem.asp?AOID=235536>QL 120 Prevailing Left Wrist Symbiant, Artillery Unit Aban</A>;
 130;Left Hand;Control;White;Elysium South;White Pass (The Scoop);Chill Spider & 2 Named Bosses;120;;;<a href=http://aomainframe.info/showitem.asp?AOID=236483>QL 130 Residing Left Hand Symbiant, Control Unit Aban</A>;
 130;Feet;Control;White;Elysium South;White Pass (The Scoop);Chill Spider & 2 Named Bosses;120;;;<a href=http://aomainframe.info/showitem.asp?AOID=236498>QL 130 Residing Feet Symbiant, Control Unit Aban</A>;
+110;Feet;Control;White;Elysium South;White Pass (The Scoop);Chill Spider & 2 Named Bosses;110;;;<a href=http://aomainframe.info/showitem.asp?AOID=236498>QL 110 Operative Feet Symbiant, Control Unit Aban</A>;
+110;Left Hand;Control;White;Elysium South;White Pass (The Scoop);Chill Spider & 2 Named Bosses;110;;;<a href=http://aomainframe.info/showitem.asp?AOID=236482>QL 110 Operative Left Hand Symbiant, Control Unit Aban</A>;
 120;Feet;Control;White;Elysium South;White Pass (The Scoop);Chill Spider & 2 Named Bosses;120;;;<a href=http://aomainframe.info/showitem.asp?AOID=236497>QL 120 Prevailing Feet Symbiant, Control Unit Aban</A>;
 100;Left Arm;Infantry;White;Elysium South;White Pass (The Scoop);Chill Spider & 2 Named Bosses;120;;;<a href=http://aomainframe.info/showitem.asp?AOID=235706>QL 100 Breathing Left Arm Symbiant, Infantry Unit Aban</A>;
 280;Left Wrist;Artillery;Xark the Battletoad;Penumbra Forest;South from Purity;Death Wing, Slithers, Maar...;255;;;<a href=http://aomainframe.info/showitem.asp?AOID=235542>QL 280 Alert Left Wrist Symbiant, Artillery Unit Aban</A>;
@@ -966,3 +972,9 @@
 280;Waist;Extermination;[Not a PB] Deranged Xan;Alien Outzones;The Xan (12-man);Boss;0;;;<a href=http://aomainframe.info/showitem.asp?AOID=279033>QL 280 Alert Waist Symbiant, Extermination Unit Aban</A>;
 280;Waist;Extermination;[Not a PB] Deranged Xan;Alien Outzones;The Xan (12-man);Boss;0;;;<a href=http://aomainframe.info/showitem.asp?AOID=279046>QL 280 Alert Waist Symbiant, Extermination Unit Aban</A>;
 280;Waist;Extermination;[Not a PB] Deranged Xan;Alien Outzones;The Xan (12-man);Boss;0;;;<a href=http://aomainframe.info/showitem.asp?AOID=279059>QL 280 Alert Waist Symbiant, Extermination Unit Aban</A>;
+170;Left Arm;Control;Unknown;Unknown;Unknown;Boss;0;;;<a href=http://aomainframe.info/showitem.asp?AOID=236376>QL 170 Active Left Arm Symbiant, Control Unit Aban</A>;
+60;Brain;Control;Unknown;Unknown;Unknown;Boss;0;;;<a href=http://aomainframe.info/showitem.asp?AOID=236304>QL 60 Lulled Brain Symbiant, Control Unit Aban</A>;
+290;Eye;Extermination;Unknown;Unknown;Unknown;Boss;0;;;<a href=http://aomainframe.info/showitem.asp?AOID=235848>QL 290 Conscious Ocular Symbiant, Extermination Unit Aban</A>;
+270;Left Hand;Infantry;Unknown;Unknown;Unknown;Boss;0;;;<a href=http://aomainframe.info/showitem.asp?AOID=235813>QL 270 Cognizant Left Hand Symbiant, Infantry Unit Aban</A>;
+170;Right Hand;Support;Unknown;Unknown;Unknown;Boss;0;;;<a href=http://aomainframe.info/showitem.asp?AOID=236230>QL 170 Active Right Hand Symbiant, Support Unit Aban</A>;
+290;Feet;Support;Unknown;Unknown;Unknown;Boss;0;;;<a href=http://aomainframe.info/showitem.asp?AOID=236283>QL 290 Conscious Feet Symbiant, Support Unit Aban</A>;
