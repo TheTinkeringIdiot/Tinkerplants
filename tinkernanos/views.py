@@ -73,7 +73,7 @@ def update_stats(request):
                 class_nanos = Nano.objects.filter(profession__contains=prof, expansion__lte=sub).all()
 
             nanolist = [x.json() for x in class_nanos]
-            nanolist = sorted(nanolist, key=lambda x: (x['strain_name'], -x['ql']))
+            nanolist = sorted(nanolist, key=lambda x: (x['strain_name'], x['icon'], -x['ql']))
 
             retlist = []
             for nano in nanolist:
