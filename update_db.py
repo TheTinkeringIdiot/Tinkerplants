@@ -10,20 +10,23 @@ from tinkerplants.models import *
 from tinkernukes.models import *
 from tinkerfite.models import *
 from tinkerpocket.models import *
+from tinkernanos.models import *
 
 # Clear out the old data entirely
 Implant.objects.all().delete()
 Cluster.objects.all().delete()
-Nano.objects.all().delete()
+Nuke.objects.all().delete()
 Weapon.objects.all().delete()
 Symbiant.objects.all().delete()
 Pocketboss.objects.all().delete()
+Nano.objects.all().delete()
 
 with open('data.json', 'r') as fd:
     data = json.loads(fd.read())
 
 clusters = data['data']['clusters']
 implants = data['data']['implants']
+nt_nukes = data['data']['nt_nukes']
 nanos = data['data']['nanos']
 weapons = data['data']['weapons']
 symbiants = data['data']['symbiants']
@@ -31,10 +34,21 @@ bosses = data['data']['bosses']
 
 new_clusters = []
 new_implants = []
+new_nukes = []
 new_nanos = []
 new_weapons = []
 new_symbs = []
 new_bosses = []
+
+TITLE_LEVELS = {
+    '1' : 5,
+    '2' : 15,
+    '3' : 50,
+    '4' : 100,
+    '5' : 150,
+    '6' : 190,
+    '7' : 205
+}
 
 for name, vals in clusters.items():
     if not vals.get('normal'): # what the....skip it
@@ -173,63 +187,119 @@ for entry in bright_nd:
 
 Implant.objects.bulk_update(bright_nd_fixed, ['bright'])
 
-for aiod, vals in nanos.items():
-    nano = Nano()
-    nano.name = vals['name']
-    nano.ql = vals['ql']
-    nano.mc = vals['mc']
-    nano.attack = vals['attack']
-    nano.recharge = vals['recharge']
-    nano.cost = vals['cost']
-    nano.low_dmg = vals['low_dmg']
-    nano.high_dmg = vals['high_dmg']
-    nano.ac = vals['ac']
-    nano.nr_pct = vals['nr_pct']
+for aiod, vals in nt_nukes.items():
+    nuke = Nuke()
+    nuke.name = vals['name']
+    nuke.ql = vals['ql']
+    nuke.mc = vals['mc']
+    nuke.attack = vals['attack']
+    nuke.recharge = vals['recharge']
+    nuke.cost = vals['cost']
+    nuke.low_dmg = vals['low_dmg']
+    nuke.high_dmg = vals['high_dmg']
+    nuke.ac = vals['ac']
+    nuke.nr_pct = vals['nr_pct']
 
     if vals.get('nt_dot') is not None:
-        nano.nt_dot = vals['nt_dot']
+        nuke.nt_dot = vals['nt_dot']
     else:
-        nano.nt_dot = False
+        nuke.nt_dot = False
 
     if vals.get('nt_dot') is not None:
-        nano.nt_dot = vals['nt_dot']
+        nuke.nt_dot = vals['nt_dot']
     else:
-        nano.nt_dot = False
+        nuke.nt_dot = False
 
     if vals.get('level_req') is not None:
-        nano.level = vals['level_req']
+        nuke.level = vals['level_req']
     else:
-        nano.level = 0
+        nuke.level = 0
 
     if vals.get('spec') is not None:
-        nano.spec = vals['spec']
+        nuke.spec = vals['spec']
     else:
-        nano.spec = 0
+        nuke.spec = 0
 
     if vals.get('deck') is not None:
-        nano.deck = vals['deck']
+        nuke.deck = vals['deck']
     else:
-        nano.deck = 0
+        nuke.deck = 0
 
     if vals.get('atk_cap') is not None:
-        nano.atk_cap = vals['atk_cap']
+        nuke.atk_cap = vals['atk_cap']
     else:
-        nano.atk_cap = 0
+        nuke.atk_cap = 0
 
     if vals.get('dot_hits') is not None:
-        nano.dot_hits = vals['dot_hits']
+        nuke.dot_hits = vals['dot_hits']
     else:
-        nano.dot_hits = 0
+        nuke.dot_hits = 0
 
     if vals.get('dot_delay') is not None:
-        nano.dot_delay = vals['dot_delay']
+        nuke.dot_delay = vals['dot_delay']
     else:
-        nano.dot_delay = 0
+        nuke.dot_delay = 0
 
     if vals.get('strain_cd') is not None:
-        nano.strain_cd = vals['strain_cd']
+        nuke.strain_cd = vals['strain_cd']
     else:
-        nano.strain_cd = 0
+        nuke.strain_cd = 0
+
+    new_nukes.append(nuke)
+
+Nuke.objects.bulk_create(new_nukes)
+
+for aoid, vals in nanos.items():
+    nano = Nano()
+    nano.aoid = int(aoid)
+    nano.name = vals['name']
+    nano.icon = vals['icon']
+    nano.school = vals['school']
+    nano.strain = vals['strain']
+    nano.strain_name = vals['strain_name']
+    nano.ql = vals['ql']
+
+    if vals.get('Profession') is not None:
+        nano.profession = vals['Profession']
+        nano.fp_able = False
+    elif vals.get('Visual profession') is not None:
+        nano.profession = vals['Visual profession']
+        nano.fp_able = True
+
+    if vals.get('Specialization') is not None:
+        nano.spec = vals['Specialization']
+
+    if vals.get('Expansion sets') is not None:
+        nano.expansion = vals['Expansion sets']
+
+    if vals.get('Cyberdeck') is not None:
+        nano.nanodeck = vals['Cyberdeck']
+
+    if vals.get('Level') is not None:
+        nano.level = vals['Level']
+    elif vals.get('Title level') is not None:
+        nano.level = TITLE_LEVELS[vals['Title level']]
+
+    if vals.get('location') is not None:
+        nano.location = vals['location']
+
+    if vals.get('Matter metamorphosis') is not None:
+        nano.mm = vals['Matter metamorphosis']
+
+    if vals.get('Biological metamorphosis') is not None:
+        nano.bm = vals['Biological metamorphosis']
+
+    if vals.get('Matter creation') is not None:
+        nano.mc = vals['Matter creation']
+
+    if vals.get('Time and space') is not None:
+        nano.ts = vals['Time and space']
+
+    if vals.get('Psychological modifications') is not None:
+        nano.pm = vals['Psychological modifications']
+
+    if vals.get('Sensory improvement') is not None:
+        nano.si = vals['Sensory improvement']
 
     new_nanos.append(nano)
 

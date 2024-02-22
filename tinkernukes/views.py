@@ -134,7 +134,7 @@ def get_nano_list(stats):
 
     nano_list = []
 
-    db_nanos = Nano.objects.filter(mc__lte=stats['mc'])
+    db_nanos = Nuke.objects.filter(mc__lte=stats['mc'])
     for db_nano in db_nanos:
         nano = []
         nano.append(db_nano.name)

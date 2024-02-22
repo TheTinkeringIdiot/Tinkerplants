@@ -1,0 +1,172 @@
+{% extends "tinkernanos/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col col-md-3 col-lg-2">
+            <span class="fs-4">Tinkernanos</span>
+            <hr>
+            <div class="accordion" id="nano-accordion">
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button bg-dark" data-bs-toggle="collapse" data-bs-target="#stats">Character</button>
+                    <div id="stats" class="accordion-collapse" data-bs-parent="#nano-accordion">
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li class="navitem">
+                                <span class="fw-bold">Profession:</span>
+                                <select class="form-select" id="profession">
+                                    <option selected value="0">-- Choose --</option>
+                                    <option value="6">Adventurer</option>
+                                    <option value="5">Agent</option>
+                                    <option value="8">Bureaucrat</option>
+                                    <option value="10">Doctor</option>
+                                    <option value="9">Enforcer</option>
+                                    <option value="3">Engineer</option>
+                                    <option value="4">Fixer</option>
+                                    <option value="14">Keeper</option>
+                                    <option value="2">Martial Artist</option>
+                                    <option value="12">Meta-Physicist</option>
+                                    <option value="11">Nano-Technician</option>
+                                    <option value="15">Shade</option>
+                                    <option value="1">Soldier</option>
+                                    <option value="7">Trader</option>
+                                </select>
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Level:</span>
+                                <input type="number" id="level" min=1 max=220 class="form-control" value="1">
+                            </li>
+                            <li>
+                                <span class="fw-bold">Specialization:</span>
+                                <select class="form-select" id="specialization">
+                                    <option selected value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="4">3</option>
+                                    <option value="8">4</option>
+                                </select>
+                            </li>
+                            <li class="navitem">
+                                <span class="fw-bold">Subscription:</span>
+                                <select class="form-select" id="subscription">
+                                    <option value="0">Free (Froob)</option>
+                                    <option value="2">Shadowlands (Sloob)</option>
+                                    <option selected value="128">Paid</option>
+                                </select>
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Matter&nbsp;Metamorphosis (MM):</span>
+                                <input type="number" id="mm" min=1 class="form-control" value="1">
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Biological&nbsp;Metamorphosis (BM):</span>
+                                <input type="number" id="bm" min=1 class="form-control" value="1">
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Psychological&nbsp;Modification (PM):</span>
+                                <input type="number" id="pm" min=1 class="form-control" value="1">
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Sensory&nbsp;Improvement (SI):</span>
+                                <input type="number" id="si" min=1 class="form-control" value="1">
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Time&nbsp;and&nbsp;Space (TS):</span>
+                                <input type="number" id="ts" min=1 class="form-control" value="1">
+                            </li>
+                            <li class="nav-item">
+                                <span class="fw-bold">Matter&nbsp;Creation (MC):</span>
+                                <input type="number" id="mc" min=1 class="form-control" value="1">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button collapsed bg-light" data-bs-toggle="collapse" data-bs-target="#buffs">Buffs</button>
+                    <div id="buffs" class="accordion-collapse" data-bs-parent="#nano-accordion">
+                        <div class="row">&nbsp;</div>
+                        <li>
+                            <div class="container">
+                                <input type="checkbox" id="wrangle-131">
+                                <span >Wrangle (+131)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="container">
+                                <input type="checkbox" id="wrangle-132">
+                                <span >Team Wrangle (+132)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="container">
+                                <input type="checkbox" id="wrangle-153">
+                                <span >Umbral Wrangle (+153)</span>
+                            </div>
+                        </li>
+                        <div class="row">&nbsp;</div>
+                        <li>
+                            <div class="container">
+                                <input type="checkbox" id="mocham-25">
+                                <span >Teachings (+25)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="container">
+                                <input type="checkbox" id="mocham-50">
+                                <span >Mastery (+50)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="container">
+                                <input type="checkbox" id="mocham-90">
+                                <span >Infuse (+90)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="container">
+                                <input type="checkbox" id="mocham-140">
+                                <span >Mocham's Gift (+140)</span>
+                            </div>
+                        </li>
+                        <div class="row">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button type="button" class="accordion-button bg-light" data-bs-toggle="collapse" data-bs-target="#settings">Settings</button>
+                    <div id="settings" class="accordion-collapse" data-bs-parent="#nano-accordion">
+                        <div class="row">&nbsp;</div>
+                        <li>
+                            <div class="container">
+                                <input type="checkbox" id="hide-unusable">
+                                <span >Hide Unusable Nanos</span>
+                            </div>
+                        </li>
+                        <div class="row">&nbsp;</div>
+                        <li>
+                            <div class="container">
+                                <input type="checkbox" id="fp-only">
+                                <span >Agent FP Compatible Only</span>
+                            </div>
+                        </li>
+                        <div class="row">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li>&nbsp;</li>
+                <li>
+                    <a class="btn" role="button" data-bs-toggle="modal" data-bs-target="#about" aria-expanded="false">About</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col" style="width: 85%;">
+            <div class="container-fluid" id="nano-region">
+               
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'tinkernanos/modals.html' %}
+{% include 'tinkernanos/index_script.html' %}
+{% endblock content %}

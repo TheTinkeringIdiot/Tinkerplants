@@ -176,8 +176,8 @@ def update_stats(request):
             if add_dmg is not None and add_dmg >= 1: request.session['stats']['add_dmg'] = add_dmg
 
             try: target_ac = int(data.get('target_ac'))
-            except: target_ac = 1
-            if target_ac is not None and target_ac >= 1: request.session['stats']['target_ac'] = target_ac
+            except: target_ac = 0
+            if target_ac is not None and target_ac >= 0: request.session['stats']['target_ac'] = target_ac
 
             try: wrangle = int(data.get('wrangle'))
             except: wrangle = 0
@@ -435,6 +435,16 @@ def calculate_speeds(weapon, stats):
         if atk_time < 100: atk_time = 100
         rech_time = round(rech_time - (stats[INITS[init]] / 3))
         if rech_time < 100: rech_time = 100
+
+    atk_cap = weapon.other.get('Attack time cap')
+    rech_cap = weapon.other.get('Recharge time cap')
+    if atk_cap is not None:
+        if atk_time < atk_cap:
+            atk_time = atk_cap
+
+    if rech_cap is not None:
+        if rech_time < rech_cap:
+            rech_time = rech_cap
 
     return atk_time, rech_time
 

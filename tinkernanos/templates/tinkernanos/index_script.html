@@ -1,0 +1,433 @@
+<script type="text/javascript">
+
+    SPECS = {
+        0 : 0,
+        1 : 1,
+        2 : 2,
+        4 : 3,
+        8 : 4
+    }
+
+    let wrangles = document.querySelectorAll('input[type="checkbox"][id^="wrangle-"]');
+    wrangle_amt = 0
+
+    for (let i = 0; i < wrangles.length; i++) {
+        wrangles[i].addEventListener('change', function(evt) {
+            was_checked = this.checked
+            clear_wrangles()
+            if (was_checked) {
+                this.checked = true
+                update_buffs(0 - wrangle_amt) //undo the last wrangle
+                wrangle_amt = 0
+                if(this.id === 'wrangle-131') { wrangle_amt += 131 }
+                else if (this.id === 'wrangle-132') { wrangle_amt += 132 }
+                else if (this.id === 'wrangle-153') { wrangle_amt += 153 }
+                update_buffs(wrangle_amt)
+            }
+            else {
+                this.checked = false
+                update_buffs(0 - wrangle_amt) //undo the last wrangle
+                wrangle_amt = 0
+            }
+        })
+    }
+
+    function clear_wrangles() {
+        document.getElementById('wrangle-131').checked = false
+        document.getElementById('wrangle-132').checked = false
+        document.getElementById('wrangle-153').checked = false
+    }
+
+    let mochams = document.querySelectorAll('input[type="checkbox"][id^="mocham-"]');
+    mocham_amt = 0
+
+    for (let i = 0; i < mochams.length; i++) {
+        mochams[i].addEventListener('change', function(evt) {
+            was_checked = this.checked
+            clear_mochams()
+            if (was_checked) {
+                this.checked = true
+                update_buffs(0 - mocham_amt) //undo the last mocham
+                mocham_amt = 0
+                if(this.id === 'mocham-25') { mocham_amt += 25 }
+                else if (this.id === 'mocham-50') { mocham_amt += 50 }
+                else if (this.id === 'mocham-90') { mocham_amt += 90 }
+                else if (this.id === 'mocham-140') { mocham_amt += 140 }
+                update_buffs(mocham_amt)
+            }
+            else {
+                this.checked = false
+                update_buffs(0 - mocham_amt) //undo the last mocham
+                mocham_amt = 0
+            }
+        })
+    }
+
+    function clear_mochams() {
+        document.getElementById('mocham-25').checked = false
+        document.getElementById('mocham-50').checked = false
+        document.getElementById('mocham-90').checked = false
+        document.getElementById('mocham-140').checked = false
+    }
+
+    function update_buffs(amt) {
+        document.getElementById('mm').value = parseInt(document.getElementById('mm').value) + amt
+        document.getElementById('bm').value = parseInt(document.getElementById('bm').value) + amt
+        document.getElementById('mc').value = parseInt(document.getElementById('mc').value) + amt
+        document.getElementById('ts').value = parseInt(document.getElementById('ts').value) + amt
+        document.getElementById('pm').value = parseInt(document.getElementById('pm').value) + amt
+        document.getElementById('si').value = parseInt(document.getElementById('si').value) + amt
+
+        update_tables()
+    }
+
+    var selectElements = Array.from(document.getElementsByTagName('select'))
+    selectElements.forEach(function(elem) {
+        elem.addEventListener('change', update_tables);
+    })
+
+    var selectElements = Array.from(document.getElementsByTagName('input'))
+    selectElements.forEach(function(elem) {
+        elem.addEventListener('change', update_tables);
+    })
+
+    document.getElementById('profession').addEventListener('change', update_stats)
+    document.getElementById('subscription').addEventListener('change', update_stats)
+
+    function update_stats(evt) {
+        profession = document.getElementById('profession').value
+        level = document.getElementById('level').value
+        specialization = document.getElementById('specialization').value
+        subscription = document.getElementById('subscription').value
+        mm = document.getElementById('mm').value
+        bm = document.getElementById('bm').value
+        mc = document.getElementById('mc').value
+        ts = document.getElementById('ts').value
+        pm = document.getElementById('pm').value
+        si = document.getElementById('si').value
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        
+        fetch('update_stats', {
+            method: 'post',
+            body: JSON.stringify({
+                'profession' : profession, 
+                'level' : level,
+                'specialization' : specialization,
+                'subscription' : subscription,
+                'mm' : mm,
+                'bm' : bm,
+                'mc' : mc,
+                'ts' : ts,
+                'pm' : pm,
+                'si' : si
+            }),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                update_data(data)
+            }
+            
+        })
+    }
+
+    function clear_table(tbl) {
+        while(tbl.lastChild) {
+            tbl.removeChild(tbl.lastChild)
+        }
+    }
+
+    function get_stats() {
+
+        wrangle = 0
+        if (document.getElementById('wrangle-131').checked) { wrangle += 131 }
+        else if (document.getElementById('wrangle-132').checked) { wrangle += 132 }
+        else if (document.getElementById('wrangle-153').checked) { wrangle += 153 }
+
+        mocham = 0
+        if (document.getElementById('mocham-25').checked) { mocham += 25 }
+        else if (document.getElementById('mocham-50').checked) { mocham += 50 }
+        else if (document.getElementById('mocham-90').checked) { mocham += 90 }
+        else if (document.getElementById('mocham-140').checked) { mocham += 140 }
+
+        level = parseInt(document.getElementById('level').value)
+        specialization = parseInt(document.getElementById('specialization').value)
+        mm = parseInt(document.getElementById('mm').value)
+        bm = parseInt(document.getElementById('bm').value)
+        mc = parseInt(document.getElementById('mc').value)
+        ts = parseInt(document.getElementById('ts').value)
+        pm = parseInt(document.getElementById('pm').value)
+        si = parseInt(document.getElementById('si').value)
+
+        spec = SPECS[specialization]
+
+        return {
+            'level' : level,
+            'spec' : spec,
+            'mm' : mm,
+            'bm' : bm,
+            'mc' : mc,
+            'ts' : ts,
+            'pm' : pm,
+            'si' : si
+        }
+    }
+
+    function update_data(data) {
+        
+        nanos = data.nanos
+        sessionStorage.setItem('nanos', JSON.stringify(nanos))
+
+        update_tables()
+    }
+
+    function meet_reqs(nano, stats) {
+        if(
+            nano.level <= stats['level'] &&
+            nano.spec <= stats['spec'] &&
+            nano.mm <= stats['mm'] &&
+            nano.bm <= stats['bm'] &&
+            nano.mc <= stats['mc'] &&
+            nano.ts <= stats['ts'] &&
+            nano.pm <= stats['pm'] &&
+            nano.si <= stats['si']
+        ) { return true }
+        else { return false }
+    }
+
+    function create_collapse(title) {
+        div = document.createElement('div')
+        div.classList.add('collapse')
+        div.classList.add('show')
+        div.id = 's' + title
+        return div
+    }
+
+    function update_tables() {
+        region = document.getElementById('nano-region')
+        remove_children(region)
+
+        nanos = JSON.parse(sessionStorage.getItem('nanos'))
+        stats = get_stats()
+
+        fp_only = document.getElementById('fp-only').checked
+        hide_unusable = document.getElementById('hide-unusable').checked
+
+        last_strain = ''
+        table = null
+        nanos.forEach(function(nano) {
+            if(nano.strain_name != last_strain) {
+                spacer = create_spacer()
+                region.appendChild(spacer)
+
+                header = table_header(nano.strain_name, nano.strain)
+                region.appendChild(header)
+                
+                collapse = create_collapse(nano.strain)
+                table = create_table()
+                collapse.appendChild(table)
+                region.appendChild(collapse)
+                last_strain = nano.strain_name
+            }
+            tbody = table.getElementsByTagName('tbody')[0]
+
+            if ( nano.location === 'No longer drops') { return }
+
+            if ( fp_only ) {
+                if ( !nano.fp_able ) { return } //weird syntax for continue becuase JS
+            }
+
+            row = create_row(nano)
+
+            if( !meet_reqs(nano, stats)) 
+            {
+                if ( !hide_unusable ) {
+                    row.style.opacity = 0.3
+                    tbody.appendChild(row)
+                } 
+            }
+            else {
+                if ( fp_only ) {
+                    console.log(nano)
+                    if ( nano.fp_able ) { tbody.appendChild(row) }
+                }
+                else {
+                    tbody.appendChild(row)
+                }
+            }
+        })
+    }
+
+    function create_row(nano) {
+        nano_width = '60px'
+
+        tr = document.createElement('tr')
+
+        td = document.createElement('td')
+        td.style.width = '50px'
+        td.innerHTML = '<img src=https://icons.aogalaxy.com/' + nano.icon + '.png>'
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = '450px'
+
+        a = document.createElement('a')
+        a.style.color = 'white'
+        a.setAttribute('href', 'https://auno.org/ao/db.php?id=' + nano.aoid)
+        a.text = nano.name
+        td.appendChild(a)
+        a2 = document.createElement('a')
+        a2.setAttribute('onclick', 'navigator.clipboard.writeText("' + nano.name + '")')
+        a2.innerHTML = '&nbsp;&nbsp;&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/></svg>'
+        td.appendChild(a2)
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.innerHTML = nano.ql
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = '360px'
+        td.innerHTML = nano.location
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        if(nano.spec === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.spec }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        if(nano.level === 1) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.level }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        if(nano.expansion === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.expansion }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.mm === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.mm }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.bm === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.bm }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.pm === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.pm }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.si === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.si }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.ts === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.ts }
+        tr.appendChild(td)
+
+        td = document.createElement('td')
+        td.style.width = nano_width
+        if(nano.mc === 0) { td.innerHTML = '&nbsp;' }
+        else { td.innerHTML = nano.mc }
+        tr.appendChild(td)
+
+        return tr
+    }
+
+    function create_table() {
+        table = document.createElement('table')
+        table.classList.add('table')
+        table.classList.add('table-striped')
+        thead = document.createElement('thead')
+        tbody = document.createElement('tbody')
+
+        table.appendChild(thead)
+        table.appendChild(tbody)
+
+        th = document.createElement('th')
+        th.text = ''
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'Name'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'QL'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'Location'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'Spec'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'Level'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'Xpac'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'MM'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'BM'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'PM'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'SI'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'TS'
+        thead.appendChild(th)
+        th = document.createElement('th')
+        th.innerHTML = 'MC'
+        thead.appendChild(th)
+        
+        return table
+    }
+
+    function table_header(label, strain) {
+        a = document.createElement('button')
+        a.classList.add('btn')
+        a.setAttribute('type', 'button')
+        a.setAttribute('data-bs-toggle', 'collapse')
+        a.setAttribute('data-bs-target', '#s' + strain)
+        a.innerHTML = label
+        // div.classList.add('row')
+        // div.innerHTML = '<p class="fw-bold">' + label + '</p>'
+        
+        return a
+    }
+
+    function create_spacer() {
+        div = document.createElement('div')
+        div.classList.add('row')
+        div.innerHTML = '&nbsp;'
+
+        return div
+    }
+
+    function remove_children(parent) {
+        while(parent.lastChild) {
+            parent.removeChild(parent.lastChild)
+        }
+    }
+
+</script>
