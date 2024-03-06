@@ -1,0 +1,25 @@
+{% load static %}
+
+{% for actionData in Actions %}
+<div class="row">
+    <div class="card ps-0 pe-0 pb-0">
+        <div class="card-header"><span class="fs-6">{{ actionData.Action }}</span></div>
+        <table class="card-table table mb-0 pb-0">
+            {% for criterion in actionData.Criteria %}
+            <tr>
+                <td>{{ criterion.0 }}</td>
+                <td>{{ criterion.1 }}</td>
+                <td>{{ criterion.2 }}</td>
+                {% if criterion.3 %}
+                <td>{{ criterion.3 }}</td>
+                {% else %}
+                <td></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<div class="row">&nbsp;</div>
+{% endfor %}
+    

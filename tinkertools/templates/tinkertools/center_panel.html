@@ -1,0 +1,37 @@
+
+{% load static %}
+
+<div class="container-fluid">
+    <div class="pb-2 mt-4 mb-2 border-bottom">
+        <div style="height: 50;">
+            <img src="https://icons.aogalaxy.com/{{ Icon }}.png" width="50" height="50">&nbsp;&nbsp;&nbsp;
+            <span class="fs-3">{{ Name }}</span>&nbsp;&nbsp;&nbsp;
+            <span class="fs-5 text-muted">QL {{ Level }}</span>
+        </div>
+        <div>
+            {% if "NoDrop" in Flags %}
+                <button class="btn btn-sm btn-danger py-0" style="font-size: 0.7em;">NoDrop</button>
+            {% endif %}
+            {% for flag in Can %}
+                <button class="btn btn-sm btn-secondary py-0" style="font-size: 0.7em;">{{ flag }}</button>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="pb-2 mt-2 mb-2 ">
+        {{ Description }}
+    </div>
+    <div class="row">
+        {% if ItemClass == 'Weapon' %}
+            {% include "tinkertools/weapon_panel.html" %}
+        {% elif ItemClass == 'Armor' %}
+            {% include "tinkertools/armor_panel.html" %}
+        {% elif ItemClass == 'Implant' %}
+            {% include "tinkertools/implant_panel.html" %}
+        {% elif ItemClass == 'None' %}
+            {% include "tinkertools/item_panel.html" %}
+        {% endif %}
+    </div>
+    
+    
+    
+</div>

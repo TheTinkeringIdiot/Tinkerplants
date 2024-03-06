@@ -1,0 +1,26 @@
+{% block navbar %}
+<div class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">TinkerItems</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse w-100" id="navbarSupportedContent">
+        <ul class="navbar-nav w-100 justify-content-end">
+          <li>
+            <form action="/search"><input class="form-control" type="text" placeholder="Search..." name="query"><input type="submit" hidden></form>
+          </li>
+          
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+              <a class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#about" aria-expanded="false">About</a>
+          </li>
+      </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock navbar %}

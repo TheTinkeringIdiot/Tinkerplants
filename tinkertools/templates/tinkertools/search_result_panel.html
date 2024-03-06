@@ -1,0 +1,35 @@
+
+{% load static %}
+
+<div class="container-fluid">
+    <table class="table table-striped" id="search-result-table">
+        <thead>
+            <tr>
+                <th>Icon</th>
+                <th>Name</th>
+                <th>QL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in Items %}
+                <tr>
+                    <td><img src="https://icons.aogalaxy.com/{{ item.Icon }}.png" width="25" height="25"></td>
+                    <td><span class="fs-5"><a href="/item/{{ item.AOID }}">{{ item.Name }}</a></span></td>
+                    <td><span class="fs-5">{{ item.QL }}</span></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#search-result-table').DataTable({
+            "language": {
+                "search": "Filter:"
+            },
+            pageLength: 25
+        })
+    })
+</script>

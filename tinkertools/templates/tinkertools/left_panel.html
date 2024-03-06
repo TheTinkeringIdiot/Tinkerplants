@@ -1,0 +1,38 @@
+
+<span class="fs-5">Other Tools</span>
+<ul>
+    <li>
+        <h4><a href='https://ao.tinkeringidiot.com/tinkerplants'>TinkerPlants</a></h4> - Design your next set of implants!
+    </li>
+    <li>
+        <h4><a href='https://ao.tinkeringidiot.com/tinkernanos'>TinkerNanos</a></h4> - Find those nanoprograms!
+    </li>
+    <li>
+        <h4><a href='https://ao.tinkeringidiot.com/tinkerfite'>TinkerFite</a></h4> - What weapon should you be using?
+    </li>
+    <li>
+        <h4><a href='https://ao.tinkeringidiot.com/tinkerpocket'>TinkerPocket</a></h4> - Symbiants and Pocketbosses
+    </li>
+    <li>
+        <h4><a href='https://ao.tinkeringidiot.com/tinkernukes'>TinkerNukes</a></h4> - NT nuke table!
+    </li>
+</ul>
+
+<div class="row align-items-center justify-content-center">Current Time on Rubi-Ka</div>
+<div class="row align-items-center justify-content-center">(Athen Standard Time)</div>
+<div id="rk-clock" class="row align-items-center justify-content-center"></div>
+
+
+
+<script type="text/javascript">
+var time_span = document.getElementById('rk-clock')
+
+function time() {
+    var rk_date = new Date()
+    rk_date.setFullYear(rk_date.getFullYear() + 27474)
+                        
+    time_span.textContent = rk_date.toUTCString().slice(0, -4)
+}
+
+setInterval(time, 1000)
+</script>
