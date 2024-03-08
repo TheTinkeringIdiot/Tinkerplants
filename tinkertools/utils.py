@@ -1601,7 +1601,7 @@ def interpret_criterion(criterion):
         crit = [OPERATOR[criterion.operator]]
         return crit
 
-    elif criterion.operator in [44, 45, 66, 70, 80, 83, 85, 86, 89, 104, 111, 112, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 134, 136]:
+    elif criterion.operator in [44, 45, 66, 70, 80, 83, 85, 86, 89, 103, 104, 111, 112, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 134, 136]:
         crit = [STAT[criterion.value1]]
         crit.append(OPERATOR[criterion.operator])
         crit.append(criterion.value2)
@@ -1615,6 +1615,12 @@ def interpret_criterion(criterion):
     elif criterion.operator in [88]: # Use location
         crit = [OPERATOR[criterion.operator]]
         crit.append(str(ARMOR_SLOT(criterion.value2)).replace('ARMOR_SLOT.', ''))
+        return crit
+    
+    elif criterion.operator in [50]:
+        crit = [TARGET[criterion.value1]]
+        crit.append(OPERATOR[criterion.operator])
+        crit.append(TARGET[criterion.value2])
         return crit
 
     else: 

@@ -238,7 +238,7 @@ def item(request, id, ql=0):
                     elif tag == 'BitNum':
                         # breakpoint()
                         stat = spell.spellParams['Stat']
-                        if stat in [1, 65, 179, 181, 198, 215, 256, 257, 301, 471, 472, 545, 583, 585, 586, 618, 686]:
+                        if stat in [1, 62, 65, 179, 181, 198, 215, 224, 251, 256, 257, 301, 471, 472, 545, 583, 585, 586, 618, 686]:
                             formatParams[tag] = spell.spellParams[tag]
                         elif stat in [467]:
                             # breakpoint()
@@ -255,7 +255,9 @@ def item(request, id, ql=0):
                             formatParams[tag] = spell.spellParams[tag]
                         else:
                             formatParams[tag] = spell.spellParams['MessageName']
-                        
+
+                    elif tag == 'Target' and spell.spellID == 53254:
+                        formatParams[tag] = 'Self'
 
                     else:
                         # breakpoint()
