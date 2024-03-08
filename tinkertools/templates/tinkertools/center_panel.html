@@ -17,9 +17,6 @@
             {% endfor %}
         </div>
     </div>
-    <div class="pb-2 mt-2 mb-2 ">
-        {{ Description }}
-    </div>
     <div class="row">
         {% if ItemClass == 'Weapon' %}
             {% include "tinkertools/weapon_panel.html" %}
@@ -27,6 +24,8 @@
             {% include "tinkertools/armor_panel.html" %}
         {% elif ItemClass == 'Implant' %}
             {% include "tinkertools/implant_panel.html" %}
+        {% elif ItemClass == 'Nano' %}
+            {% include "tinkertools/nano_panel.html" %}
         {% elif ItemClass == 'None' %}
             {% include "tinkertools/item_panel.html" %}
         {% endif %}

@@ -8,8 +8,19 @@
             {% for criterion in actionData.Criteria %}
             <tr>
                 <td>{{ criterion.0 }}</td>
-                <td>{{ criterion.1 }}</td>
+                
+                {% if criterion.1 %}
+                <td>{{ criterion.1 |safe }}</td>
+                {% else %}
+                <td></td>
+                {% endif %}
+
+                {% if criterion.2 %}
                 <td>{{ criterion.2 }}</td>
+                {% else %}
+                <td></td>
+                {% endif %}
+
                 {% if criterion.3 %}
                 <td>{{ criterion.3 }}</td>
                 {% else %}
