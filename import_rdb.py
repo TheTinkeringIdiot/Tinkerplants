@@ -47,6 +47,9 @@ def import_rdb(data, is_nano):
             statValue, create = StatValue.objects.get_or_create(stat=stat, value=value)
             newItem.stats.add(statValue)
 
+        if newItem.itemClass is None:
+            newItem.itemClass = 0
+
         atkdef = item.get('AttackDefenseData')
         if atkdef is not None:
             newAtkDef = AttackDefense.objects.create()
