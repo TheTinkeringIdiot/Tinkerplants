@@ -1552,8 +1552,13 @@ def interpret_criterion(criterion):
         else:
             crit.append('IsNot')
 
+        # breakpoint()
         if val1 == 'Expansion':
             crit.append(str(EXPANSION_FLAG(criterion.value2)).replace('EXPANSION_FLAG.', ''))
+        elif val1 == 'Specialization':
+            crit.append(str(SPECIALIZATION_FLAG(criterion.value2)).replace('SPECIALIZATION_FLAG.', ''))
+        elif val1 == 'WornItem':
+            crit.append(str(WORN_ITEM(criterion.value2)).replace('WORN_ITEM.', ''))
         else:
             crit.append(str(WEAPON_TYPE(criterion.value2)).replace('WEAPON_TYPE.', ''))
         return crit
@@ -1563,7 +1568,7 @@ def interpret_criterion(criterion):
         val1 = STAT[criterion.value1]
         crit.append(val1)
 
-        if val1 == 'Profession':
+        if val1 == 'Profession' or val1 == 'VisualProfession':
             val2 = PROFESSION[criterion.value2]
         elif val1 == 'Faction':
             val2 = FACTION[criterion.value2]
