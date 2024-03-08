@@ -1,3 +1,8 @@
+.dataTables_filter
+{
+    float: right;
+}
+
 .weapon-column
 {
     flex: 0 0 210px !important;
