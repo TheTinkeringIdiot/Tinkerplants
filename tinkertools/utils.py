@@ -731,6 +731,10 @@ AMMOTYPE = {
     3 : 'FlameThrower',
     4 : 'ShotgunShells',
     5 : 'Arrows',
+    6 : 'LauncherGrenades',
+    7 : 'Rockets',
+    8 : 'Missiles',
+    10: 'Infinite'
 }
 
 TEXTURELOCATION = {
@@ -954,6 +958,30 @@ class WORN_ITEM(Flag):
     SocialArmor = 2**5
     NanoDeck = 2**6
     MpSummonedWeapon = 2**7
+    Bit8 = 2**8
+    Bit9 = 2**9
+    Bit10 = 2**10
+    Bit11 = 2**11
+    Bit12 = 2**12
+    Bit13 = 2**13
+    Bit14 = 2**14
+    Bit15 = 2**15
+    Bit16 = 2**16
+    Bit17 = 2**17
+    Bit18 = 2**18
+    Bit19 = 2**19
+    Bit20 = 2**20
+    Bit21 = 2**21
+    Bit22 = 2**22
+    Bit23 = 2**23
+    Bit24 = 2**24
+    Bit25 = 2**25
+    Bit26 = 2**26
+    Bit27 = 2**27
+    Bit28 = 2**28
+    Bit29 = 2**29
+    Bit30 = 2**30
+    Bit31 = 2**31
 
 EXPANSION_PLAYFIELD = {
     0 : 'Rubika',
@@ -1216,9 +1244,9 @@ OPERATOR = {
     22 : 'StatBitSet',
     24 : 'StatNotEqual',
     107 : 'StatBitNotSet',
-    3 : 'GOr',
-    4 : 'GAnd',
-    42 : 'GNot',
+    3 : 'Or',
+    4 : 'And',
+    42 : 'Not',
     44 : 'StateIsNpc',
     45 : 'StateIsFighting',
     134 : 'StateIsNotFighting',
@@ -1298,6 +1326,7 @@ TEMPLATE_EVENT = {
     3 : "TargetInVicinity",
     4 : "UseItemOnTarget",
     5 : "Hit",
+    6 : "NPCWear",
     7 : "Create",
     8 : "Effects",
     9 : "Run",
@@ -1310,6 +1339,7 @@ TEMPLATE_EVENT = {
     18 : "Open",
     19 : "Close",
     20 : "Terminate",
+    21 : "Unknown",
     23 : "EndCollide",
     24 : "FriendlyInVicinity",
     25 : "EnemyInVicinity",
@@ -1346,7 +1376,7 @@ SPELL_FORMATS = {
     53065 : 'Attractor Effect A, A={A} B={B} C={C} D={D}',
     53075 : 'Attractor Effect B, A={A} B={B} C={C} D={D}',
     53076 : 'Attractor Effect C, A={A} B={B} C={C} D={D}',
-    53024 : 'Attractor Gfx Effect',
+    53204 : 'Attractor Gfx Effect',
     53055 : 'Attractor Mesh, A={A} B={B}',
     53037 : 'Back Mesh, A={A} B={B}',
     53238 : 'Switch breed to {Breed} {Gender}',
@@ -1446,7 +1476,7 @@ SPELL_FORMATS = {
     53181 : 'Summon pets',
     53154 : 'Teleport selected player to current location',
     53155 : 'Teleport team to current location',
-    53044 : 'Systme text: {Text}',
+    53044 : 'System text: {Text}',
     53210 : 'Say {Message}',
     53117 : 'Taunt {Amount} for {Duration}s',
     53066 : 'Cast {NanoID} on team',
@@ -1462,3 +1492,175 @@ SPELL_FORMATS = {
     53189 : 'Update {Skill}',
     53019 : 'Upload {NanoID}'
 }
+
+class WEAPON_TYPE(Flag):
+    NONE = 0
+    Fists = 2**0
+    Melee = 2**1
+    Ranged = 2**2
+    Bow = 2**3
+    SMG = 2**4
+    OneHandEdge = 2**5
+    OneHandBlunt = 2**6
+    TwoHandEdge = 2**7
+    TwoHandBlunt = 2**8
+    Piercing = 2**9
+    Pistol = 2**10
+    AssaultRifle = 2**11
+    Rifle = 2**12
+    Shotgun = 2**13
+    Energy = 2**14
+    Grenade = 2**15
+    HeavyWeapons = 2**16
+    Bit17 = 2**17
+    Bit18 = 2**18
+    Bit19 = 2**19
+    Bit20 = 2**20
+    Bit21 = 2**21
+    Bit22 = 2**22
+    TestItem = 2**23
+    Bit24 = 2**24
+    Bit25 = 2**25
+    Bit26 = 2**26
+    Bit27 = 2**27
+    Bit28 = 2**28
+    Bit29 = 2**29
+    Bit30 = 2**30
+    Bit31 = 2**31
+
+class SL_ZONE_PROTECTION(Flag):
+    Adonis = 0
+    Penumbra = 2**0
+    Inferno = 2**1
+    Pandemonium = 2**2
+
+
+
+def interpret_criterion(criterion):
+
+    if criterion.operator in USE_ON_OPERATOR.keys():
+        crit = [USE_ON_OPERATOR[criterion.operator]]
+        return crit
+
+    elif criterion.operator in [22, 107]: # StatBitSet/StatBitNotSet
+        crit = []
+        val1 = STAT[criterion.value1]
+        crit.append(val1)
+
+        if criterion.operator == 22:
+            crit.append('Is')
+        else:
+            crit.append('IsNot')
+
+        if val1 == 'Expansion':
+            crit.append(str(EXPANSION_FLAG(criterion.value2)).replace('EXPANSION_FLAG.', ''))
+        else:
+            crit.append(str(WEAPON_TYPE(criterion.value2)).replace('WEAPON_TYPE.', ''))
+        return crit
+
+    elif criterion.operator in [0, 1, 2, 24, 42]:  # StatValue
+        crit = []
+        val1 = STAT[criterion.value1]
+        crit.append(val1)
+
+        if val1 == 'Profession':
+            val2 = PROFESSION[criterion.value2]
+        elif val1 == 'Faction':
+            val2 = FACTION[criterion.value2]
+        else:
+            val2 = criterion.value2
+        
+        compare = OPERATOR[criterion.operator]
+        if compare == 'StatEqual':
+            crit.append('==')
+            crit.append(val2)
+        if compare == 'StatGreaterThan':
+            crit.append('>=')
+            crit.append(val2 + 1)
+        elif compare == 'StatLessThan':
+            crit.append('<=')
+            crit.append(val2 - 1)
+        elif compare == 'StatNotEqual':
+            crit.append('!=')
+            crit.append(val2)
+        return crit
+
+    elif criterion.operator in [31, 32, 33, 34, 35, 36, 91, 108, 109, 127]: # Item in val2
+        crit = [OPERATOR[criterion.operator]]
+        itemID = criterion.value2
+        targetItem = Item.objects.get(aoid=itemID)
+        crit.append(f'<a href="/item/{itemID}">{targetItem.name}</a>')
+        return crit
+
+    elif criterion.operator in [93, 94, 97]: # PerkTrained/PerkLocked/PerkNotLocked
+        crit = [OPERATOR[criterion.operator]]
+        crit.append(criterion.value2)
+        return crit
+
+    elif criterion.operator in [98, 99]: # True/False
+        crit = [OPERATOR[criterion.operator]]
+        return crit
+
+    elif criterion.operator in [44, 45, 66, 70, 80, 83, 85, 86, 89, 104, 111, 112, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 134, 136]:
+        crit = [STAT[criterion.value1]]
+        crit.append(OPERATOR[criterion.operator])
+        crit.append(criterion.value2)
+        return crit
+
+    elif criterion.operator in [91, 92, 101, 102, 106, 117, 138]: # operator then value2
+        crit = [OPERATOR[criterion.operator]]
+        crit.append(criterion.value2)
+        return crit
+
+    elif criterion.operator in [88]: # Use location
+        crit = [OPERATOR[criterion.operator]]
+        crit.append(str(ARMOR_SLOT(criterion.value2)).replace('ARMOR_SLOT.', ''))
+        return crit
+
+    else: 
+        breakpoint()
+
+# def flatten(lst):
+#     result = []
+#     for i in lst:
+#         if isinstance(i, list):
+#             result.extend(flatten(i))
+#         else:
+#             result.append(i)
+#     return result
+
+# def parse(criteria, invert=False):
+#     # breakpoint()
+#     if isinstance(criteria, list):
+#         if len(criteria) == 3:
+#             operator = criteria[1]
+#             if operator == 'And':
+#                 return f"({parse(criteria[0])} AND {parse(criteria[2])})"
+#             elif operator == 'Or':
+#                 return f"({parse(criteria[0])} OR {parse(criteria[2])})"
+#             elif operator == 'Not':
+#                 return f"NOT ({parse(criteria[2])})"
+#         else:  # Assume non-operator
+#             return str(criteria)
+#     else:  # Assume non-operator
+#         return str(criteria)
+    
+# def print_tree(criteria, indent=0):
+#     # breakpoint()
+#     if isinstance(criteria, list):
+#         if len(criteria) == 3:
+#             operator = criteria[1]
+#             if not operator in ['And', 'Or', 'Not']:
+#                 print('  ' * indent + str(criteria))
+#             # elif operator == 'Or':
+#             #     print('  ' * indent + operator)
+#             #     print_tree(criteria[0], indent + 1)
+#             #     print_tree(criteria[2], indent + 1)
+#             else:
+#                 print('  ' * indent + operator)
+#                 print_tree(criteria[0], indent + 1)
+#                 print_tree(criteria[2], indent + 1)
+#         else:  # Assume non-operator
+#             print('  ' * indent + str(criteria))
+#     else:  # Assume non-operator
+#         print('  ' * indent + str(criteria))

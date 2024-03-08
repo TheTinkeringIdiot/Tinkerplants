@@ -84,8 +84,12 @@ def item(request, id, ql=0):
             data['AmmoType'] = AMMOTYPE[stat.value]
 
         elif STAT[stat.stat] == 'Slot':
+            # breakpoint()
             if ITEM_CLASS[item.itemClass] == 'Weapon':
-                slots = str(WEAPON_SLOT(stat.value)).replace('WEAPON_SLOT.', '').split('|')
+                if item.aoid in [202726, 202727, 202728, 202729, 202730, 202731, 290619, 290625, 290626, 290627]: # Slot on this item is -1, set it manually
+                    slots = str(WEAPON_SLOT(2**9)).replace('WEAPON_SLOT.', '').split('|')
+                else:
+                    slots = str(WEAPON_SLOT(stat.value)).replace('WEAPON_SLOT.', '').split('|')
                 data['Slot'] = slots
             elif ITEM_CLASS[item.itemClass] == 'Armor':
                 slots = str(ARMOR_SLOT(stat.value)).replace('ARMOR_SLOT.', '').split('|')
@@ -110,64 +114,76 @@ def item(request, id, ql=0):
             data['DefenseSkills'].append([STAT[sv.stat], f'{sv.value}%'])
 
     data['Specials'] = {}
-    if 'FlingShot' in data['Can']:
+    if data.get('Can') is not None and 'FlingShot' in data['Can']:
         data['Specials']['FlingShot'] = calculate_fling(data['AttackDelay_Value'])
-    if 'Burst' in data['Can']:
+
+    if data.get('Can') is not None and 'Burst' in data['Can']:
         if data.get('Burst') is not None:
             data['Specials']['Burst'] = calculate_burst(data['AttackDelay_Value'], data['RechargeDelay_Value'], data['Burst'])
         elif data.get('BurstRecharge') is not None:
             data['Specials']['Burst'] = calculate_burst(data['AttackDelay_Value'], data['RechargeDelay_Value'], data['BurstRecharge'])
-    if 'FullAuto' in data['Can']:
-        data['Specials']['FullAuto'] = calculate_full_auto(data['RechargeDelay_Value'], data['FullAuto'])
-    if 'AimedShot' in data['Can']:
+
+    if data.get('Can') is not None and 'FullAuto' in data['Can']:
+        if data.get('FullAuto') is not None:
+            data['Specials']['FullAuto'] = calculate_full_auto(data['RechargeDelay_Value'], data['FullAuto'])
+        elif data.get('FullAutoRecharge') is not None:
+            data['Specials']['FullAuto'] = calculate_full_auto(data['RechargeDelay_Value'], data['FullAutoRecharge'])
+
+    if data.get('Can') is not None and 'AimedShot' in data['Can']:
         data['Specials']['AimedShot'] = calculate_aimed_shot(data['RechargeDelay_Value'])
-    if 'FastAttack' in data['Can']:
+    if data.get('Can') is not None and 'FastAttack' in data['Can']:
         data['Specials']['FastAttack'] = calculate_fast_attack(data['AttackDelay_Value'])
 
     data['Actions'] = []
     for actionData in item.actions.all():
         action = {}
+        if actionData.action == 0: # these are useless
+            continue
         action['Action'] = TEMPLATE_ACTION[actionData.action]
+        action['Criteria'] = []
         criteria = []
 
-        op_idx = 0
         for actioncriterion in actionData.actioncriterion_set.order_by('order').select_related('criterion').all():
             criterion = actioncriterion.criterion
-            if criterion.value1 == 0:
-                if criterion.operator in USE_ON_OPERATOR.keys():
-                    criteria.append([USE_ON_OPERATOR[criterion.operator]])
-                else:
-                    criteria[op_idx].append(GROUPING_OPERATOR[criterion.operator])
-                op_idx += 1
-            else:
-                crit = []
-                val1 = STAT[criterion.value1]
-                crit.append(val1)
+            operator = criterion.operator
+            # breakpoint()
 
-                if val1 == 'Profession':
-                    val2 = PROFESSION[criterion.value2]
-                elif val1 == 'Faction':
-                    val2 = FACTION[criterion.value2]
-                else:
-                    val2 = criterion.value2
+            try:
+                if operator == 42: 
+                    if len(criteria) <= 0: continue
+                    operand = criteria.pop()
+                    operand.append('Not')
+                    criteria.append(operand)
+                    # result = operand
                 
-                compare = OPERATOR[criterion.operator]
-                if compare == 'StatEqual' or compare == 'StatBitSet':
-                    crit.append('==')
-                    crit.append(val2)
-                if compare == 'StatGreaterThan':
-                    crit.append('>=')
-                    crit.append(val2 + 1)
-                elif compare == 'StatLessThan':
-                    crit.append('<=')
-                    crit.append(val2 - 1)
-                elif compare == 'StatNotEqual':
-                    crit.append('!=')
-                    crit.append(val2)
-                criteria.append(crit)
+                elif operator == 4:
+                    if len(criteria) <= 0: continue
+                    oper1 = criteria.pop()
+                    oper2 = criteria.pop()
+                    oper2.append('And')
+                    criteria.extend([oper2, oper1])
+                    # result = [oper1, 'And', oper2]
 
-        action['Criteria'] = criteria
-        data['Actions'].append(action)
+                elif operator == 3:
+                    if len(criteria) <= 0: continue
+                    oper1 = criteria.pop()
+                    oper2 = criteria.pop()
+                    oper2.append('Or')
+                    criteria.extend([oper2, oper1])
+                    # result = [oper1, 'Or', oper2]
+
+                else:
+                    result = interpret_criterion(criterion)
+                    criteria.append(result)
+
+            except:
+                continue
+                
+        if len(criteria) > 0:
+            action['Criteria'].extend(criteria)
+
+        if len(action['Criteria']) > 0:
+            data['Actions'].append(action)
 
     data['SpellData'] = []
     for spellData in item.spellData.all():
@@ -201,23 +217,48 @@ def item(request, id, ql=0):
                         formatParams[tag] = f'{STAT[spell.spellParams[tag]]}'
 
                     elif tag == 'Duration':
-                        if not spell.spellID == 53033:
+                        if not spell.spellID in [53033, 53187]:
                             formatParams[tag] = int(spell.spellParams[tag] / 100)
                         else:
                             formatParams[tag] = spell.spellParams[tag]
 
                     elif tag == 'NanoID':
                         aoid = spell.spellParams[tag]
-                        nano = Item.objects.get(aoid=aoid)
+                        try:
+                            nano = Item.objects.get(aoid=aoid)
+                        except:
+                            formatParams[tag] = 'Unknown'
+                            continue
+                        
                         if nano is not None:
                             formatParams[tag] = f'<a href="/item/{aoid}">{nano.name}</a>'
                         else:
                             formatParams[tag] = f'<a href="/item/{aoid}">{aoid}</a>'
 
                     elif tag == 'BitNum':
-                        formatParams[tag] = str(WORN_ITEM(2**spell.spellParams['BitNum'])).replace('WORN_ITEM.', '')
+                        # breakpoint()
+                        stat = spell.spellParams['Stat']
+                        if stat in [1, 65, 179, 181, 198, 215, 256, 257, 301, 471, 472, 545, 583, 585, 586, 618, 686]:
+                            formatParams[tag] = spell.spellParams[tag]
+                        elif stat in [467]:
+                            # breakpoint()
+                            formatParams[tag] = str(SL_ZONE_PROTECTION(spell.spellParams[tag])).replace('SL_ZONE_PROTECTION.', '')
+                        elif stat in [355]:
+                            formatParams[tag] = str(WORN_ITEM(2**spell.spellParams['BitNum'])).replace('WORN_ITEM.', '')
+                        elif stat in [0]:
+                            formatParams[tag] = str(ITEM_NONE_FLAG(spell.spellParams['BitNum'])).replace('ITEM_NONE_FLAG.', '')
+                        else:
+                            breakpoint()
+
+                    elif tag == 'Message':
+                        if spell.spellParams.get(tag) is not None:
+                            formatParams[tag] = spell.spellParams[tag]
+                        else:
+                            formatParams[tag] = spell.spellParams['MessageName']
+                        
 
                     else:
+                        # breakpoint()
                         formatParams[tag] = spell.spellParams[tag]
 
                 if idx == 0:
