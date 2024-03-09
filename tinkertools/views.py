@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from tinkertools.models import *
 from tinkertools.utils import *
+from tinkertools.InterpItem import *
 
 import math, re
 
@@ -34,7 +35,6 @@ def search(request):
 
         data['Items'].append(item)
 
-    # breakpoint()
     try:
         return render(request, 'tinkertools/search.html', data)
     except Exception as thing:
@@ -43,16 +43,21 @@ def search(request):
 def item(request, id, ql=0):
     
     data = {}
+
+    # breakpoint()
     
     try:
-        item = Item.objects.get(aoid=id)
+        item = InterpItem(id, ql)
+        # item = Item.objects.get(aoid=id)
+        # breakpoint()
     except:
         return render(request, 'tinkertools/item_not_found.html')
 
     data['Name'] = item.name
     data['Description'] = item.description
     
-    for stat in item.stats.all():
+    for stat in item.stats():
+        # breakpoint()
         if STAT[stat.stat] == 'Can':
             canItems = str(CANFLAG(stat.value)).replace('CANFLAG.', '').split('|')
             data['Can'] = canItems
@@ -135,7 +140,7 @@ def item(request, id, ql=0):
         data['Specials']['FastAttack'] = calculate_fast_attack(data['AttackDelay_Value'])
 
     data['Actions'] = []
-    for actionData in item.actions.all():
+    for actionData in item.actions:
         action = {}
         if actionData.action == 0: # these are useless
             continue
@@ -143,8 +148,7 @@ def item(request, id, ql=0):
         action['Criteria'] = []
         criteria = []
 
-        for actioncriterion in actionData.actioncriterion_set.order_by('order').select_related('criterion').all():
-            criterion = actioncriterion.criterion
+        for criterion in actionData.criteria():
             operator = criterion.operator
             # breakpoint()
 
@@ -185,12 +189,14 @@ def item(request, id, ql=0):
         if len(action['Criteria']) > 0:
             data['Actions'].append(action)
 
+    # breakpoint()
+
     data['SpellData'] = []
-    for spellData in item.spellData.all():
+    for spellData in item.spellData:
         spellEvent= {}
         spellEvent['Event'] = TEMPLATE_EVENT[spellData.event]
         spellEvent['Spells'] = []
-        for spell in spellData.spells.all():
+        for spell in spellData.spells():
             newSpell = {}
             newSpell['Target'] = TARGET[spell.target]
             newSpell['TickCount'] = spell.tickCount
@@ -271,7 +277,6 @@ def item(request, id, ql=0):
             spellEvent['Spells'].append(newSpell)
         data['SpellData'].append(spellEvent)
 
-
     # breakpoint()
     
     try:
@@ -307,4 +312,3 @@ def calculate_fast_attack(attack_time):
     cap = math.floor(6 + (attack_time / 100))
     skill = round(((attack_time / 100) * 15 - cap) * 100)
     cycle = (skill, cap)
-    return cycle
