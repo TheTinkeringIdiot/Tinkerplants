@@ -67,6 +67,7 @@ class ShopHash(models.Model):
 class Item(models.Model):
     aoid = models.IntegerField(null=True)
     name = models.CharField(max_length=128)
+    ql = models.IntegerField(null=True)
     description = models.CharField(max_length=8192)
     itemClass = models.IntegerField(null=True)
     is_nano = models.BooleanField(default=False)
