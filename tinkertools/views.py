@@ -6,9 +6,6 @@ from tinkertools.CriterionHandler import *
 
 import math, re
 
-# Create your views here.
-
-
 def index(request):
     return render(request, 'tinkertools/index.html')
 
@@ -53,10 +50,7 @@ def item(request, id, ql=0):
     data['LowQL'] = item.low_ql
     data['HighQL'] = item.high_ql
 
-    # breakpoint()
-    
     for stat in item.stats():
-        # breakpoint()
         if STAT[stat.stat] == 'Can':
             canItems = str(CANFLAG(stat.value)).replace('CANFLAG.', '').split('|')
             data['Can'] = canItems
@@ -103,7 +97,6 @@ def item(request, id, ql=0):
             data['AmmoType'] = AMMOTYPE[stat.value]
 
         elif STAT[stat.stat] == 'Slot':
-            # breakpoint()
             if ITEM_CLASS[item.itemClass] == 'Weapon':
                 if item.aoid in [202726, 202727, 202728, 202729, 202730, 202731, 290619, 290625, 290626, 290627]: # Slot on this item is -1, set it manually
                     slots = str(WEAPON_SLOT(2**9)).replace('WEAPON_SLOT.', '').split('|')
@@ -176,7 +169,6 @@ def item(request, id, ql=0):
 
         for criterion in actionData.criteria():
             operator = criterion.operator
-            # breakpoint()
 
             try:
                 if operator == 42: 
@@ -184,7 +176,6 @@ def item(request, id, ql=0):
                     operand = criteria.pop()
                     operand.append('Not')
                     criteria.append(operand)
-                    # result = operand
                 
                 elif operator == 4:
                     if len(criteria) <= 0: continue
@@ -192,7 +183,6 @@ def item(request, id, ql=0):
                     oper2 = criteria.pop()
                     oper2.append('And')
                     criteria.extend([oper2, oper1])
-                    # result = [oper1, 'And', oper2]
 
                 elif operator == 3:
                     if len(criteria) <= 0: continue
@@ -200,7 +190,6 @@ def item(request, id, ql=0):
                     oper2 = criteria.pop()
                     oper2.append('Or')
                     criteria.extend([oper2, oper1])
-                    # result = [oper1, 'Or', oper2]
 
                 else:
                     result = interpret_criterion(criterion)
@@ -214,8 +203,6 @@ def item(request, id, ql=0):
 
         if len(action['Criteria']) > 0:
             data['Actions'].append(action)
-
-    # breakpoint()
 
     data['SpellData'] = []
     for spellData in item.spellData:
@@ -233,9 +220,6 @@ def item(request, id, ql=0):
             for criterion in spell.criteria.all():
                 newSpell['Criteria'].append(interpret_criterion(criterion))
 
-
-            # breakpoint()
-
             for idx, token in enumerate(spellTokens):
 
                 formatParams = {}
@@ -245,13 +229,11 @@ def item(request, id, ql=0):
                 tags = [re.sub('[\{\}]', '', x) for x in tags]
 
                 for tag in tags:
-                    # breakpoint()
 
                     if tag == 'Location':
                         formatParams[tag] = f'{TEXTURELOCATION[spell.spellParams[tag]]}'
 
                     elif tag == 'Stat' or tag == 'Skill':
-                        # breakpoint()
                         formatParams[tag] = f'{STAT[spell.spellParams[tag]]}'
 
                     elif tag == 'Duration':
@@ -274,19 +256,15 @@ def item(request, id, ql=0):
                             formatParams[tag] = f'<a href="/item/{aoid}">{aoid}</a>'
 
                     elif tag == 'BitNum':
-                        # breakpoint()
                         stat = spell.spellParams['Stat']
                         if stat in [1, 62, 65, 179, 181, 198, 215, 224, 251, 256, 257, 301, 471, 472, 545, 583, 585, 586, 618, 686]:
                             formatParams[tag] = spell.spellParams[tag]
                         elif stat in [467]:
-                            # breakpoint()
                             formatParams[tag] = str(SL_ZONE_PROTECTION(spell.spellParams[tag])).replace('SL_ZONE_PROTECTION.', '')
                         elif stat in [355]:
                             formatParams[tag] = str(WORN_ITEM(2**spell.spellParams['BitNum'])).replace('WORN_ITEM.', '')
                         elif stat in [0]:
                             formatParams[tag] = str(ITEM_NONE_FLAG(spell.spellParams['BitNum'])).replace('ITEM_NONE_FLAG.', '')
-                        # else:
-                        #     breakpoint()
 
                     elif tag == 'Message':
                         if spell.spellParams.get(tag) is not None:
@@ -301,7 +279,6 @@ def item(request, id, ql=0):
                         pass
 
                     else:
-                        # breakpoint()
                         formatParams[tag] = spell.spellParams[tag]
 
                 if idx == 0:
