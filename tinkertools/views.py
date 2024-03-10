@@ -225,11 +225,15 @@ def item(request, id, ql=0):
         for spell in spellData.spells():
             newSpell = {}
             newSpell['Target'] = TARGET[spell.target]
-            # newSpell['TickCount'] = spell.tickCount
-            # newSpell['TickInterval'] = spell.tickInterval
             newSpell['spellID'] = spell.spellID
             spellFormat = SPELL_FORMATS[spell.spellID]
             spellTokens = spellFormat.split('|')
+
+            newSpell['Criteria'] = []
+            for criterion in spell.criteria.all():
+                newSpell['Criteria'].append(interpret_criterion(criterion))
+
+
             # breakpoint()
 
             for idx, token in enumerate(spellTokens):

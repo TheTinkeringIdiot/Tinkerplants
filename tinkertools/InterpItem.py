@@ -156,7 +156,8 @@ class InterpItem:
                             tickCount = lo_spell.tickCount,
                             tickInterval = lo_spell.tickInterval,
                             spellID = lo_spell.spellID,
-                            spellParams = lo_spell.spellParams
+                            spellParams = lo_spell.spellParams,
+                            criteria = lo_spell.criteria
                             )
                         newSpell.spellParams['Amount'] = newVal 
                         self.interpSpells.append(newSpell)
@@ -170,7 +171,8 @@ class InterpItem:
                             tickCount = lo_spell.tickCount,
                             tickInterval = lo_spell.tickInterval,
                             spellID = lo_spell.spellID,
-                            spellParams = lo_spell.spellParams
+                            spellParams = lo_spell.spellParams,
+                            criteria = lo_spell.criteria
                             )
                         newSpell.spellParams['Amount'] = newVal 
                         self.interpSpells.append(newSpell)
@@ -184,7 +186,8 @@ class InterpItem:
                             tickCount = lo_spell.tickCount,
                             tickInterval = lo_spell.tickInterval,
                             spellID = lo_spell.spellID,
-                            spellParams = lo_spell.spellParams
+                            spellParams = lo_spell.spellParams,
+                            criteria = lo_spell.criteria
                             )
                         newSpell.spellParams['Percent'] = newVal 
                         self.interpSpells.append(newSpell)
