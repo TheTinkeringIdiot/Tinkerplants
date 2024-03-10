@@ -69,9 +69,9 @@ class InterpItem:
         for lo_spellData in self.lo_item.spellData.all():
             if self.interpolating:
                 hi_spellData = self.hi_item.spellData.filter(event=lo_spellData.event).first()
-                self.spellData.append(self.InterpSpell(self, lo_spellData, hi_spellData))
+                self.spellData.append(self.InterpSpellData(self, lo_spellData, hi_spellData))
             else:
-                self.spellData.append(self.InterpSpell(self, lo_spellData))
+                self.spellData.append(self.InterpSpellData(self, lo_spellData))
 
             
     def stats(self):
@@ -133,7 +133,7 @@ class InterpItem:
             for criterion in self.criterions:
                 yield criterion
 
-    class InterpSpell: # Inner class for SpellData and Spells
+    class InterpSpellData: # Inner class for SpellData and Spells
         outer = None
         event = 0
         interpSpells = []
@@ -151,14 +151,7 @@ class InterpItem:
                         hi_spell = hi_spellData.spells.filter(spellID=lo_spell.spellID, spellParams__Stat=lo_spell.spellParams['Stat']).first()
                         newVal = self.outer.interpolate_value(lo_spell.spellParams['Amount'], hi_spell.spellParams['Amount'])
 
-                        newSpell = Spell(
-                            target = lo_spell.target,
-                            tickCount = lo_spell.tickCount,
-                            tickInterval = lo_spell.tickInterval,
-                            spellID = lo_spell.spellID,
-                            spellParams = lo_spell.spellParams,
-                            criteria = lo_spell.criteria
-                            )
+                        newSpell = self.convert_spell(lo_spell)
                         newSpell.spellParams['Amount'] = newVal 
                         self.interpSpells.append(newSpell)
 
@@ -166,14 +159,7 @@ class InterpItem:
                         hi_spell = hi_spellData.spells.filter(spellID=lo_spell.spellID, spellParams__Stat=lo_spell.spellParams['Skill']).first()
                         newVal = self.outer.interpolate_value(lo_spell.spellParams['Amount'], hi_spell.spellParams['Amount'])
 
-                        newSpell = Spell(
-                            target = lo_spell.target,
-                            tickCount = lo_spell.tickCount,
-                            tickInterval = lo_spell.tickInterval,
-                            spellID = lo_spell.spellID,
-                            spellParams = lo_spell.spellParams,
-                            criteria = lo_spell.criteria
-                            )
+                        newSpell = self.convert_spell(lo_spell)
                         newSpell.spellParams['Amount'] = newVal 
                         self.interpSpells.append(newSpell)
 
@@ -181,26 +167,54 @@ class InterpItem:
                         hi_spell = hi_spellData.spells.filter(spellID=lo_spell.spellID, spellParams__Stat=lo_spell.spellParams['Stat']).first()
                         newVal = self.outer.interpolate_value(lo_spell.spellParams['Percent'], hi_spell.spellParams['Percent'])
 
-                        newSpell = Spell(
-                            target = lo_spell.target,
-                            tickCount = lo_spell.tickCount,
-                            tickInterval = lo_spell.tickInterval,
-                            spellID = lo_spell.spellID,
-                            spellParams = lo_spell.spellParams,
-                            criteria = lo_spell.criteria
-                            )
+                        newSpell = self.convert_spell(lo_spell)
                         newSpell.spellParams['Percent'] = newVal 
                         self.interpSpells.append(newSpell)
 
                     else:
-                        self.interpSpells.append(lo_spell)
+                        newSpell = self.convert_spell(lo_spell)
+                        self.interpSpells.append(newSpell)
 
             else:
-                self.interpSpells.extend([x for x in lo_spellData.spells.all()])
+                self.interpSpells.extend([self.convert_spell(x) for x in lo_spellData.spells.all()])
 
         def spells(self):
             for spell in self.interpSpells:
                 yield spell
+
+        def convert_spell(self, spell):
+            return self.InterpSpell(
+                self, 
+                target = spell.target,
+                tickCount = spell.tickCount,
+                tickInterval = spell.tickInterval,
+                spellID = spell.spellID,
+                spellParams = spell.spellParams,
+                criteria = [x for x in spell.criteria.all()]
+                )
+
+        class InterpSpell:
+            outer = None
+            target = 0
+            tickCount = 0
+            tickInterval = 0
+            spellID = 0
+            spellParams = {}
+            criterions = []
+
+            def __init__(self, outer, target, tickCount, tickInterval, spellID, spellParams, criteria):
+                self.criterions = []
+                self.outer = outer
+                self.target = target
+                self.tickCount = tickCount
+                self.tickInterval = tickInterval
+                self.spellID = spellID
+                self.spellParams = spellParams
+                self.criterions = criteria
+
+            def criteria(self):
+                for criterion in self.criterions:
+                    yield criterion
             
 
 

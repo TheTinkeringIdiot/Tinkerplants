@@ -165,38 +165,9 @@ def item(request, id, ql=0):
             continue
         action['Action'] = TEMPLATE_ACTION[actionData.action]
         action['Criteria'] = []
-        criteria = []
+        criteria = CriterionHandler([x for x in actionData.criteria()]).parse_criteria()
 
-        for criterion in actionData.criteria():
-            operator = criterion.operator
-
-            try:
-                if operator == 42: 
-                    if len(criteria) <= 0: continue
-                    operand = criteria.pop()
-                    operand.append('Not')
-                    criteria.append(operand)
-                
-                elif operator == 4:
-                    if len(criteria) <= 0: continue
-                    oper1 = criteria.pop()
-                    oper2 = criteria.pop()
-                    oper2.append('And')
-                    criteria.extend([oper2, oper1])
-
-                elif operator == 3:
-                    if len(criteria) <= 0: continue
-                    oper1 = criteria.pop()
-                    oper2 = criteria.pop()
-                    oper2.append('Or')
-                    criteria.extend([oper2, oper1])
-
-                else:
-                    result = interpret_criterion(criterion)
-                    criteria.append(result)
-
-            except:
-                continue
+        breakpoint()
                 
         if len(criteria) > 0:
             action['Criteria'].extend(criteria)
@@ -210,15 +181,16 @@ def item(request, id, ql=0):
         spellEvent['Event'] = TEMPLATE_EVENT[spellData.event]
         spellEvent['Spells'] = []
         for spell in spellData.spells():
+            
             newSpell = {}
             newSpell['Target'] = TARGET[spell.target]
             newSpell['spellID'] = spell.spellID
             spellFormat = SPELL_FORMATS[spell.spellID]
             spellTokens = spellFormat.split('|')
 
-            newSpell['Criteria'] = []
-            for criterion in spell.criteria.all():
-                newSpell['Criteria'].append(interpret_criterion(criterion))
+            newSpell['Criteria'] = CriterionHandler([x for x in spell.criteria()]).parse_criteria()
+            # for criterion in spell.criteria():
+            #     newSpell['Criteria'].append(interpret_criterion(criterion))
 
             for idx, token in enumerate(spellTokens):
 
