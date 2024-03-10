@@ -2,6 +2,7 @@ from django.shortcuts import render
 from tinkertools.models import *
 from tinkertools.utils import *
 from tinkertools.InterpItem import *
+from tinkertools.CriterionHandler import *
 
 import math, re
 
