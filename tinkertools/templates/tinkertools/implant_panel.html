@@ -1,50 +1,47 @@
 {% load static %}
 
-<div class="col weapon-column">
-    <div class="card">
-        <div class="card-header"><span class="fs-6">Implants</span></div>
-        <table class="implanttable">
-            <tr>
-                <td>{% if 'Eyes' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-                <td>{% if 'Head' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-                <td>{% if 'Ears' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-            </tr>
-            <tr>
-                <td>{% if 'RightArm' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-                <td>{% if 'Chest' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-                <td>{% if 'LeftArm' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-            </tr>
-            <tr>
-                <td>{% if 'RightWrist' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-                <td>{% if 'Waist' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-                <td>{% if 'LeftWrist' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-            </tr>
-            <tr>
-                <td>{% if 'RightHand' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-                <td>{% if 'Legs' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-                <td>{% if 'LeftHand' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-            </tr>
-            <tr>
-                <td>{% if 'Deck4' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-                <td>{% if 'Feet' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-                <td>{% if 'Deck6' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
-            </tr>
-        </table>
+<div class="row pb-2">
+    <div class="col weapon-column">
+        <div class="card">
+            <div class="card-header"><span class="fs-6">Implants</span></div>
+            <table class="implanttable">
+                <tr>
+                    <td>{% if 'Eyes' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                    <td>{% if 'Head' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                    <td>{% if 'Ears' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% if 'RightArm' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                    <td>{% if 'Chest' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                    <td>{% if 'LeftArm' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% if 'RightWrist' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                    <td>{% if 'Waist' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                    <td>{% if 'LeftWrist' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% if 'RightHand' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                    <td>{% if 'Legs' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                    <td>{% if 'LeftHand' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% if 'Deck4' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                    <td>{% if 'Feet' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                    <td>{% if 'Deck6' in Slot %}<img class="pt-0 pb-0" src="{% static 'image/check-mark.png' %}" height="30px" width="30px">{% endif %}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="col col-md-6">
+        {% include "tinkertools/description_panel.html" %}
     </div>
 </div>
-<div class="col col-md-4">
-    {% include "tinkertools/description_panel.html" %}
-</div>
-<div class="col col-md-3 ms-2">
-
-</div>
-<div class="col col-md-3 ms-2">
-
-</div>
-<div class="row">&nbsp;</div>
-<div class="col col-md-6 ms-2">
-    {% include "tinkertools/actions_panel.html" %}
-</div>
-<div class="col col-md-5 ms-2">
-    {% include "tinkertools/spells_panel.html" %}
+<div class="row pb-2">
+    <div class="col col-md-6">
+        {% include "tinkertools/actions_panel.html" %}
+    </div>
+    <div class="col col-md-6">
+        {% include "tinkertools/spells_panel.html" %}
+    </div>
 </div>

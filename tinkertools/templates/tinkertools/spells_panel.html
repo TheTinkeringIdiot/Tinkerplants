@@ -1,24 +1,23 @@
 {% load static %}
 
 {% for spellData in SpellData %}
-<div class="row pb-1">
-    <div class="card ps-0 pe-0 pb-0">
-        <div class="card-header"><span class="fs-6">On {{ spellData.Event }}</span></div>
-        <table class="card-table table mb-0 pb-0">
-            {% for spell in spellData.Spells %}
-            <tr>
-                <td>{{ spell.Target }}</td>
-                <td ><span class="fs-6">{{ spell.Description |safe }}</span></td>
-                {% if spell.Amount %}
-                <td class="text-end"><span class="fs-6">{{ spell.Amount }}</span></td>
-                {% else %}
-                <td></td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
+
+<div class="card ps-0 pe-0 pb-0 mb-2">
+    <div class="card-header"><span class="fs-6">On {{ spellData.Event }}</span></div>
+    <table class="card-table table mb-0 pb-0">
+        {% for spell in spellData.Spells %}
+        <tr>
+            <td>{{ spell.Target }}</td>
+            <td ><span class="fs-6">{{ spell.Description |safe }}</span></td>
+            {% if spell.Amount %}
+            <td class="text-end"><span class="fs-6">{{ spell.Amount }}</span></td>
+            {% else %}
+            <td></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
 </div>
-<div class="row">&nbsp;</div>
+
 {% endfor %}
     

@@ -8,13 +8,18 @@
             <span class="fs-3">{{ Name }}</span>&nbsp;&nbsp;&nbsp;
             <span class="fs-5 text-muted">QL {{ Level }}</span>
         </div>
-        <div>
-            {% if "NoDrop" in Flags %}
-                <button class="btn btn-sm btn-danger py-0" style="font-size: 0.7em;">NoDrop</button>
-            {% endif %}
-            {% for flag in Can %}
-                <button class="btn btn-sm btn-secondary py-0" style="font-size: 0.7em;">{{ flag }}</button>
-            {% endfor %}
+        <div class="row">
+            <div class="col col-md-9">
+                {% if "NoDrop" in Flags %}
+                    <button class="btn btn-sm btn-danger py-0" style="font-size: 0.7em;">NoDrop</button>
+                {% endif %}
+                {% for flag in Can %}
+                    <button class="btn btn-sm btn-secondary py-0" style="font-size: 0.7em;">{{ flag }}</button>
+                {% endfor %}
+            </div>
+            <div class="col col-md-3">
+                {% include "tinkertools/interpolate_panel.html" %}
+            </div>
         </div>
     </div>
     <div class="row">

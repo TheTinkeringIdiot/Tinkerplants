@@ -27,11 +27,7 @@ def search(request):
 
         item['AOID'] = result.aoid
         item['Name'] = result.name
-
-        try:
-            item['QL'] = result.stats.filter(stat=54).first().value
-        except:
-            item['QL'] = '-'
+        item['QL'] = result.ql
 
         data['Items'].append(item)
 
@@ -43,18 +39,20 @@ def search(request):
 def item(request, id, ql=0):
     
     data = {}
-
-    # breakpoint()
     
     try:
         item = InterpItem(id, ql)
-        # item = Item.objects.get(aoid=id)
-        # breakpoint()
     except:
         return render(request, 'tinkertools/item_not_found.html')
 
+    data['AOID'] = id
     data['Name'] = item.name
     data['Description'] = item.description
+    data['QL'] = item.ql
+    data['LowQL'] = item.low_ql
+    data['HighQL'] = item.high_ql
+
+    # breakpoint()
     
     for stat in item.stats():
         # breakpoint()
@@ -78,9 +76,24 @@ def item(request, id, ql=0):
             data['AttackDelay'] = f'{stat.value / 100:.2f}s'
             data['AttackDelay_Value'] = stat.value
 
+        elif STAT[stat.stat] == 'AttackDelayCap':
+            data['AttackDelayCap'] = f'{stat.value / 100:.2f}s'
+
         elif STAT[stat.stat] == 'RechargeDelay':
             data['RechargeDelay'] = f'{stat.value / 100:.2f}s'
             data['RechargeDelay_Value'] = stat.value
+
+        elif STAT[stat.stat] == 'Duration':
+            duration = stat.value / 100
+            if duration > 3600:
+                data['Duration'] = f'{duration / 3600:.2f}h'
+            elif duration > 60:
+                data['Duration'] = f'{duration / 60:.2f}m'
+            else:
+                data['Duration'] = f'{duration / 100:.2f}s'
+
+        elif STAT[stat.stat] == 'CooldownTime1':
+            data['CooldownTime1'] = f'{stat.value / 100:.2f}s'
 
         elif STAT[stat.stat] == 'InitiativeType':
             data['InitiativeType'] = STAT[stat.value]
@@ -108,6 +121,18 @@ def item(request, id, ql=0):
 
         else:
             data[STAT[stat.stat]] = stat.value
+
+    if data.get('Icon') is None:
+        if data.get('EffectIcon') is not None:
+            data['Icon'] = data['EffectIcon']
+        else:
+            data['Icon'] = 273470
+
+    if data.get('ItemClass') is None:
+        if item.is_nano:
+            data['ItemClass'] = 'Nano'
+        else:
+            data['ItemClass'] = 'None'
 
     if item.atkdef is not None:
         data['AttackSkills'] = []
@@ -199,8 +224,8 @@ def item(request, id, ql=0):
         for spell in spellData.spells():
             newSpell = {}
             newSpell['Target'] = TARGET[spell.target]
-            newSpell['TickCount'] = spell.tickCount
-            newSpell['TickInterval'] = spell.tickInterval
+            # newSpell['TickCount'] = spell.tickCount
+            # newSpell['TickInterval'] = spell.tickInterval
             newSpell['spellID'] = spell.spellID
             spellFormat = SPELL_FORMATS[spell.spellID]
             spellTokens = spellFormat.split('|')
@@ -209,6 +234,8 @@ def item(request, id, ql=0):
             for idx, token in enumerate(spellTokens):
 
                 formatParams = {}
+                formatParams['TickCount'] = spell.tickCount
+                formatParams['TickInterval'] = spell.tickInterval / 100
                 tags = re.findall('(\{[A-z0-9]{1,}\})', token)
                 tags = [re.sub('[\{\}]', '', x) for x in tags]
 
@@ -228,7 +255,7 @@ def item(request, id, ql=0):
                         else:
                             formatParams[tag] = spell.spellParams[tag]
 
-                    elif tag == 'NanoID':
+                    elif tag == 'NanoID' or tag == 'Proc':
                         aoid = spell.spellParams[tag]
                         try:
                             nano = Item.objects.get(aoid=aoid)
@@ -253,8 +280,8 @@ def item(request, id, ql=0):
                             formatParams[tag] = str(WORN_ITEM(2**spell.spellParams['BitNum'])).replace('WORN_ITEM.', '')
                         elif stat in [0]:
                             formatParams[tag] = str(ITEM_NONE_FLAG(spell.spellParams['BitNum'])).replace('ITEM_NONE_FLAG.', '')
-                        else:
-                            breakpoint()
+                        # else:
+                        #     breakpoint()
 
                     elif tag == 'Message':
                         if spell.spellParams.get(tag) is not None:
@@ -264,6 +291,9 @@ def item(request, id, ql=0):
 
                     elif tag == 'Target' and spell.spellID == 53254:
                         formatParams[tag] = 'Self'
+
+                    elif tag == 'TickCount' or tag == 'TickInterval':
+                        pass
 
                     else:
                         # breakpoint()

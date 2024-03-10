@@ -1370,7 +1370,7 @@ TEMPLATE_ACTION = {
 }
 
 SPELL_FORMATS = {
-    53002 : 'Hit {Stat} for {MinValue} to {MaxValue}',
+    53002 : 'Hit {Stat} for {MinValue} to {MaxValue} | {TickCount}x @ {TickInterval}s',
     53003 : 'Animation effect, A={A} B={B} C={C} D={D} E={E}',
     53012 : 'Modify {Stat} | {Amount}',
     53014 : 'Modify {Stat} for {Duration}s | {Amount}',

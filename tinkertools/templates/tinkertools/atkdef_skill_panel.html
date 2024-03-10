@@ -1,0 +1,33 @@
+{% load static %}
+
+{% if AttackSkills or DefenseSkills %}
+<div class="col col-md-6 ms-2">
+    <div class="card ps-0 pe-0 pb-0">
+        <div class="card-header"><span class="fs-6">Attack Skills</span></div>
+        <table class="card-table table mb-0 pb-0">
+            {% for item in AttackSkills %}
+            <tr>
+                <td>{{ item.0 }}</td>
+                <td class="text-end"><span class="fs-6">{{ item.1 }}</span></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<div class="col col-md-5 ms-2">
+    <div class="card ps-0 pe-0 pb-0">
+        <div class="card-header"><span class="fs-6">Defense Skills</span></div>
+            <table class="card-table table mb-0 pb-0">
+                {% for item in DefenseSkills %}
+                <tr>
+                    <td>{{ item.0 }}</td>
+                    <td class="text-end"><span class="fs-6">{{ item.1 }}</span></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+    

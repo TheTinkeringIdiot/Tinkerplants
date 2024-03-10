@@ -1,34 +1,32 @@
 {% load static %}
 
 {% if AttackDelay or RechargeDelay or AttackRange or InitiativeType or MaxEnergy %}
-<div class="col col-md-3 ms-2">
-    <div class="row pb-2">
-        <div class="card ps-0 pe-0 pb-0">
-            <div class="card-header"><span class="fs-6">Attack</span></div>
-            <table class="card-table table mb-0 pb-0">
-                <tr>
-                    <td>Attack Time</td>
-                    <td class="text-end"><span class="fs-6">{{ AttackDelay }}</span></td>
-                </tr>
-                <tr>
-                    <td>Recharge Time</td>
-                    <td class="text-end"><span class="fs-6">{{ RechargeDelay }}</span></td>
-                </tr>
-                <tr>
-                    <td>Range</td>
-                    <td class="text-end"><span class="fs-6">{{ AttackRange }}m</span></td>
-                </tr>
-                <tr>
-                    <td>Init</td>
-                    <td class="text-end"><span class="fs-6">{{ InitiativeType }}</span></td>
-                </tr>
-                <tr>
-                    <td>Clip</td>
-                    {% if MaxEnergy >= 0 %}<td class="text-end"><span class="fs-6">{{ MaxEnergy }} {{ AmmoType }}</span></td>
-                    {% else %}<td class="text-end"><span class="fs-6"> - </span></td>{% endif %}
-                </tr>
-            </table>
-        </div>
-    </div>
+
+<div class="card ps-0 pe-0 pb-0">
+    <div class="card-header"><span class="fs-6">Attack</span></div>
+    <table class="card-table table mb-0 pb-0">
+        <tr>
+            <td>Attack Time</td>
+            <td class="text-end"><span class="fs-6">{{ AttackDelay }}</span></td>
+        </tr>
+        <tr>
+            <td>Recharge Time</td>
+            <td class="text-end"><span class="fs-6">{{ RechargeDelay }}</span></td>
+        </tr>
+        <tr>
+            <td>Range</td>
+            <td class="text-end"><span class="fs-6">{{ AttackRange }}m</span></td>
+        </tr>
+        <tr>
+            <td>Init</td>
+            <td class="text-end"><span class="fs-6">{{ InitiativeType }}</span></td>
+        </tr>
+        <tr>
+            <td>Clip</td>
+            {% if MaxEnergy >= 0 %}<td class="text-end"><span class="fs-6">{{ MaxEnergy }} {{ AmmoType }}</span></td>
+            {% else %}<td class="text-end"><span class="fs-6"> - </span></td>{% endif %}
+        </tr>
+    </table>
 </div>
+
 {% endif %}

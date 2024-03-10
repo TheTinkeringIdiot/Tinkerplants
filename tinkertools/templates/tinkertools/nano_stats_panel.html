@@ -1,0 +1,25 @@
+{% load static %}
+
+{% if Duration or CooldownTime1 or NanoPoints or NanoSchool or NanoStrain%}
+        <div class="card ps-0 pe-0 pb-0">
+            <div class="card-header"><span class="fs-6">Stats</span></div>
+            <table class="card-table table mb-0 pb-0">
+                <tr>
+                    <td>Nano Cost</td>
+                    <td class="text-end"><span class="fs-6">{{ NanoPoints }}</span></td>
+                </tr>
+                <tr>
+                    <td>Duration</td>
+                    <td class="text-end"><span class="fs-6">{{ Duration }}</span></td>             
+                </tr>
+                <tr>
+                    <td>Strain</td>
+                    <td class="text-end"><span class="fs-6">{{ NanoSchool }}:{{ NanoStrain }}</span></td>
+                </tr>
+                <tr>
+                    <td>School Cooldown</td>
+                    <td class="text-end"><span class="fs-6">{{ CooldownTime1 }}</span></td>
+                </tr>
+            </table>
+        </div>
+{% endif %}

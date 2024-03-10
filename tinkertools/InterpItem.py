@@ -12,6 +12,8 @@ class InterpItem:
     itemClass = 0
 
     ql = 0
+    low_ql = 0
+    high_ql = 0
     ql_delta = 0
     ql_delta_full = 0
     interpolating = False
@@ -23,22 +25,32 @@ class InterpItem:
         item = Item.objects.get(aoid=aoid)
         self.actions = []
         self.spellData = []
+
+        # matching description and name together accounts for implants with the same name
+        items = Item.objects.filter(name=item.name, description=item.description).order_by('ql').all()
         
-        if ql == 0 or item.ql == ql: # No interpolation
+        if items[len(items)-1].ql == item.ql or len(items) == 1: # No interpolation
             self.lo_item = item
             self.ql = item.ql
+            self.low_ql = item.ql
+            self.high_ql = item.ql
 
         else:
             self.interpolating = True
-            items = Item.objects.filter(name=item.name).order_by('ql')
+            
+            if ql == 0: # QL not specified, default to lowest QL for this item
+                ql = items[0].ql
+
             for i in range(len(items)):
-                if items[i].ql <= ql and items[i+1].ql >= ql:
+                if items[i].ql <= ql and items[i+1].ql > ql:
                     self.lo_item = items[i]
                     self.hi_item = items[i+1]
 
             self.ql = ql
             self.ql_delta_full = self.hi_item.ql - self.lo_item.ql
             self.ql_delta = ql - self.lo_item.ql
+            self.low_ql = self.lo_item.ql
+            self.high_ql = self.hi_item.ql - 1
 
         self.name = self.lo_item.name
         self.description = self.lo_item.description
@@ -86,7 +98,7 @@ class InterpItem:
         newval = round(lo_val + (val_per_ql * self.ql_delta))
         return newval
 
-    class InterpAction:
+    class InterpAction: # Inner class for actions and criterion
         outer = None
         action = 0
         criterions = []
@@ -121,7 +133,7 @@ class InterpItem:
             for criterion in self.criterions:
                 yield criterion
 
-    class InterpSpell:
+    class InterpSpell: # Inner class for SpellData and Spells
         outer = None
         event = 0
         interpSpells = []

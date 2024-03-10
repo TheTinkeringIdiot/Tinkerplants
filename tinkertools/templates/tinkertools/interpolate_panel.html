@@ -1,0 +1,18 @@
+{% load static %}
+
+{% if LowQL != HighQL %}
+<div class="input-group">
+    
+    <span class="input-group-text">QL {{ LowQL }}</span>
+    <input class="form-control text-center" type="text" id="ql-input" value="{{ QL }}">
+    <span class="input-group-text">QL {{ HighQL }}</span>
+</div>
+
+<script type="text/javascript">
+    input = document.getElementById('ql-input')
+    input.addEventListener('change', function() {
+        window.location.href = '/item/{{ AOID }}/' + input.value
+    })
+</script>
+{% endif %}
+    
