@@ -44,8 +44,13 @@ def import_rdb(data, is_nano):
             value = sv.get('RawValue')
             if stat == 76:
                 newItem.itemClass = value
+            elif stat == 54:
+                newItem.ql = value
             statValue, create = StatValue.objects.get_or_create(stat=stat, value=value)
             newItem.stats.add(statValue)
+
+        if newItem.ql is None:
+            newItem.ql = 1
 
         if newItem.itemClass is None:
             newItem.itemClass = 0
@@ -224,7 +229,7 @@ def make_criterion(data):
 
     return criteria
 
-chunkSize = 1000
+chunkSize = 100
 
 if __name__ == "__main__":
 
