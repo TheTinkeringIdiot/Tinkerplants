@@ -2,23 +2,27 @@
 
 A set of web-based utilities for the sci-fi MMORPG Anarchy Online. 
 
-### Tinkerplants
+### TinkerItems
+
+A full-featured item database
+
+### TinkerPlants
 
 Implant design and planning, with full requirements to build and equip
 
-### Tinkernanos
+### TinkerNanos
 
 Profession-specific nano program list with skill-based filtering
 
-### Tinkernukes
+### TinkerNukes
 
 Nanotechnician nuke table that suggests best available nukes for your setup
 
-### Tinkerfite
+### TinkerFite
 
 Weapon table that suggests weapon options for your setup
 
-### Tinkerpocket
+### TinkerPocket
 
 Symbiant and Pocket Boss database
 
@@ -42,7 +46,7 @@ See requirements.txt for the full list. Tinkertools is built and runs on Ubuntu 
 
 ## Updating the database
 
-This repo includes up-to-date data (data.json) for the latest AO client as of June 2023. This will be kept up to the best of my ability, but future updates can be accomplished by anyone using these steps:
+This repo includes up-to-date data (data.json) for the latest AO client as of March 2024. This will be kept up to the best of my ability, but future updates can be accomplished by anyone using these steps:
 
 1. Update your AO client.
 
