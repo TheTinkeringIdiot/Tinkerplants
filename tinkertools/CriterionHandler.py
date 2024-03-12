@@ -114,7 +114,7 @@ class CriterionHandler:
             crit = [OPERATOR[criterion.operator]]
             return crit
 
-        elif criterion.operator in [44, 45, 66, 70, 80, 83, 85, 86, 89, 103, 104, 111, 112, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 134, 136]:
+        elif criterion.operator in [44, 45, 66, 70, 80, 83, 85, 86, 89, 103, 104, 111, 112, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 129, 130, 131, 132, 133, 134, 135, 136]:
             crit = [STAT[criterion.value1]]
             crit.append(OPERATOR[criterion.operator])
             crit.append(criterion.value2)
