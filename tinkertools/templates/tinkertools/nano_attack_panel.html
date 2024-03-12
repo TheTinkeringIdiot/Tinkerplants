@@ -1,0 +1,26 @@
+{% load static %}
+
+{% if AttackDelay or RechargeDelay or AttackRange %}
+
+<div class="card ps-0 pe-0 pb-0">
+    <div class="card-header"><span class="fs-6">Cast</span></div>
+    <table class="card-table table mb-0 pb-0">
+        <tr>
+            <td>Attack Time</td>
+            <td class="text-end"><span class="fs-6">
+                {{ AttackDelay }}
+                {% if AttackDelayCap %}(Cap @ {{ AttackDelayCap }}){% endif %}
+            </span></td>
+        </tr>
+        <tr>
+            <td>Recharge Time</td>
+            <td class="text-end"><span class="fs-6">{{ RechargeDelay }}</span></td>             
+        </tr>
+        <tr>
+            <td>Range</td>
+            <td class="text-end"><span class="fs-6">{{ AttackRange }}m</span></td>
+        </tr>
+    </table>
+</div>
+
+{% endif %}

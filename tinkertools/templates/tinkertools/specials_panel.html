@@ -1,0 +1,18 @@
+{% load static %}
+
+{% if "FlingShot" in Can or "AimedShot" in Can or "Burst" in Can or "FullAuto" in Can or "FastAttack" in Can %}
+<div class="row pb-2">
+    <div class="card ps-0 pe-0 pb-0">
+        <div class="card-header"><span class="fs-6">Special Attack Skill Caps</span></div>
+        <table class="card-table table mb-0 pb-0">
+            {% for key, val in Specials.items %}
+            <tr>
+                <td>{{ key }}</td>
+                <td class="text-end"><span class="fs-6">{{ val.0 }} ({{ val.1 }}s)</span></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endif %}
+    

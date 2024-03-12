@@ -1,0 +1,88 @@
+.dataTables_filter
+{
+    float: right;
+}
+
+.weapon-column
+{
+    flex: 0 0 210px !important;
+}
+
+table.weapontable
+{
+    background-image: url("../image/weapon_slots.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+table.armortable
+{
+    background-image: url("../image/armor_slots.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+table.implanttable
+{
+    background-image: url("../image/implant_slots.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+table.weapontable
+td {
+    width: 60px;
+    max-width: 60px;
+    height: 60px;
+    max-height: 60px;
+    text-align: center;
+    white-space: pre-wrap;
+    vertical-align: middle;
+    border: 1px solid #fff;
+    color: #FFFFFF;
+    text-shadow:        
+        -1px -1px 0 #555,
+        1px -1px 0 #555,
+        -1px 1px 0 #555,
+        1px 1px 2px #555;
+    font-size: 90%;
+}
+
+table.armortable
+td {
+    width: 60px;
+    max-width: 60px;
+    height: 60px;
+    max-height: 60px;
+    text-align: center;
+    white-space: pre-wrap;
+    vertical-align: middle;
+    border: 1px solid #fff;
+    color: #FFFFFF;
+    text-shadow:        
+        -1px -1px 0 #555,
+        1px -1px 0 #555,
+        -1px 1px 0 #555,
+        1px 1px 2px #555;
+    font-size: 90%;
+}
+
+table.implanttable
+td {
+    width: 60px;
+    max-width: 60px;
+    height: 60px;
+    max-height: 60px;
+    text-align: center;
+    white-space: pre-wrap;
+    vertical-align: middle;
+    border: 1px solid #fff;
+    color: #FFFFFF;
+    text-shadow:        
+        -1px -1px 0 #555,
+        1px -1px 0 #555,
+        -1px 1px 0 #555,
+        1px 1px 2px #555;
+    font-size: 90%;
+}
+

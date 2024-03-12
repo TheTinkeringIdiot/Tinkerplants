@@ -1,0 +1,33 @@
+{% load static %}
+
+{% for spellData in SpellData %}
+
+<div class="card ps-0 pe-0 pb-0 mb-2">
+    <div class="card-header"><span class="fs-6">On {{ spellData.Event }}</span></div>
+    <table class="card-table table mb-0 pb-0">
+        {% for spell in spellData.Spells %}
+            <tr>
+                <td>{{ spell.Target }}</td>
+                <td ><span class="fs-6">{{ spell.Description |safe }}</span></td>
+                {% if spell.Amount %}
+                <td class="text-end"><span class="fs-6">{{ spell.Amount }}</span></td>
+                {% else %}
+                <td></td>
+                {% endif %}
+                <td></td>
+            </tr>
+            {% for criterion in spell.Criteria %}
+            <tr>
+                <td></td>
+                <td><span class="fs-6">If {{ criterion.0 }}</span></td>
+                <td><span class="fs-6">{{ criterion.1 }}</span></td>
+                <td><span class="fs-6">{{ criterion.2 }}</span></td>
+            </tr>
+            {% endfor %}
+
+        {% endfor %}
+    </table>
+</div>
+
+{% endfor %}
+    

@@ -1,6 +1,8 @@
 
 import os, json
 import django
+from django import db
+from multiprocessing import Pool
 from tinkerplants.utils import *
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'aobase.settings'
@@ -354,3 +356,4 @@ for name, vals in bosses.items():
 
     boss.drops.add(*drops)
     boss.save()
+

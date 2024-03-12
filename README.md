@@ -2,23 +2,27 @@
 
 A set of web-based utilities for the sci-fi MMORPG Anarchy Online. 
 
-### Tinkerplants
+### TinkerItems
+
+A full-featured item database
+
+### TinkerPlants
 
 Implant design and planning, with full requirements to build and equip
 
-### Tinkernanos
+### TinkerNanos
 
 Profession-specific nano program list with skill-based filtering
 
-### Tinkernukes
+### TinkerNukes
 
 Nanotechnician nuke table that suggests best available nukes for your setup
 
-### Tinkerfite
+### TinkerFite
 
 Weapon table that suggests weapon options for your setup
 
-### Tinkerpocket
+### TinkerPocket
 
 Symbiant and Pocket Boss database
 
@@ -40,9 +44,9 @@ See requirements.txt for the full list. Tinkertools is built and runs on Ubuntu 
 
 1. `python3 manage.py runserver`
 
-## Updating the database
+## Updating the database (TinkerTools)
 
-This repo includes up-to-date data (data.json) for the latest AO client as of June 2023. This will be kept up to the best of my ability, but future updates can be accomplished by anyone using these steps:
+This repo includes up-to-date data (data.json) for the latest AO client as of March 2024. This will be kept up to the best of my ability, but future updates can be accomplished by anyone using these steps:
 
 1. Update your AO client.
 
@@ -75,6 +79,16 @@ This repo includes up-to-date data (data.json) for the latest AO client as of Ju
     `python3 update_db.py`
 
     The Tinkertools database is now updated and ready to use!
+
+## Updating the database (TinkerItems)
+
+1. Run [TinkerParse](https://github.com/TheTinkeringIdiot/TinkerParse) with the `--items` and `--nanos` options to dump item and nano data from the game's database.
+
+2. Set your database connection string appropriately.
+
+3. Update the RDB database.
+
+    `python3 import_rdb.py`
 
 
 

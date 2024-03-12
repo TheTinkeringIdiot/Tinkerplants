@@ -1,0 +1,23 @@
+{% load static %}
+
+{% if MultiRanged or MultiMelee %}
+<div class="row">
+    <div class="card ps-0 pe-0 pb-0">
+        <div class="card-header"><span class="fs-6">Multi-Wield</span></div>
+        <table class="card-table table mb-0 pb-0">
+            {% if MultiMelee %}
+            <tr>
+                <td>Multi-Melee</td>
+                <td class="text-end"><span class="fs-6">{{ MultiMelee }}</span></td>
+            </tr>
+            {% elif MultiRanged %}
+            <tr>
+                <td>Multi-Ranged</td>
+                <td class="text-end"><span class="fs-6">{{ MultiRanged }}</span></td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+</div>
+{% endif %}
+    
