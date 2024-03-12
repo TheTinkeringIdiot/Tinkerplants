@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 from tinkertools.models import *
 from tinkertools.utils import *
 from tinkertools.InterpItem import *
@@ -32,7 +32,7 @@ def search(request):
     try:
         return render(request, 'tinkertools/search.html', data)
     except Exception as thing:
-        breakpoint()
+        return render(request, 'tinkertools/item_not_found.html')
 
 def item(request, id, ql=0):
     
@@ -166,9 +166,7 @@ def item(request, id, ql=0):
         action['Action'] = TEMPLATE_ACTION[actionData.action]
         action['Criteria'] = []
         criteria = CriterionHandler([x for x in actionData.criteria()]).parse_criteria()
-
-        breakpoint()
-                
+     
         if len(criteria) > 0:
             action['Criteria'].extend(criteria)
 
@@ -189,8 +187,6 @@ def item(request, id, ql=0):
             spellTokens = spellFormat.split('|')
 
             newSpell['Criteria'] = CriterionHandler([x for x in spell.criteria()]).parse_criteria()
-            # for criterion in spell.criteria():
-            #     newSpell['Criteria'].append(interpret_criterion(criterion))
 
             for idx, token in enumerate(spellTokens):
 
@@ -266,7 +262,7 @@ def item(request, id, ql=0):
     try:
         return render(request, 'tinkertools/item.html', data)
     except Exception as thing:
-        breakpoint()
+        return render(request, 'tinkertools/item_not_found.html')
 
 def calculate_fling(attack_time):
     cap = math.floor(6 + (attack_time / 100))
