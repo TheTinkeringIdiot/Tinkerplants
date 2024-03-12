@@ -22,14 +22,15 @@ class InterpItem:
     spellData = []
     
     def __init__(self, aoid, ql = 0):
-        item = Item.objects.get(aoid=aoid)
+        
         self.actions = []
         self.spellData = []
+        item = Item.objects.get(aoid=aoid)
 
         # matching description and name together accounts for implants with the same name
         items = Item.objects.filter(name=item.name, description=item.description).order_by('ql').all()
         
-        if items[len(items)-1].ql == item.ql or len(items) == 1: # No interpolation
+        if items[len(items)-1].ql == item.ql or len(items) == 1 or item.is_nano or 'Control Point' in item.name: # No interpolation
             self.lo_item = item
             self.ql = item.ql
             self.low_ql = item.ql
@@ -45,6 +46,7 @@ class InterpItem:
                 if items[i].ql <= ql and items[i+1].ql > ql:
                     self.lo_item = items[i]
                     self.hi_item = items[i+1]
+                    # print(f'{self.lo_item.aoid} {self.hi_item.aoid}')
 
             self.ql = ql
             self.ql_delta_full = self.hi_item.ql - self.lo_item.ql
@@ -82,6 +84,9 @@ class InterpItem:
         else:
             for lo_stat in self.lo_item.stats.all():
                 hi_stat = self.hi_item.stats.filter(stat=lo_stat.stat).first()
+
+                if hi_stat is None:
+                    continue
 
                 if lo_stat == hi_stat:
                     yield lo_stat
@@ -149,6 +154,7 @@ class InterpItem:
                 for lo_spell in lo_spells:
                     if lo_spell.spellID in [53012, 53014, 53045, 53175]: # Stat | Amount
                         hi_spell = hi_spellData.spells.filter(spellID=lo_spell.spellID, spellParams__Stat=lo_spell.spellParams['Stat']).first()
+                        if hi_spell is None: continue
                         newVal = self.outer.interpolate_value(lo_spell.spellParams['Amount'], hi_spell.spellParams['Amount'])
 
                         newSpell = self.convert_spell(lo_spell)
@@ -156,7 +162,8 @@ class InterpItem:
                         self.interpSpells.append(newSpell)
 
                     elif lo_spell.spellID in [53026, 53028]: # Skill | Amount
-                        hi_spell = hi_spellData.spells.filter(spellID=lo_spell.spellID, spellParams__Stat=lo_spell.spellParams['Skill']).first()
+                        hi_spell = hi_spellData.spells.filter(spellID=lo_spell.spellID, spellParams__Skill=lo_spell.spellParams['Skill']).first()
+                        if hi_spell is None: continue
                         newVal = self.outer.interpolate_value(lo_spell.spellParams['Amount'], hi_spell.spellParams['Amount'])
 
                         newSpell = self.convert_spell(lo_spell)
@@ -165,6 +172,7 @@ class InterpItem:
 
                     elif lo_spell.spellID in [53184, 53237]: # Stat | Percent
                         hi_spell = hi_spellData.spells.filter(spellID=lo_spell.spellID, spellParams__Stat=lo_spell.spellParams['Stat']).first()
+                        if hi_spell is None: continue
                         newVal = self.outer.interpolate_value(lo_spell.spellParams['Percent'], hi_spell.spellParams['Percent'])
 
                         newSpell = self.convert_spell(lo_spell)
