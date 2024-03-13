@@ -12,6 +12,9 @@ def index(request):
 def search(request):
     query = request.GET.get('query')
 
+    if query is None or len(query) <= 0:
+        return render(request, 'tinkertools/index.html')
+
     results = Item.objects.filter(name__icontains=query).all()
 
     data = {}
