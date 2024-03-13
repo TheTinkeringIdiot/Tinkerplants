@@ -85,7 +85,7 @@ def item(request, id, ql=0):
             elif duration > 60:
                 data['Duration'] = f'{duration / 60:.2f}m'
             else:
-                data['Duration'] = f'{duration / 100:.2f}s'
+                data['Duration'] = f'{duration:.2f}s'
 
         elif STAT[stat.stat] == 'CooldownTime1':
             data['CooldownTime1'] = f'{stat.value / 100:.2f}s'
