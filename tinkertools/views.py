@@ -208,7 +208,7 @@ def item(request, id, ql=0):
                         formatParams[tag] = f'{STAT[spell.spellParams[tag]]}'
 
                     elif tag == 'Duration':
-                        if not spell.spellID in [53033, 53187]:
+                        if not spell.spellID in [53033, 53187, 53177]:
                             formatParams[tag] = int(spell.spellParams[tag] / 100)
                         else:
                             formatParams[tag] = spell.spellParams[tag]
