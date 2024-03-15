@@ -1,0 +1,62 @@
+
+{% load static %}
+
+<div class="container-fluid">
+    <div class="pb-2 mt-4 mb-2 border-bottom">
+        <div style="height: 50;">
+            <span class="fs-3">Advanced Search</span>&nbsp;&nbsp;&nbsp;
+        </div>
+    </div>
+    <div class="row">
+        <form action="/search" method="get">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col">
+                    <label for="name">Item Name</label>
+                    <input class="form-control" type="text" placeholder="Item Name" name="name">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="min_ql">Minimum QL</label>
+                    <input class="form-control" type="number" placeholder="Minimum QL" name="min_ql">
+                </div>
+                <div class="col">
+                    <label for="max_ql">Maximum QL</label>
+                    <input class="form-control" type="number" placeholder="Maximum QL" name="max_ql">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="item_class">Item Class</label>
+                    <select class="form-control" name="item_class">
+                        <option value="None">None</option>
+                        <option value="Armor">Armor</option>
+                        <option value="Implant">Implant</option>
+                        <option value="Weapon">Weapon</option>
+                        <option value="Nano">Nano</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="slot">Slot</label>
+                    <select class="form-control" name="slot">
+                        <option value="None">None</option>
+                        <option value="Head">Head</option>
+                        <option value="Back">Back</option>
+                        <option value="Right Hand">Right Hand</option>
+                        <option value="Left Hand">Left Hand</option>
+                        <option value="Chest">Chest</option>
+                        <option value="Feet">Feet</option>
+                        <option value="Legs">Legs</option>
+                        <option value="Right Wrist">Right Wrist</option>
+                        <option value="Left Wrist">Left Wrist</option>
+                        <option value="Right Ring">Right Ring</option>
+                        <option value="Left Ring">Left Ring</option>
+                        <option value="Right Ear">Right Ear</option>
+                        <option value="Left Ear">Left Ear</option>
+                        <
+    </div>
+    
+    
+    
+</div>

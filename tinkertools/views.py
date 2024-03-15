@@ -36,6 +36,9 @@ def search(request):
         return render(request, 'tinkertools/search.html', data)
     except Exception as thing:
         return render(request, 'tinkertools/item_not_found.html')
+    
+def advanced_search(request):
+    return render(request, 'tinkertools/advanced_search.html')
 
 def item(request, id, ql=0):
     
