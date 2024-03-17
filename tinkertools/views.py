@@ -38,7 +38,14 @@ def search(request):
         return render(request, 'tinkertools/item_not_found.html')
     
 def advanced_search(request):
-    return render(request, 'tinkertools/advanced_search.html')
+    data = {}
+    data['requirements'] = REQUIREMENTS.items()
+    data['spell_stats'] = SPELL_MODIFIED_STATS.items()
+    return render(request, 'tinkertools/advanced_search.html', data)
+
+def adv_search(request):
+    breakpoint()
+    pass
 
 def item(request, id, ql=0):
     
