@@ -65,6 +65,8 @@ class CriterionHandler:
                 crit.append(str(SPECIALIZATION_FLAG(criterion.value2)).replace('SPECIALIZATION_FLAG.', ''))
             elif val1 == 'WornItem':
                 crit.append(str(WORN_ITEM(criterion.value2)).replace('WORN_ITEM.', ''))
+            elif val1 == 'SelectedTargetType':
+                crit.append('Monster')
             else:
                 crit.append(str(WEAPON_TYPE(criterion.value2)).replace('WEAPON_TYPE.', ''))
             return crit
@@ -80,6 +82,8 @@ class CriterionHandler:
                 val2 = FACTION[criterion.value2]
             elif val1 == 'Gender':
                 val2 = GENDER[criterion.value2]
+            elif val1 == 'Breed':
+                val2 = BREED[criterion.value2]
             else:
                 val2 = criterion.value2
             

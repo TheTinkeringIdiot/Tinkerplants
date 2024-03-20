@@ -1,0 +1,459 @@
+
+{% load static %}
+
+<div class="container-fluid">
+    <div class="pb-2 mt-4 mb-2 border-bottom">
+        <div style="height: 50;">
+            <span class="fs-3">Advanced Search</span>&nbsp;&nbsp;&nbsp;
+        </div>
+    </div>
+    <div class="row">
+        <form action="/adv_search" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col">
+                    <label for="name">Name</label>
+                    <input class="form-control" type="text" placeholder="Item Name" name="name">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <label for="min_ql">QL</label>
+                            <input class="form-control" type="number" value="0" min=0 max=1000 placeholder="Min QL" name="min_ql">
+                        </div>
+                        <div class="col col-md-1">
+                            <label for="to-span">&nbsp;</label>
+                            <span id="to-span"> - </span>
+                        </div>
+                        <div class="col">
+                            <label for="max_ql">&nbsp;</label>
+                            <input class="form-control" type="number" value="999" min=0 max=1000 placeholder="Max QL" name="max_ql">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <label for="item_class">Item Class</label>
+                    <select class="form-control" name="item_class" onchange="update_slots(this.value)">
+                        <option value=-1 selected>Any</option>
+                        <option value=0>None</option>
+                        <option value=1>Weapon</option>
+                        <option value=2>Armor</option>
+                        <option value=3>Implant</option>
+                        <option value=4>Nano</option>
+                    </select>
+                    
+                </div>
+                <div class="col">
+                    <label for="slot">Slot</label>
+                    <select class="form-control" name="slot" id="slot">
+                        <option value=-1 selected>Any</option>
+                    </select>
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="profesison">Profession</label>
+                    <select class="form-control" name="profession">
+                        <option value=-1 selected>Any</option>
+                        <option value=6>Adventurer</option>
+                        <option value=5>Agent</option>
+                        <option value=8>Bureaucrat</option>
+                        <option value=10>Doctor</option>
+                        <option value=9>Enforcer</option>
+                        <option value=3>Engineer</option>
+                        <option value=4>Fixer</option>
+                        <option value=14>Keeper</option>
+                        <option value=2>Martial Artist</option>
+                        <option value=12>Metaphysicist</option>
+                        <option value=11>Nanotechnician</option>
+                        <option value=15>Shade</option>
+                        <option value=1>Soldier</option>
+                        <option value=7>Trader</option>
+                        <option value=13>Monster</option>
+                        <option value=0>Unknown</option>
+ 
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="breed">Breed</label>
+                    <select class="form-control" name="breed">
+                        <option value=-1 selected>Any</option>
+                        <option value=0>Unknown</option>
+                        <option value=1>Solitus</option>
+                        <option value=2>Opifex</option>
+                        <option value=3>Nanomage</option>
+                        <option value=4>Atrox</option>
+                        <option value=7>Monster</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="gender">Gender</label>
+                    <select class="form-control" name="gender">
+                        <option value=-1 selected>Any</option>
+                        <option value=0>Unknown</option>
+                        <option value=1>Uni</option>
+                        <option value=2>Male</option>
+                        <option value=3>Female</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="faction">Faction</label>
+                    <select class="form-control" name="faction">
+                        <option value=-1 selected>Any</option>
+                        <option value=0>Neutral</option>
+                        <option value=1>Clan</option>
+                        <option value=2>Omni</option>
+                    </select>
+                </div>
+                
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="froob">
+                            <label for="froob">Froob Friendly</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="nodrop">
+                            <label for="nodrop">NoDrop</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="unique">
+                            <label for="unique">Unique</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="with_social">
+                            <label for="with_social">Wear with Social</label>
+                        </div>
+                    </div>   
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="fling">
+                            <label for="fling">Fling Shot</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="burst">
+                            <label for="burst">Burst</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="fullauto">
+                            <label for="fullauto">Full Auto</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="aimedshot">
+                            <label for="aimedshot">Aimed Shot</label>
+                        </div>
+                    </div>   
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="fastattack">
+                            <label for="fastattack">Fast Attack</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="brawl">
+                            <label for="brawl">Brawl</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="dimach">
+                            <label for="dimach">Dimach</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="sneakattack">
+                            <label for="sneakattack">Sneak Attack</label>
+                        </div>
+                    </div>   
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="strength">
+                            <label for="strength">Adds Strength</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="stamina">
+                            <label for="stamina">Adds Stamina</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="agility">
+                            <label for="agility">Adds Agility</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="sense">
+                            <label for="sense">Adds Sense</label>
+                        </div>
+                    </div> 
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="intelligence">
+                            <label for="intelligence">Adds Intelligence</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="psychic">
+                            <label for="psychic">Adds Psychic</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="treatment">
+                            <label for="treatment">Adds Treatment</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" name="complit">
+                            <label for="complit">Adds CompLit</label>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row" id="arb_fields">
+                <div class="row pb-2 mt-2 mb-2 border-bottom">
+                    <div class="col">
+                        <span class="fs-5">Filters</span>
+                    </div>
+                    <div class="col col-md-2">
+                        <button class="btn btn-primary" style="width: 100%;" type="button" onclick="add_arb_field()">Add Filter</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">&nbsp;</div>
+            <input type="submit" value="Search" class="btn btn-primary mt-2">
+        </form>            
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var none_slots = "<option value=-1 selected>Any</option>"
+
+    var armor_slots = `<option value=-1 selected>Any</option>
+                        <option value=1>Neck</option>
+                        <option value=2>Head</option>
+                        <option value=3>Back</option>
+                        <option value=4>Right Shoulder</option>
+                        <option value=5>Chest</option>
+                        <option value=6>Left Shoulder</option>
+                        <option value=7>Right Arm</option>
+                        <option value=8>Hands</option>
+                        <option value=9>Left Arm</option>
+                        <option value=10>Right Wrist</option>
+                        <option value=11>Legs</option>
+                        <option value=12>Left Wrist</option>
+                        <option value=13>Right Finger</option>
+                        <option value=14>Feet</option>
+                        <option value=15>Left Finger</option>`
+
+    var implant_slots = `<option value=-1 selected>Any</option>
+                        <option value=1>Eyes</option>
+                        <option value=2>Head</option>
+                        <option value=3>Ears</option>
+                        <option value=4>Right Arm</option>
+                        <option value=5>Chest</option>
+                        <option value=6>Left Arm</option>
+                        <option value=7>Right Wrist</option>
+                        <option value=8>Waist</option>
+                        <option value=9>Left Wrist</option>
+                        <option value=10>Right Hand</option>
+                        <option value=11>Legs</option>
+                        <option value=12>Left Hand</option>
+                        <option value=13>Feet</option>`
+
+    var weapon_slots = `<option value=-1 selected>Any</option>
+                        <option value=1>Hud 1</option>
+                        <option value=2>Hud 2</option>
+                        <option value=15>Hud 3</option>
+                        <option value=3>Utils 1</option>
+                        <option value=4>Utils 2</option>
+                        <option value=5>Utils 3</option>
+                        <option value=6>Right Hand</option>
+                        <option value=7>Deck</option>
+                        <option value=8>Left Hand</option>
+                        <option value=9>Deck 1</option>
+                        <option value=10>Deck 2</option>
+                        <option value=11>Deck 3</option>
+                        <option value=12>Deck 4</option>
+                        <option value=13>Deck 5</option>
+                        <option value=14>Deck 6</option>
+                        `
+    
+    var requirements = `
+    {% for stat in requirements %}
+        <option value={{ stat.0 }}>{{ stat.1 }}</option>
+    {% endfor %}
+    `
+
+    var modified_stats = `
+    {% for stat in spell_stats %}
+        <option value={{ stat.0 }}>{{ stat.1 }}</option>
+    {% endfor %}
+    `
+
+    var operators = `
+    <option value=0 selected>==</option>
+    <option value=1><=</option>
+    <option value=2>>=</option>
+    <option value=24>!=/option>
+    `
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        add_arb_field();
+    });
+
+    window.addEventListener('pageshow', function() {
+        var itemclass = document.getElementsByName('item_class')[0];
+        update_slots(itemclass.value);
+    });
+
+    function update_slots(val) {
+        slots = document.getElementById('slot');
+        slots.innerHTML = '';
+
+        if(val == 0 || val == -1) {
+            slots.innerHTML = none_slots;
+        }
+        else if(val == 1) {
+            slots.innerHTML = weapon_slots;
+        }
+        else if(val == 2) {
+            slots.innerHTML = armor_slots;
+        }
+        else if(val == 3) {
+            slots.innerHTML = implant_slots;
+        }
+        else if(val == 4) {
+            slots.innerHTML = none_slots;
+        }
+    }
+
+    function add_arb_field() {
+        var arb_fields = document.getElementById('arb_fields');
+        
+        var field_set = document.createElement('fieldset');
+        field_set.name = 'arb_field';
+        arb_fields.appendChild(field_set);
+
+        var row = document.createElement('div');
+        row.className = 'row mt-1 mb-1';
+        field_set.appendChild(row);
+        
+        var col = document.createElement('div');
+        col.className = 'col';
+        row.appendChild(col);
+
+        var func_select_label = document.createElement('label');
+        func_select_label.for = 'func_select';
+        func_select_label.innerHTML = 'Function';
+        col.appendChild(func_select_label);
+
+        var func_select = document.createElement('select');
+        func_select.className = 'form-control';
+        func_select.name = 'func_select';
+        func_select.onchange = function() {
+            stat_select = this.parentElement.nextElementSibling.children[1];
+            stat_select.innerHTML = '';
+            if(this.value == 0) {
+                stat_select.innerHTML = requirements;
+            }
+            else if(this.value == 1) {
+                stat_select.innerHTML = modified_stats;
+            }
+        }
+        console.log(func_select);
+        col.appendChild(func_select);
+
+        var option = document.createElement('option');
+        option.value = 0;
+        option.innerHTML = 'Requires';
+        func_select.appendChild(option);
+
+        var option = document.createElement('option');
+        option.value = 1;
+        option.innerHTML = 'Modifies';
+        func_select.appendChild(option);
+
+        var col = document.createElement('div');
+        col.className = 'col';
+        row.appendChild(col);
+
+        var stat_select_label = document.createElement('label');
+        stat_select_label.for = 'stat_select';
+        stat_select_label.innerHTML = 'Stat';
+        col.appendChild(stat_select_label);
+
+        var stat_select = document.createElement('select');
+        stat_select.className = 'form-control';
+        stat_select.name = 'stat_select';
+        stat_select.innerHTML = requirements;
+        col.appendChild(stat_select);
+
+        var col = document.createElement('div');
+        col.className = 'col col-md-2';
+        row.appendChild(col);
+
+        var op_select_label = document.createElement('label');
+        op_select_label.for = 'op_select';
+        op_select_label.innerHTML = 'Op';
+        col.appendChild(op_select_label);
+
+        var op_select = document.createElement('select');
+        op_select.className = 'form-control';
+        op_select.name = 'op_select';
+        op_select.innerHTML = operators;
+        col.appendChild(op_select);
+
+        var col = document.createElement('div');
+        col.className = 'col';
+        row.appendChild(col);
+
+        var value_label = document.createElement('label');
+        value_label.for = 'value';
+        value_label.innerHTML = 'Value';
+        col.appendChild(value_label);
+
+        var value = document.createElement('input');
+        value.className = 'form-control';
+        value.name = 'value';
+        value.type = 'text';
+        col.appendChild(value);
+
+    }
+</script>

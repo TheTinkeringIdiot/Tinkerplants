@@ -4,6 +4,9 @@ from tinkertools.utils import *
 from tinkertools.InterpItem import *
 from tinkertools.CriterionHandler import *
 
+from django.db.models import Q, F
+from django.db.models.expressions import RawSQL
+
 import math, re
 
 def index(request):
@@ -36,6 +39,160 @@ def search(request):
         return render(request, 'tinkertools/search.html', data)
     except Exception as thing:
         return render(request, 'tinkertools/item_not_found.html')
+    
+def advanced_search(request):
+    data = {}
+    data['requirements'] = REQUIREMENTS.items()
+    data['spell_stats'] = SPELL_MODIFIED_STATS.items()
+    return render(request, 'tinkertools/advanced_search.html', data)
+
+def adv_search(request):
+    if request.method == 'POST':
+        data = request.POST
+
+        q_obj = Q()
+
+        items = Item.objects.all()
+
+        if len(data['name']) > 0:
+            items = items.filter(name__icontains=data['name'])
+
+        if int(data['min_ql']) >= 0 and int(data['max_ql']) <= 1000:
+            items = items.filter(ql__gte=int(data['min_ql'])).filter(ql__lte=int(data['max_ql']))
+
+        if int(data['item_class']) != -1:
+            if int(data['item_class']) == 4:
+                items = items.filter(is_nano=True)
+            else:
+                items = items.filter(stats__stat=76, stats__value=int(data['item_class']))
+
+            if int(data['slot']) != -1:
+                items = items.filter(stats__stat = 298).annotate(flag_check=F('stats__value').bitand(2**int(data['slot']))).exclude(flag_check=0)
+
+        if int(data['profession']) != -1:
+            items = items.filter(actions__criteria__value1=60, actions__criteria__value2=int(data['profession']))
+
+        if int(data['faction']) != -1:
+            items = items.filter(actions__criteria__value1=33, actions__criteria__value2=int(data['faction']))
+
+        if int(data['breed']) != -1:
+            items = items.filter(actions__criteria__value1=4, actions__criteria__value2=int(data['breed']))
+
+        if int(data['gender']) != -1:
+            items = items.filter(actions__criteria__value1=59, actions__criteria__value2=int(data['gender']))
+
+        # None Flags
+
+        if data.get('nodrop') is not None:
+            items = items.filter(stats__stat = 0).annotate(flag_check=F('stats__value').bitand(2**26)).exclude(flag_check=0)
+
+        if data.get('unique') is not None:
+            items = items.filter(stats__stat = 0).annotate(flag_check=F('stats__value').bitand(2**27)).exclude(flag_check=0)
+
+        # CAN Flags
+
+        if data.get('with_social') is not None:
+            items = items.filter(stats__stat = 30).annotate(flag_check=F('stats__value').bitand(2**28)).exclude(flag_check=0)
+
+        if data.get('flingshot') is not None:
+            items = items.filter(stats__stat = 30).annotate(flag_check=F('stats__value').bitand(2**12)).exclude(flag_check=0)
+
+        if data.get('burst') is not None:
+            items = items.filter(stats__stat = 30).annotate(flag_check=F('stats__value').bitand(2**11)).exclude(flag_check=0)
+
+        if data.get('fullauto') is not None:
+            items = items.filter(stats__stat = 30).annotate(flag_check=F('stats__value').bitand(2**13)).exclude(flag_check=0)
+
+        if data.get('aimedshot') is not None:
+            items = items.filter(stats__stat = 30).annotate(flag_check=F('stats__value').bitand(2**14)).exclude(flag_check=0)
+
+        if data.get('fastattack') is not None:
+            items = items.filter(stats__stat = 30).annotate(flag_check=F('stats__value').bitand(2**18)).exclude(flag_check=0)
+
+        if data.get('brawl') is not None:
+            items = items.filter(stats__stat = 30).annotate(flag_check=F('stats__value').bitand(2**25)).exclude(flag_check=0)
+
+        if data.get('dimach') is not None:
+            items = items.filter(stats__stat = 30).annotate(flag_check=F('stats__value').bitand(2**26)).exclude(flag_check=0)
+
+        if data.get('sneakattack') is not None:
+            items = items.filter(stats__stat = 30).annotate(flag_check=F('stats__value').bitand(2**17)).exclude(flag_check=0)
+
+        # Stat checks
+
+        if data.get('strength') is not None:
+            items = items.filter(spellData__spells__spellParams__Stat=16, spellData__spells__spellParams__Amount__gte=1)
+
+        if data.get('stamina') is not None:
+            items = items.filter(spellData__spells__spellParams__Stat=18, spellData__spells__spellParams__Amount__gte=1)
+
+        if data.get('agility') is not None:
+            items = items.filter(spellData__spells__spellParams__Stat=17, spellData__spells__spellParams__Amount__gte=1)
+
+        if data.get('sense') is not None:
+            items = items.filter(spellData__spells__spellParams__Stat=20, spellData__spells__spellParams__Amount__gte=1)
+
+        if data.get('intelligence') is not None:
+            items = items.filter(spellData__spells__spellParams__Stat=19, spellData__spells__spellParams__Amount__gte=1)
+
+        if data.get('psychic') is not None:
+            items = items.filter(spellData__spells__spellParams__Stat=21, spellData__spells__spellParams__Amount__gte=1)
+
+        if data.get('treatment') is not None:
+            items = items.filter(spellData__spells__spellParams__Stat=124, spellData__spells__spellParams__Amount__gte=1)
+
+        if data.get('complit') is not None:
+            items = items.filter(spellData__spells__spellParams__Stat=161, spellData__spells__spellParams__Amount__gte=1)
+
+        data = dict(data.lists())
+        for i in range(len(data['func_select'])):
+            if data['value'][i] == '': continue
+
+            func = int(data['func_select'][i])
+            stat = int(data['stat_select'][i])
+            op = int(data['op_select'][i])
+            value = int(data['value'][i])
+            
+            if func == 0: # Requires - criterion
+                items = items.filter(actions__criteria__value1=stat, actions__criteria__value2=value-1, actions__criteria__operator=op)
+
+            elif func == 1: # Modifies - spell effect
+                if op == 0:
+                    items = items.filter(spellData__spells__spellParams__Stat=stat, spellData__spells__spellParams__Amount__exact=value)
+                elif op == 1:
+                    items = items.filter(spellData__spells__spellParams__Stat=stat, spellData__spells__spellParams__Amount__lte=value)
+                elif op == 2:
+                    items = items.filter(spellData__spells__spellParams__Stat=stat, spellData__spells__spellParams__Amount__gte=value)
+                elif op == 24:
+                    items = items.filter(spellData__spells__spellParams__Stat=stat).exclude(spellData__spells__spellParams__Amount__exact=value)
+
+        results = {}
+        results['Items'] = []
+        for item in items:
+            result = {}
+            try:
+                result['Icon'] = item.stats.filter(stat=79).first().value
+            except:
+                result['Icon'] = 273470
+
+            result['AOID'] = item.aoid
+            result['Name'] = item.name
+            result['QL'] = item.ql
+
+            results['Items'].append(result)
+
+        try:
+            return render(request, 'tinkertools/search.html', results)
+        except Exception as thing:
+            return render(request, 'tinkertools/item_not_found.html')
+
+
+    else:
+        data = {}
+        data['requirements'] = REQUIREMENTS.items()
+        data['spell_stats'] = SPELL_MODIFIED_STATS.items()
+        return render(request, 'tinkertools/advanced_search.html', data)
+    
 
 def item(request, id, ql=0):
     
@@ -295,3 +452,4 @@ def calculate_fast_attack(attack_time):
     cap = math.floor(6 + (attack_time / 100))
     skill = round(((attack_time / 100) * 15 - cap) * 100)
     cycle = (skill, cap)
+    return cycle

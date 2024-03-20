@@ -1,0 +1,23 @@
+{% extends "tinkertools/base.html" %}
+
+{% block content %}
+
+{% include "tinkertools/navbar.html" %}
+
+<div class="container-fluid">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col col-md-3 col-lg-2">
+            {% include "tinkertools/left_panel.html" %}
+        </div>
+        <div class="col col-md-6 col-lg-8">
+            {% include "tinkertools/adv_search_panel.html" %}
+        </div>
+        <div class="col col-md-3 col-lg-2">
+            {% include "tinkertools/right_panel.html" %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
