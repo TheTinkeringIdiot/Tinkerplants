@@ -82,6 +82,8 @@ class CriterionHandler:
                 val2 = FACTION[criterion.value2]
             elif val1 == 'Gender':
                 val2 = GENDER[criterion.value2]
+            elif val1 == 'Breed':
+                val2 = BREED[criterion.value2]
             else:
                 val2 = criterion.value2
             
