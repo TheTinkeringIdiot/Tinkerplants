@@ -154,7 +154,14 @@ def adv_search(request):
             value = int(data['value'][i])
             
             if func == 0: # Requires - criterion
-                items = items.filter(actions__criteria__value1=stat, actions__criteria__value2=value-1, actions__criteria__operator=op)
+                if op == 0:
+                    items = items.filter(actions__criteria__value1=stat, actions__criteria__value2__exact=value-1, actions__criteria__operator=op)
+                if op == 1:
+                    items = items.filter(actions__criteria__value1=stat, actions__criteria__value2__lte=value-1, actions__criteria__operator=op)
+                if op == 2:
+                    items = items.filter(actions__criteria__value1=stat, actions__criteria__value2__gte=value-1, actions__criteria__operator=op)
+                if op == 0:
+                    items = items.filter(actions__criteria__value1=stat).exclude(actions__criteria__value2__exact=value-1)
 
             elif func == 1: # Modifies - spell effect
                 if op == 0:
@@ -185,7 +192,6 @@ def adv_search(request):
             return render(request, 'tinkertools/search.html', results)
         except Exception as thing:
             return render(request, 'tinkertools/item_not_found.html')
-
 
     else:
         data = {}
