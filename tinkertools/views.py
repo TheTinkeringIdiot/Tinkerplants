@@ -61,9 +61,12 @@ def adv_search(request):
             items = items.filter(ql__gte=int(data['min_ql'])).filter(ql__lte=int(data['max_ql']))
 
         if int(data['item_class']) != -1:
-            items = items.filter(stats__stat=76, stats__value=int(data['item_class']))
-            if int(data['slot']) != -1:
+            if int(data['item_class']) == 4:
+                items = items.filter(is_nano=True)
+            else:
+                items = items.filter(stats__stat=76, stats__value=int(data['item_class']))
 
+            if int(data['slot']) != -1:
                 items = items.filter(stats__stat = 298).annotate(flag_check=F('stats__value').bitand(2**int(data['slot']))).exclude(flag_check=0)
 
         if int(data['profession']) != -1:
@@ -140,6 +143,28 @@ def adv_search(request):
 
         if data.get('complit') is not None:
             items = items.filter(spellData__spells__spellParams__Stat=161, spellData__spells__spellParams__Amount__gte=1)
+
+        data = dict(data.lists())
+        for i in range(len(data['func_select'])):
+            if data['value'][i] == '': continue
+
+            func = int(data['func_select'][i])
+            stat = int(data['stat_select'][i])
+            op = int(data['op_select'][i])
+            value = int(data['value'][i])
+            
+            if func == 0: # Requires - criterion
+                items = items.filter(actions__criteria__value1=stat, actions__criteria__value2=value-1, actions__criteria__operator=op)
+
+            elif func == 1: # Modifies - spell effect
+                if op == 0:
+                    items = items.filter(spellData__spells__spellParams__Stat=stat, spellData__spells__spellParams__Amount__exact=value)
+                elif op == 1:
+                    items = items.filter(spellData__spells__spellParams__Stat=stat, spellData__spells__spellParams__Amount__lte=value)
+                elif op == 2:
+                    items = items.filter(spellData__spells__spellParams__Stat=stat, spellData__spells__spellParams__Amount__gte=value)
+                elif op == 24:
+                    items = items.filter(spellData__spells__spellParams__Stat=stat).exclude(spellData__spells__spellParams__Amount__exact=value)
 
         results = {}
         results['Items'] = []
