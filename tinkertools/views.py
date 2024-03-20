@@ -427,3 +427,4 @@ def calculate_fast_attack(attack_time):
     cap = math.floor(6 + (attack_time / 100))
     skill = round(((attack_time / 100) * 15 - cap) * 100)
     cycle = (skill, cap)
+    return cycle
