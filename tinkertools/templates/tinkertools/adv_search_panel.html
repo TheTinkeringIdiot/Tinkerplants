@@ -21,7 +21,7 @@
                     <div class="row">
                         <div class="col">
                             <label for="min_ql">QL</label>
-                            <input class="form-control" type="number" value="1" min=1 max=999 placeholder="Min QL" name="min_ql">
+                            <input class="form-control" type="number" value="0" min=0 max=1000 placeholder="Min QL" name="min_ql">
                         </div>
                         <div class="col col-md-1">
                             <label for="to-span">&nbsp;</label>
@@ -29,7 +29,7 @@
                         </div>
                         <div class="col">
                             <label for="max_ql">&nbsp;</label>
-                            <input class="form-control" type="number" value="999" min=1 max=999 placeholder="Max QL" name="max_ql">
+                            <input class="form-control" type="number" value="999" min=0 max=1000 placeholder="Max QL" name="max_ql">
                         </div>
                     </div>
                 </div>
@@ -38,9 +38,9 @@
                     <select class="form-control" name="item_class" onchange="update_slots(this.value)">
                         <option value=-1 selected>Any</option>
                         <option value=0>None</option>
-                        <option value=1>Armor</option>
-                        <option value=2>Implant</option>
-                        <option value=3>Weapon</option>
+                        <option value=1>Weapon</option>
+                        <option value=2>Armor</option>
+                        <option value=3>Implant</option>
                         <option value=4>Nano</option>
                     </select>
                     
@@ -264,7 +264,7 @@
 
     var none_slots = "<option value=-1 selected>Any</option>"
 
-    var armor_slots = `<option value=0 selected>None</option>
+    var armor_slots = `<option value=-1 selected>Any</option>
                         <option value=1>Neck</option>
                         <option value=2>Head</option>
                         <option value=3>Back</option>
@@ -281,7 +281,7 @@
                         <option value=14>Feet</option>
                         <option value=15>Left Finger</option>`
 
-    var implant_slots = `<option value=0 selected>None</option>
+    var implant_slots = `<option value=-1 selected>Any</option>
                         <option value=1>Eyes</option>
                         <option value=2>Head</option>
                         <option value=3>Ears</option>
@@ -296,7 +296,7 @@
                         <option value=12>Left Hand</option>
                         <option value=13>Feet</option>`
 
-    var weapon_slots = `<option value=0 selected>None</option>
+    var weapon_slots = `<option value=-1 selected>Any</option>
                         <option value=1>Hud 1</option>
                         <option value=2>Hud 2</option>
                         <option value=15>Hud 3</option>
@@ -338,6 +338,11 @@
         add_arb_field();
     });
 
+    window.addEventListener('pageshow', function() {
+        var itemclass = document.getElementsByName('item_class')[0];
+        update_slots(itemclass.value);
+    });
+
     function update_slots(val) {
         slots = document.getElementById('slot');
         slots.innerHTML = '';
@@ -346,13 +351,13 @@
             slots.innerHTML = none_slots;
         }
         else if(val == 1) {
-            slots.innerHTML = armor_slots;
+            slots.innerHTML = weapon_slots;
         }
         else if(val == 2) {
-            slots.innerHTML = implant_slots;
+            slots.innerHTML = armor_slots;
         }
         else if(val == 3) {
-            slots.innerHTML = weapon_slots;
+            slots.innerHTML = implant_slots;
         }
         else if(val == 4) {
             slots.innerHTML = none_slots;
