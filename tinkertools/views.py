@@ -81,6 +81,12 @@ def adv_search(request):
         if int(data['gender']) != -1:
             items = items.filter(actions__criteria__value1=59, actions__criteria__value2=int(data['gender']))
 
+        # Froob flag
+
+        if data.get('froob') != -1:
+            items = items.filter(actions__criteria__value1=54, actions__criteria__value2__lte=200)
+            items = items.exclude(actions__criteria__value1=389)
+
         # None Flags
 
         if data.get('nodrop') is not None:
