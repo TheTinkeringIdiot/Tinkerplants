@@ -5,7 +5,7 @@ from tinkertools.InterpItem import *
 from tinkertools.CriterionHandler import *
 
 from django.db.models import Q, F
-from django.db.models.expressions import RawSQL
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 import math, re
 
@@ -18,7 +18,8 @@ def search(request):
     if query is None or len(query) <= 0:
         return render(request, 'tinkertools/index.html')
 
-    results = Item.objects.filter(name__icontains=query).all()
+    # results = Item.objects.filter(name__icontains=query).all()
+    results = Item.objects.annotate(rank=SearchRank(SearchVector('name', 'description'), SearchQuery(query))).filter(rank__gte=0.01).order_by('-rank').all()
 
     data = {}
     data['Items'] = []
@@ -55,7 +56,7 @@ def adv_search(request):
         items = Item.objects.all()
 
         if len(data['name']) > 0:
-            items = items.filter(name__icontains=data['name'])
+            items = items.annotate(rank=SearchRank(SearchVector('name', 'description'), SearchQuery(data['name']))).filter(rank__gte=0.01).order_by('-rank').all()
 
         if int(data['min_ql']) >= 0 and int(data['max_ql']) <= 1000:
             items = items.filter(ql__gte=int(data['min_ql'])).filter(ql__lte=int(data['max_ql']))
@@ -83,8 +84,8 @@ def adv_search(request):
 
         # Froob flag
 
-        if data.get('froob') != -1:
-            items = items.filter(actions__criteria__value1=54, actions__criteria__value2__lte=200)
+        if data.get('froob') is not None:
+            items = items.exclude(actions__criteria__value1=54, actions__criteria__value2__gte=201)
             items = items.exclude(actions__criteria__value1=389)
 
         # None Flags
