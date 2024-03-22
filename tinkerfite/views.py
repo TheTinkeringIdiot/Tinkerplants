@@ -243,8 +243,13 @@ def calculate_dps(weapon, stats):
     if max_dmg < min_dmg: max_dmg = min_dmg
     avg_dmg = round(min_dmg + (max_dmg - min_dmg) / 2)
 
-    num_crits = math.floor(num_basic_attacks * (stats['crit'] / 100))
-    num_basic_attacks = num_basic_attacks - num_crits
+    crit_rate = stats['crit'] / 100
+    if crit_rate >= 1.0:
+        num_crits = num_basic_attacks
+        num_basic_attacks = 0
+    else:
+        num_crits = math.floor(num_basic_attacks * (stats['crit'] / 100))
+        num_basic_attacks = num_basic_attacks - num_crits
 
     crit_min_dmg = round(((weapon.dmg_min + weapon.dmg_crit) * ar_bonus) + add_dmg)
     crit_dmg = round(((weapon.dmg_max + weapon.dmg_crit) * ar_bonus) + add_dmg  - (stats['target_ac'] / 10))
