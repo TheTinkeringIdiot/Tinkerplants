@@ -431,7 +431,7 @@
             th = document.createElement('th')
             link = document.createElement('a')
             link.textContent = name
-            link.href = 'https://auno.org/ao/db.php?id=' + info.ids[idx]
+            link.href = 'https://ao.tinkeringidiot.com/item/' + info.ids[idx]
             th.appendChild(link)
             header.appendChild(th)
         })
@@ -580,7 +580,7 @@
                 name_cell = document.createElement('td')
                 a = document.createElement('a')
                 a.appendChild(document.createTextNode(drop[1]))
-                a.href = "https://auno.org/ao/db.php?id=" + drop[0]
+                a.href = "https://ao.tinkeringidiot.com/item/" + drop[0]
                 a.target = '_blank'
                 name_cell.appendChild(a)
                 row.appendChild(name_cell)
@@ -616,7 +616,7 @@
                 })
 
                 filter_table.row.add([
-                    '<a href="https://auno.org/ao/db.php?id=' + symb[0] + '">' + symb[2] + '</a>',
+                    '<a href="https://ao.tinkeringidiot.com/item/' + symb[0] + '">' + symb[2] + '</a>',
                     symb[1],
                     symb[3],
                     droppers,
