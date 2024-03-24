@@ -319,12 +319,16 @@ def item(request, id, ql=0):
             data['Specials']['Burst'] = calculate_burst(data['AttackDelay_Value'], data['RechargeDelay_Value'], data['Burst'])
         elif data.get('BurstRecharge') is not None:
             data['Specials']['Burst'] = calculate_burst(data['AttackDelay_Value'], data['RechargeDelay_Value'], data['BurstRecharge'])
+        else:
+            data['Specials']['Burst'] = calculate_burst(data['AttackDelay_Value'], data['RechargeDelay_Value'], 0)
 
     if data.get('Can') is not None and 'FullAuto' in data['Can']:
         if data.get('FullAuto') is not None:
             data['Specials']['FullAuto'] = calculate_full_auto(data['RechargeDelay_Value'], data['FullAuto'])
         elif data.get('FullAutoRecharge') is not None:
             data['Specials']['FullAuto'] = calculate_full_auto(data['RechargeDelay_Value'], data['FullAutoRecharge'])
+        else:
+            data['Specials']['FullAuto'] = calculate_full_auto(data['RechargeDelay_Value'], 0)
 
     if data.get('Can') is not None and 'AimedShot' in data['Can']:
         data['Specials']['AimedShot'] = calculate_aimed_shot(data['RechargeDelay_Value'])
