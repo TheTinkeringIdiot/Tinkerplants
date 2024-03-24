@@ -326,11 +326,11 @@ def item(request, id, ql=0):
 
     if data.get('Can') is not None and 'FullAuto' in data['Can']:
         if data.get('FullAuto') is not None:
-            data['Specials']['FullAuto'] = calculate_full_auto(data['RechargeDelay_Value'], data['FullAuto'])
+            data['Specials']['FullAuto'] = calculate_full_auto(data['AttackDelay_Value'], data['RechargeDelay_Value'], data['FullAuto'])
         elif data.get('FullAutoRecharge') is not None:
-            data['Specials']['FullAuto'] = calculate_full_auto(data['RechargeDelay_Value'], data['FullAutoRecharge'])
+            data['Specials']['FullAuto'] = calculate_full_auto(data['AttackDelay_Value'], data['RechargeDelay_Value'], data['FullAutoRecharge'])
         else:
-            data['Specials']['FullAuto'] = calculate_full_auto(data['RechargeDelay_Value'], 0)
+            data['Specials']['FullAuto'] = calculate_full_auto(data['AttackDelay_Value'], data['RechargeDelay_Value'], 0)
 
     if data.get('Can') is not None and 'AimedShot' in data['Can']:
         data['Specials']['AimedShot'] = calculate_aimed_shot(data['RechargeDelay_Value'])
@@ -455,11 +455,11 @@ def calculate_burst(attack_time, rech_time, burst_cycle):
     cycle = (skill, cap)
     return cycle
 
-def calculate_full_auto(rech_time, fa_cycle):
-    cap = math.floor(10 + (rech_time / 100))
+def calculate_full_auto(attack_time, rech_time, fa_cycle):
+    cap = math.floor(10 + (attack_time / 100))
     if fa_cycle == 0:
-        fa_cycle = 900
-    skill = round(((rech_time / 100) * 40 + (fa_cycle / 100) - cap) * 25)
+        fa_cycle = 1000
+    skill = round(((rech_time / 100) * 40 + (fa_cycle / 100) - 11) * 25)
     cycle = (skill, cap)
     return cycle
 

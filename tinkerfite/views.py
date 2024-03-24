@@ -284,12 +284,12 @@ def calculate_dps(weapon, stats):
             max_special_dmg += round(max_dmg * 3 * num_attacks)
 
         elif special == "Full Auto":
-            cycle_cap = math.floor(10 + (weapon.rech_time / 100))
+            cycle_cap = math.floor(10 + (weapon.atk_time / 100))
             fa_cycle = weapon.other.get('Fullauto cycle')
             if fa_cycle is None: 
                 fa_cycle = 900
 
-            cycle_time = ((weapon.rech_time / 100) * 40) + (fa_cycle / 100) - (stats['Full auto'] / 25)
+            cycle_time = ((weapon.rech_time / 100) * 40) + (fa_cycle / 100) - (stats['Full auto'] / 25) + round((weapon.atk_time / 100) - 1)
             if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             # num_rounds = 5 + (stats['Full auto'] / 100)
