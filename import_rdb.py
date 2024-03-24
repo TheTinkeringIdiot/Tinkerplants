@@ -156,6 +156,7 @@ def get_singletons(data):
 
     statVals = []
     criteria = []
+    shopHashes = []
 
     idx = 0
     for item in data:
@@ -207,12 +208,22 @@ def get_singletons(data):
                 # sv = StatValue(stat=mesh['Stat'], value=mesh['RawValue'])
                 statVals.append((mesh['Stat'], mesh['RawValue']))
 
+        shopHashData = item.get('ShopHashData')
+        if shopHashData is not None:
+            for shopItem in shopHashData['Items']:
+                shopHashes.append((shopItem['Hash']['Text'], 
+                                   shopItem['MinLevel'], 
+                                   shopItem['MaxLevel'], 
+                                   shopItem['BaseAmount'], 
+                                   shopItem['RegenAmount'], 
+                                   shopItem['RegenInterval'], 
+                                   shopItem['SpawnChance']))
+
         idx += 1
 
-    return statVals, criteria
+    return statVals, criteria, shopHashes
 
 def make_statvalues(data):
-    data = list(set(data))
     statVals = []
     for item in data:
         sv = StatValue(stat=item[0], value=item[1])
@@ -221,13 +232,20 @@ def make_statvalues(data):
     return statVals
 
 def make_criterion(data):
-    data = list(set(data))
     criteria = []
     for item in data:
         crit = Criterion(value1=item[0], value2=item[1], operator=item[2])
         criteria.append(crit)
 
     return criteria
+
+def make_shopHashes(data):
+    shopHashes = []
+    for item in data:
+        sh = ShopHash(hash=item[0], minLevel=item[1], maxLevel=item[2], baseAmount=item[3], regenAmount=item[4], regenInterval=item[5], spawnChance=item[6])
+        shopHashes.append(sh)
+
+    return shopHashes
 
 chunkSize = 100
 
@@ -237,24 +255,27 @@ if __name__ == "__main__":
     with open('items.json', 'r') as fd:
         itemData = json.loads(fd.read())
 
-    itemSV, itemCrit = get_singletons(itemData)
+    itemSV, itemCrit, itemHashes = get_singletons(itemData)
 
     print('Getting Nano Singletons...')
     with open('nanos.json', 'r') as fd:
         nanoData = json.loads(fd.read())
 
-    nanoSV, nanoCrit = get_singletons(nanoData)
+    nanoSV, nanoCrit, nanoHashes = get_singletons(nanoData)
 
-    statVals = itemSV + nanoSV
-    criteria = itemCrit + nanoCrit
+    statVals = list(set(itemSV + nanoSV))
+    criteria = list(set(itemCrit + nanoCrit))
+    hashes = list(set(itemHashes + nanoHashes))
 
     print('Creating StatValue and Criterion')
     statVals = make_statvalues(statVals)
     criteria = make_criterion(criteria)
+    shopHashes = make_shopHashes(hashes)
 
     print('Sending StatValue and Criterion')
     StatValue.objects.bulk_create(statVals)
     Criterion.objects.bulk_create(criteria)
+    ShopHash.objects.bulk_create(shopHashes)
 
 
     itemChunks = [itemData[i:i + chunkSize] for i in range(0, len(itemData), chunkSize)]
