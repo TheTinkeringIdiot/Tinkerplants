@@ -215,6 +215,8 @@ def item(request, id, ql=0):
         item = InterpItem(id, ql)
     except:
         return render(request, 'tinkertools/item_not_found.html')
+    
+    # breakpoint()
 
     data['AOID'] = id
     data['Name'] = item.name
@@ -455,6 +457,8 @@ def calculate_burst(attack_time, rech_time, burst_cycle):
 
 def calculate_full_auto(rech_time, fa_cycle):
     cap = math.floor(10 + (rech_time / 100))
+    if fa_cycle == 0:
+        fa_cycle = 900
     skill = round(((rech_time / 100) * 40 + (fa_cycle / 100) - cap) * 25)
     cycle = (skill, cap)
     return cycle
