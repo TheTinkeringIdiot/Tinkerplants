@@ -55,6 +55,12 @@ class AnimationMesh(models.Model):
     animation = models.ForeignKey(StatValue, on_delete=models.CASCADE, related_name='animesh_animation', null=True)
     mesh = models.ForeignKey(StatValue, on_delete=models.CASCADE, related_name='animesh_mesh', null=True)
 
+    def __eq__(self, other):
+        return self.animation_id == other.animation_id and self.mesh_id == other.mesh_id
+    
+    def __hash__(self):
+        return super().__hash__()
+
 class ShopHash(models.Model):
     hash = models.CharField(4)
     minLevel = models.IntegerField(null=True)
@@ -63,6 +69,18 @@ class ShopHash(models.Model):
     regenAmount = models.IntegerField(null=True)
     regenInterval = models.IntegerField(null=True)
     spawnChance = models.IntegerField(null=True)
+
+    def __eq__(self, other):
+        return self.hash == other.hash and \
+        self.minLevel == other.minLevel and \
+        self.maxLevel == other.maxLevel and \
+        self.baseAmount == other.baseAmount and \
+        self.regenAmount == other.regenAmount and \
+        self.regenInterval == other.regenInterval and \
+        self.spawnChance == other.spawnChance
+    
+    def __hash__(self):
+        return super().__hash__()
 
 class Item(models.Model):
     aoid = models.IntegerField(null=True)
