@@ -18,11 +18,23 @@ class RDBImporter:
 
     chunkSize = 100
 
+    items = []
     statValues = []
+    itemStatValues = []
+    atkdefs = []
+    atkdefAttacks = []
+    atkdefDefenses = []
+    actions = []
+    actionCriterions = []
     criteria = []
+    itemShopHashes = []
     shopHashes = []
     aniMeshes = []
+
     spellTuples = []
+    itemSpellDatas = []
+    spellDatas = []
+    spellDataSpell = []
     spells = []
     spellCriteria = []
 
@@ -69,34 +81,43 @@ class RDBImporter:
         self.spells, self.spellCriteria = self.makeSpells(self.spellTuples)
 
         print('Sending Spells...')
-        breakpoint()
+        # breakpoint()
         Spell.objects.bulk_create(self.spells)
-        Spell.criteria.through.objects.bulk_create(self.spellCriteria)
+        Spell.criteria.through.objects.bulk_create(self.spellCriteria, ignore_conflicts=True)
 
-        breakpoint()
-
-
+        # breakpoint()
 
 
-
-
-
-
-
-        itemChunks = [self.totalData[i:i + chunkSize] for i in range(0, len(self.totalData), self.chunkSize)]
+        itemChunks = [self.totalData[i:i + self.chunkSize] for i in range(0, len(self.totalData), self.chunkSize)]
 
         print('Importing items...')
 
-        # result = import_items(itemData)
+        # result = self.import_items(itemData)
         # asyncio.run(result)
+        self.import_items(self.totalData)
 
+        # breakpoint()
+
+        print('Sending Items...')
+        Item.objects.bulk_create(self.items)
+        Item.stats.through.objects.bulk_create(self.itemStatValues, ignore_conflicts=True)
+        Item.shopHash.through.objects.bulk_create(self.itemShopHashes, ignore_conflicts=True)
+        Item.spellData.through.objects.bulk_create(self.itemSpellDatas, ignore_conflicts=True)
+
+        AttackDefense.attack.through.objects.bulk_create(self.atkdefAttacks, ignore_conflicts=True)
+        AttackDefense.defense.through.objects.bulk_create(self.atkdefDefenses, ignore_conflicts=True)
+        AttackDefense.objects.bulk_create(self.atkdefs)
+
+        Action.objects.bulk_create(self.actions)
+        ActionCriterion.objects.bulk_create(self.actionCriterions, ignore_conflicts=True)
+        
         # print('Importing nanos...')
         # result = import_nanos(nanoData)
         # asyncio.run(result)
 
-        db.connections.close_all()
-        with Pool(15) as pool:
-            result = pool.map(self.import_items, itemChunks)
+        # db.connections.close_all()
+        # with Pool(15) as pool:
+        #     result = pool.map(self.import_items, itemChunks)
 
 
     def initDB(self):
@@ -147,11 +168,15 @@ class RDBImporter:
     def import_nanos(self, chunk):
         asyncio.run(self.import_rdb(chunk, True))
 
-    async def import_rdb(self, data):
+    def import_rdb(self, data):
 
         item_idx = 0
         for item in data:
-            newItem, created = await Item.objects.aget_or_create(aoid = item['AOID'])
+            if item_idx % 1000 == 0:
+                print(f'Item {item_idx}...')
+            # newItem, created = await Item.objects.aget_or_create(aoid = item['AOID'])
+            item_idx += 1
+            newItem = Item(id=item_idx)
 
             newItem.name = item.get('Name')
             newItem.description = item.get('Description')
@@ -161,7 +186,7 @@ class RDBImporter:
             else:
                 newItem.is_nano = False
 
-            await newItem.asave()
+            # await newItem.asave()
 
             # breakpoint()
 
@@ -173,7 +198,8 @@ class RDBImporter:
                 elif stat == 54:
                     newItem.ql = value
                 # statValue, create = StatValue.objects.get_or_create(stat=stat, value=value)
-                await newItem.stats.aadd(self.statValues.index(StatValue(stat=stat, value=value)) + 1)
+                self.itemStatValues.append(Item.stats.through(item_id=newItem.id, statvalue_id=self.statValues.index(StatValue(stat=stat, value=value)) + 1))
+                # await newItem.stats.aadd(self.statValues.index(StatValue(stat=stat, value=value)) + 1)
 
             if newItem.ql is None:
                 newItem.ql = 1
@@ -183,17 +209,22 @@ class RDBImporter:
 
             atkdef = item.get('AttackDefenseData')
             if atkdef is not None:
-                newAtkDef = AttackDefense()
-                await newAtkDef.asave()
+                newAtkDef = AttackDefense(id=len(self.atkdefs) + 1)
+                # await newAtkDef.asave()
                 for atk in atkdef.get('Attack'):
                     # sv, create = StatValue.objects.get_or_create(stat=atk.get('Stat'), value=atk.get('RawValue'))
-                    await newAtkDef.attack.aadd(self.statValues.index(StatValue(stat=atk.get('Stat'), value=atk.get('RawValue'))) + 1)
+                    stat_idx = self.statValues.index(StatValue(stat=atk.get('Stat'), value=atk.get('RawValue'))) + 1
+                    self.atkdefAttacks.append(AttackDefense.attack.through(attackdefense_id=newAtkDef.id, statvalue_id=stat_idx))
+                    # newAtkDef.attack_id = self.statValues.index(StatValue(stat=atk.get('Stat'), value=atk.get('RawValue'))) + 1
                 for atk in atkdef.get('Defense'):
                     # sv, create = StatValue.objects.get_or_create(stat=atk.get('Stat'), value=atk.get('RawValue'))
-                    await newAtkDef.defense.aadd(self.statValues.index(StatValue(stat=atk.get('Stat'), value=atk.get('RawValue'))) + 1)
+                    stat_idx = self.statValues.index(StatValue(stat=atk.get('Stat'), value=atk.get('RawValue'))) + 1
+                    self.atkdefDefenses.append(AttackDefense.defense.through(attackdefense_id=newAtkDef.id, statvalue_id=stat_idx))
+                    # newAtkDef.defense_id =self.statValues.index(StatValue(stat=atk.get('Stat'), value=atk.get('RawValue'))) + 1
 
-                await newAtkDef.asave()
-                newItem.atkdef = newAtkDef
+                # await newAtkDef.asave()
+                self.atkdefs.append(newAtkDef)
+                newItem.atkdef_id = newAtkDef.id
                 # atkdefs.append(newAtkDef)
                 # newItem.atkdef_id = len(atkdefs)
 
@@ -202,32 +233,34 @@ class RDBImporter:
                 actions = actionData.get('Actions')
                 if actions is not None:
                     for action in actions:
-                        newAction = Action()
+                        newAction = Action(id=len(self.actions) + 1)
                         newAction.action = action['Action']
-                        await newAction.asave()
+                        # await newAction.asave()
                         crit_idx = 0
                         for criterion in action.get('Criteria'):
-                            ac = ActionCriterion()
+                            ac = ActionCriterion(id=len(self.actionCriterions) + 1)
                             # crit, create = Criterion.objects.get_or_create(value1=criterion['Value1'], value2=criterion['Value2'], operator=criterion['Operator'])
                             crit = self.criteria.index(Criterion(value1=criterion['Value1'], value2=criterion['Value2'], operator=criterion['Operator'])) + 1
-                            ac.action = newAction
+                            ac.action_id = newAction.id
                             ac.criterion_id = crit
                             ac.order = crit_idx
                             # actionCriteria.append(ac)
-                            await ac.asave()
-                            await newAction.criteria.aadd(crit)
+                            # await ac.asave()
+                            self.actionCriterions.append(ac)
+                            # await newAction.criteria.aadd(crit)
 
                             crit_idx += 1
                         
-                        newAction.item = newItem
+                        newAction.item_id = newItem.id
                         # actions.append(newAction)
-                        await newAction.asave()
+                        # await newAction.asave()
+                        self.actions.append(newAction)
 
 
             for spellData in item.get('SpellData'):
-                newSpellData = SpellData()
+                newSpellData = SpellData(id=len(self.spellDatas) + 1)
                 newSpellData.event = spellData['Event']
-                await newSpellData.asave()
+                # await newSpellData.asave()
 
                 for spell in spellData['Items']:
                     interspell = spell.copy()
@@ -246,12 +279,15 @@ class RDBImporter:
                     if spell.get('Auto3') is not None:
                         interspell['Auto3'] = spell['Auto3']['Text']
 
-                    interspell['Criteria'] = tuple(frozenset(x.items()) for x in spell['Criteria'])
+                    interspell['Criteria'] = tuple((x['Value1'], x['Value2'], x['Operator']) for x in spell['Criteria'])
 
                     spellString = frozenset(interspell.items())
 
                     spell_idx = self.spellTuples.index(spellString) + 1
-                    SpellData.spells.through.objects.create(spellData_id=newSpellData.id, spell_id=spell_idx)
+                    self.spellDataSpell.append(SpellData.spells.through(spelldata_id=newSpellData.id, spell_id=spell_idx))
+                    # await SpellData.spells.through.objects.acreate(spelldata_id=newSpellData.id, spell_id=spell_idx)
+                self.spellDatas.append(newSpellData)
+                self.itemSpellDatas.append(Item.spellData.through(item_id=newItem.id, spelldata_id=newSpellData.id))
 
 
                 
@@ -280,19 +316,20 @@ class RDBImporter:
                 # await newSpellData.asave()
                 # spellDatas.append(newSpellData)
                 
-                await newItem.spellData.aadd(newSpellData)
+                # await newItem.spellData.aadd(newSpellData)
 
             shopHashData = item.get('ShopHashData')
             if shopHashData is not None:
                 for shopItem in shopHashData['Items']:
 
-                    await newItem.shopHash.aadd(self.shopHashes.index(ShopHash(hash=shopItem['Hash']['Text'],
+                    hash_idx = (self.shopHashes.index(ShopHash(hash=shopItem['Hash']['Text'],
                                                                 minLevel=shopItem['MinLevel'],
                                                                 maxLevel=shopItem['MaxLevel'],
                                                                 baseAmount=shopItem['BaseAmount'],
                                                                 regenAmount=shopItem['RegenAmount'],
                                                                 regenInterval=shopItem['RegenInterval'],
                                                                 spawnChance=shopItem['SpawnChance'])) + 1)
+                    self.itemShopHashes.append(Item.shopHash.through(item_id=newItem.id, shophash_id=hash_idx))
 
             animesh = item.get('AnimationMesh')
             if animesh is not None:
@@ -319,7 +356,9 @@ class RDBImporter:
                 # animeshes.append(newAniMesh)
                 # newItem.animationMesh = newAniMesh
                 newItem.animationMesh_id = animesh_id
-            await newItem.asave()
+
+            self.items.append(newItem)
+            # await newItem.asave()
 
         # breakpoint()
             
@@ -493,9 +532,9 @@ class RDBImporter:
             newSpell.spellFormat = item['SpellFormat']
             item.pop('SpellFormat', None)
 
-            spell_idx = len(spells) + 2 # plus the one about to be added, plus one for len counter
-            if spell_idx == 60:
-                breakpoint()
+            spell_idx = len(spells) + 1 # plus the one about to be added, plus one for len counter
+            # if spell_idx == 60:
+            #     breakpoint()
             for criterion in criteria:
                 # crit, create = Criterion.objects.get_or_create(value1=criterion['Value1'], value2=criterion['Value2'], operator=criterion['Operator'])
                 crit_idx = self.criteria.index(Criterion(value1=criterion['Value1'], value2=criterion['Value2'], operator=criterion['Operator'])) + 1
