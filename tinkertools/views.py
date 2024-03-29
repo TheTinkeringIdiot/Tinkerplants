@@ -42,6 +42,12 @@ def search(request):
         item['AOID'] = result.aoid
         item['Name'] = result.name
         item['QL'] = result.ql
+        if result.itemClass == 1: # Item is a weapon
+            minDmg = result.stats.filter(stat=286).first().value
+            maxDmg = result.stats.filter(stat=285).first().value
+            critDmg = result.stats.filter(stat=284).first().value
+            item['Damage'] = f'{minDmg}-{maxDmg} ({critDmg})'
+            data['HasWeapons'] = True
 
         data['Items'].append(item)
 
@@ -207,6 +213,12 @@ def adv_search(request):
             result['AOID'] = item.aoid
             result['Name'] = item.name
             result['QL'] = item.ql
+            if item.itemClass == 1: # Item is a weapon
+                minDmg = item.stats.filter(stat=286).first().value
+                maxDmg = item.stats.filter(stat=285).first().value
+                critDmg = item.stats.filter(stat=284).first().value
+                result['Damage'] = f'{minDmg}-{maxDmg} ({critDmg})'
+                results['HasWeapons'] = True
 
             results['Items'].append(result)
 

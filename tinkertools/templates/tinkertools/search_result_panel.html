@@ -7,6 +7,9 @@
             <tr>
                 <th>Icon</th>
                 <th>Name</th>
+                {% if HasWeapons %}
+                <th>Weapon Damage</th>
+                {% endif %}
                 <th>QL</th>
             </tr>
         </thead>
@@ -15,6 +18,9 @@
                 <tr>
                     <td><img src="https://cdn.tinkeringidiot.com/aoicons/{{ item.Icon }}.png" width="25" height="25"></td>
                     <td><span class="fs-5"><a href="/item/{{ item.AOID }}/{{ item.QL }}">{{ item.Name }}</a></span></td>
+                    {% if HasWeapons %}
+                    <td><span class="fs-5">{{ item.Damage }}</span></td>
+                    {% endif %}
                     <td><span class="fs-5">{{ item.QL }}</span></td>
                 </tr>
             {% endfor %}
