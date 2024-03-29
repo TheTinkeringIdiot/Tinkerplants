@@ -66,6 +66,9 @@ def adv_search(request):
     if request.method == 'POST':
         data = request.POST
 
+        results = {}
+        modStats = []
+
         items = Item.objects.all()
 
         if len(data['name']) > 0:
@@ -150,27 +153,35 @@ def adv_search(request):
 
         if data.get('strength') is not None:
             items = items.filter(spellData__spells__spellParams__Stat=16, spellData__spells__spellParams__Amount__gte=1)
+            modStats.append(16)
 
         if data.get('stamina') is not None:
             items = items.filter(spellData__spells__spellParams__Stat=18, spellData__spells__spellParams__Amount__gte=1)
+            modStats.append(18)
 
         if data.get('agility') is not None:
             items = items.filter(spellData__spells__spellParams__Stat=17, spellData__spells__spellParams__Amount__gte=1)
+            modStats.append(17)
 
         if data.get('sense') is not None:
             items = items.filter(spellData__spells__spellParams__Stat=20, spellData__spells__spellParams__Amount__gte=1)
+            modStats.append(20)
 
         if data.get('intelligence') is not None:
             items = items.filter(spellData__spells__spellParams__Stat=19, spellData__spells__spellParams__Amount__gte=1)
+            modStats.append(19)
 
         if data.get('psychic') is not None:
             items = items.filter(spellData__spells__spellParams__Stat=21, spellData__spells__spellParams__Amount__gte=1)
+            modStats.append(21)
 
         if data.get('treatment') is not None:
             items = items.filter(spellData__spells__spellParams__Stat=124, spellData__spells__spellParams__Amount__gte=1)
+            modStats.append(124)
 
         if data.get('complit') is not None:
             items = items.filter(spellData__spells__spellParams__Stat=161, spellData__spells__spellParams__Amount__gte=1)
+            modStats.append(161)
 
         data = dict(data.lists())
         for i in range(len(data['func_select'])):
@@ -180,7 +191,7 @@ def adv_search(request):
             stat = int(data['stat_select'][i])
             op = int(data['op_select'][i])
             value = int(data['value'][i])
-            
+
             if func == 0: # Requires - criterion
                 if op == 0:
                     items = items.filter(actions__criteria__value1=stat, actions__criteria__value2__exact=value-1, actions__criteria__operator=op)
@@ -192,6 +203,7 @@ def adv_search(request):
                     items = items.filter(actions__criteria__value1=stat).exclude(actions__criteria__value2__exact=value-1)
 
             elif func == 1: # Modifies - spell effect
+                modStats.append(stat)
                 if op == 0:
                     items = items.filter(spellData__spells__spellParams__Stat=stat, spellData__spells__spellParams__Amount__exact=value)
                 elif op == 1:
@@ -201,7 +213,14 @@ def adv_search(request):
                 elif op == 24:
                     items = items.filter(spellData__spells__spellParams__Stat=stat).exclude(spellData__spells__spellParams__Amount__exact=value)
 
-        results = {}
+        
+        # Add ModStats for table header
+        for stat in modStats:
+            if results.get('ModStats') is None:
+                results['ModStats'] = [STAT[stat]]
+            else:
+                results['ModStats'].append(STAT[stat])
+
         results['Items'] = []
         for item in items:
             result = {}
@@ -213,15 +232,35 @@ def adv_search(request):
             result['AOID'] = item.aoid
             result['Name'] = item.name
             result['QL'] = item.ql
-            if item.itemClass == 1: # Item is a weapon
-                minDmg = item.stats.filter(stat=286).first().value
-                maxDmg = item.stats.filter(stat=285).first().value
-                critDmg = item.stats.filter(stat=284).first().value
+            if item.itemClass == 1: # Item is a weapon, include damage stats
+                try:
+                    minDmg = item.stats.filter(stat=286).first().value
+                except:
+                    minDmg = 0
+                
+                try:
+                    maxDmg = item.stats.filter(stat=285).first().value
+                except:
+                    maxDmg = 0
+
+                try:
+                    critDmg = item.stats.filter(stat=284).first().value
+                except:
+                    critDmg = 0
+
                 result['Damage'] = f'{minDmg}-{maxDmg} ({critDmg})'
                 results['HasWeapons'] = True
 
-            results['Items'].append(result)
+            # get ModStats values for the item
+            for stat in modStats:
+                val = item.spellData.filter(spells__spellParams__Stat=stat).first().spells.filter(spellParams__Stat=stat).first().spellParams['Amount']
+                if result.get('ModStats') is None:
+                    result['ModStats'] = [val]
+                else:
+                    result['ModStats'].append(val)
 
+            results['Items'].append(result)
+                
         try:
             return render(request, 'tinkertools/search.html', results)
         except Exception as thing:

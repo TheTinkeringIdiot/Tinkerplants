@@ -10,6 +10,10 @@
                 {% if HasWeapons %}
                 <th>Weapon Damage</th>
                 {% endif %}
+
+                {% for modStat in ModStats %}
+                <th>{{ modStat }}</th>
+                {% endfor %}
                 <th>QL</th>
             </tr>
         </thead>
@@ -21,6 +25,9 @@
                     {% if HasWeapons %}
                     <td><span class="fs-5">{{ item.Damage }}</span></td>
                     {% endif %}
+                    {% for modStat in item.ModStats %}
+                    <td><span class="fs-5">{{ modStat }}</span></td>
+                    {% endfor %}
                     <td><span class="fs-5">{{ item.QL }}</span></td>
                 </tr>
             {% endfor %}
