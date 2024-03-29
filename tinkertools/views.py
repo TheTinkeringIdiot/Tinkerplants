@@ -57,7 +57,7 @@ def search(request):
                 critDmg = item.stats.filter(stat=284).first().value
             except:
                 critDmg = 0
-                
+
             item['Damage'] = f'{minDmg}-{maxDmg} ({critDmg})'
             data['HasWeapons'] = True
 
@@ -503,9 +503,13 @@ def item(request, id, ql=0):
                     elif tag == 'TickCount' or tag == 'TickInterval':
                         pass
 
+                    elif tag == 'Action':
+                        formatParams[tag] = str(ACTION_FLAG(spell.spellParams[tag])).replace('ACTION_FLAG.', '')
+
                     else:
                         formatParams[tag] = spell.spellParams[tag]
-
+                            
+                        
                 if idx == 0:
                     newSpell['Description'] = token.format(**formatParams)
                 else:
