@@ -43,9 +43,21 @@ def search(request):
         item['Name'] = result.name
         item['QL'] = result.ql
         if result.itemClass == 1: # Item is a weapon
-            minDmg = result.stats.filter(stat=286).first().value
-            maxDmg = result.stats.filter(stat=285).first().value
-            critDmg = result.stats.filter(stat=284).first().value
+            try:
+                minDmg = item.stats.filter(stat=286).first().value
+            except:
+                minDmg = 0
+            
+            try:
+                maxDmg = item.stats.filter(stat=285).first().value
+            except:
+                maxDmg = 0
+
+            try:
+                critDmg = item.stats.filter(stat=284).first().value
+            except:
+                critDmg = 0
+                
             item['Damage'] = f'{minDmg}-{maxDmg} ({critDmg})'
             data['HasWeapons'] = True
 
