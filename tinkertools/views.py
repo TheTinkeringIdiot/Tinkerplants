@@ -18,8 +18,17 @@ def search(request):
     if query is None or len(query) <= 0:
         return render(request, 'tinkertools/index.html')
 
+    q = None
+    for word in query.split(' '):
+        if q is None:
+            q = Q(name__icontains=word)
+        else:
+            q &= Q(name__icontains=word)
+
+    results = Item.objects.filter(q).all()
     # results = Item.objects.filter(name__icontains=query).all()
-    results = Item.objects.annotate(rank=SearchRank(SearchVector('name', 'description'), SearchQuery(query))).filter(rank__gte=0.01).order_by('-rank').all()
+    # results = Item.objects.annotate(rank=SearchRank(SearchVector('name', 'description'), SearchQuery(query))).filter(rank__gte=0.01).order_by('-rank').all()
+    # results = Item.objects.filter(name__search=query).all()
 
     data = {}
     data['Items'] = []
@@ -51,12 +60,18 @@ def adv_search(request):
     if request.method == 'POST':
         data = request.POST
 
-        q_obj = Q()
-
         items = Item.objects.all()
 
         if len(data['name']) > 0:
-            items = items.annotate(rank=SearchRank(SearchVector('name', 'description'), SearchQuery(data['name']))).filter(rank__gte=0.01).order_by('-rank').all()
+            q = None
+            for word in data['name'].split(' '):
+                if q is None:
+                    q = Q(name__icontains=word)
+                else:
+                    q &= Q(name__icontains=word)
+
+            items = items.filter(q)
+            # items = items.annotate(rank=SearchRank(SearchVector('name', 'description'), SearchQuery(data['name']))).filter(rank__gte=0.01).order_by('-rank').all()
 
         if int(data['min_ql']) >= 0 and int(data['max_ql']) <= 1000:
             items = items.filter(ql__gte=int(data['min_ql'])).filter(ql__lte=int(data['max_ql']))
