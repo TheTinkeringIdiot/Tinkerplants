@@ -2863,6 +2863,7 @@ NANO_STRAIN = {
     887 : "Unremovable Snare",
     889 : "Trader Shutdown Skill Debuff",
     890 : "Trader Shutdown Skill Buff",
+    893 : "Last Minute Negotiations",
     900 : "Keeper Fear Immunity",
     901 : "Fixer Fear Immunity",
     909 : "Endurance Skin",
