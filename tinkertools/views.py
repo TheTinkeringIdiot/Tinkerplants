@@ -16,7 +16,7 @@ def strain(request, id):
     data = {}
     try:
         
-        nanos = Item.objects.filter(stats__stat=75, stats__value=id).all()
+        nanos = Item.objects.filter(is_nano=True, stats__stat=75, stats__value=id).all()
 
         data['StrainName'] = NANO_STRAIN[id]
         data['Items'] = []
@@ -31,7 +31,11 @@ def strain(request, id):
                 nanoData['Icon'] = 273470
 
             nanoData['QL'] = nano.ql
-            nanoData['StackingOrder'] = nano.stats.filter(stat=551).first().value
+
+            try:
+                nanoData['StackingOrder'] = nano.stats.filter(stat=551).first().value
+            except:
+                nanoData['StackingOrder'] = 0
             data['Items'].append(nanoData)
 
         # breakpoint()
