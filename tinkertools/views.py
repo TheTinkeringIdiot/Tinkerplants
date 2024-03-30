@@ -366,6 +366,10 @@ def item(request, id, ql=0):
         elif STAT[stat.stat] == 'DamageType2':
             data['DamageType'] = STAT[stat.value]
 
+        elif STAT[stat.stat] == 'NanoStrain':
+            data['NanoStrain'] = NANO_STRAIN[stat.value]
+            data['NanoStrain_Value'] = stat.value
+
         else:
             data[STAT[stat.stat]] = stat.value
 
@@ -502,6 +506,9 @@ def item(request, id, ql=0):
 
                     elif tag == 'TickCount' or tag == 'TickInterval':
                         pass
+
+                    elif tag == 'Action':
+                        formatParams[tag] = str(ACTION_FLAG(spell.spellParams[tag])).replace('ACTION_FLAG.', '')
 
                     else:
                         formatParams[tag] = spell.spellParams[tag]
