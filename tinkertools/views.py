@@ -12,6 +12,36 @@ import math, re
 def index(request):
     return render(request, 'tinkertools/index.html')
 
+def strain(request, id):
+    data = {}
+    try:
+        
+        nanos = Item.objects.filter(stats__stat=75, stats__value=id).all()
+
+        data['StrainName'] = NANO_STRAIN[id]
+        data['Items'] = []
+        
+        for nano in nanos:
+            nanoData = {}
+            nanoData['Name'] = nano.name
+            nanoData['AOID'] = nano.aoid
+            try:
+                nanoData['Icon'] = nano.stats.filter(stat=79).first().value
+            except:
+                nanoData['Icon'] = 273470
+
+            nanoData['QL'] = nano.ql
+            nanoData['StackingOrder'] = nano.stats.filter(stat=551).first().value
+            data['Items'].append(nanoData)
+
+        # breakpoint()
+
+        
+        return render(request, 'tinkertools/strain.html', data)
+
+    except:
+        return render(request, 'tinkertools/item_not_found.html')
+
 def search(request):
     query = request.GET.get('query')
 

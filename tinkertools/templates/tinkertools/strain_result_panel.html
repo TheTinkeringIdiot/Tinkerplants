@@ -1,0 +1,44 @@
+
+{% load static %}
+
+<div class="pb-2 mt-4 mb-2 border-bottom">
+    <div style="height: 50;">
+        <span class="fs-3">Nano Strain: {{ StrainName }}</span>&nbsp;&nbsp;&nbsp;
+    </div>
+</div>
+
+<div class="container-fluid">
+    <table class="table table-striped" style="width: 100%;" id="strain-result-table">
+        <thead>
+            <tr>
+                <th>Icon</th>
+                <th>Name</th>
+                <th>StackingOrder</th>
+                <th>QL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in Items %}
+                <tr>
+                    <td><img src="https://cdn.tinkeringidiot.com/aoicons/{{ item.Icon }}.png" width="25" height="25"></td>
+                    <td><span class="fs-5"><a href="/item/{{ item.AOID }}/{{ item.QL }}">{{ item.Name }}</a></span></td>
+                    <td><span class="fs-5">{{ item.StackingOrder }}</span></td>
+                    <td><span class="fs-5">{{ item.QL }}</span></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#strain-result-table').DataTable({
+            order: [[2, 'desc']],
+            "language": {
+                "search": "Filter:"
+            },
+            pageLength: 50
+        })
+    })
+</script>
