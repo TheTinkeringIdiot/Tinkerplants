@@ -37,9 +37,6 @@ def strain(request, id):
             except:
                 nanoData['StackingOrder'] = 0
             data['Items'].append(nanoData)
-
-        # breakpoint()
-
         
         return render(request, 'tinkertools/strain.html', data)
 
@@ -78,17 +75,17 @@ def search(request):
         item['QL'] = result.ql
         if result.itemClass == 1: # Item is a weapon
             try:
-                minDmg = item.stats.filter(stat=286).first().value
+                minDmg = result.stats.filter(stat=286).first().value
             except:
                 minDmg = 0
             
             try:
-                maxDmg = item.stats.filter(stat=285).first().value
+                maxDmg = result.stats.filter(stat=285).first().value
             except:
                 maxDmg = 0
 
             try:
-                critDmg = item.stats.filter(stat=284).first().value
+                critDmg = result.stats.filter(stat=284).first().value
             except:
                 critDmg = 0
 
@@ -555,8 +552,6 @@ def item(request, id, ql=0):
 
             spellEvent['Spells'].append(newSpell)
         data['SpellData'].append(spellEvent)
-
-    # breakpoint()
     
     try:
         return render(request, 'tinkertools/item.html', data)
