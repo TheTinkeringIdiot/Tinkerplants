@@ -261,7 +261,7 @@ def calculate_dps(weapon, stats):
     for special in weapon.props:
         if special == "Fling Shot":
             cycle_cap = math.floor(6 + (weapon.atk_time / 100))
-            cycle_time = 1600 * (weapon.atk_time / 100) - stats['Fling shot'] / 100
+            cycle_time = 16 * (weapon.atk_time / 100) - stats['Fling shot'] / 100
             if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             num_attacks = math.floor(sample_len / cycle_time)

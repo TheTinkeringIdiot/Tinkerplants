@@ -560,7 +560,7 @@ def item(request, id, ql=0):
 
 def calculate_fling(attack_time):
     cap = math.floor(6 + (attack_time / 100))
-    skill = round(1600 * (attack_time / 100) - (cap * 100))
+    skill = round((16 * (attack_time / 100) - cap) * 100)
     cycle = (skill, cap)
     return cycle
 
