@@ -2822,6 +2822,7 @@ NANO_STRAIN = {
     844 : "Health Drain",
     845 : "Damage Drain",
     847 : "Skill Lock Modifier Debuff",
+    848 : "Health Drain Effect",
     849 : "Incapacitate",
     850 : "Pet Heal Delta",
     851 : "Reanimated Cloak Buffs",
