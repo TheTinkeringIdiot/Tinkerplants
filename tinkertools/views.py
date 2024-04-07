@@ -15,10 +15,14 @@ def index(request):
 def strain(request, id):
     data = {}
     try:
-        
-        nanos = Item.objects.filter(is_nano=True, stats__stat=75, stats__value=id).all()
 
-        data['StrainName'] = NANO_STRAIN[id]
+        if id >= 1000000:
+            data['StrainName'] = "Unused Org Advantages"
+            nanos = Item.objects.filter(stats__stat=75, stats__value__gte=id).all()
+        else:
+            data['StrainName'] = NANO_STRAIN[id]
+            nanos = Item.objects.filter(is_nano=True, stats__stat=75, stats__value=id).all()
+        
         data['Items'] = []
         
         for nano in nanos:
@@ -398,8 +402,12 @@ def item(request, id, ql=0):
             data['DamageType'] = STAT[stat.value]
 
         elif STAT[stat.stat] == 'NanoStrain':
-            data['NanoStrain'] = NANO_STRAIN[stat.value]
-            data['NanoStrain_Value'] = stat.value
+            if stat.value > 1000000:
+                data['NanoStrain'] = "Unused Org Advantages"
+                data['NanoStrain_Value'] = 1000000
+            else:
+                data['NanoStrain'] = NANO_STRAIN[stat.value]
+                data['NanoStrain_Value'] = stat.value
 
         else:
             data[STAT[stat.stat]] = stat.value
