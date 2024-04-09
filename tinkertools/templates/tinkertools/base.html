@@ -5,9 +5,18 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="color-scheme" content="light dark">
+        {% if Description %}
+        <meta name="description" content="{{ Description }}">
+        {% else %}
         <meta name="description" content="Tinkertools are player utilities for sci-fi MMORPG Anarchy Online to help with implants, nanotechnician nukes, and weapon selection">
+        {% endif %}
         <meta name="keywords" content="anarchy online implant designer nuke table weapon help tool utility">
+
+        {% if Name %}
+        <title>{{ Name }} - TinkerTools</title>
+        {% else %}
         <title>TinkerTools</title>
+        {% endif %}
         <link rel="shortcut icon" type="image/png" href="https://cdn.tinkeringidiot.com/static/image/tools_favicon.ico"/>
         <link rel="stylesheet" type="text/css" href="https://cdn.tinkeringidiot.com/static/css/bootstrap-night.min.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.tinkeringidiot.com/static/css/tinkertools.css">
