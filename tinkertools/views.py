@@ -154,9 +154,9 @@ def adv_search(request):
             items = items.filter(actions__criteria__value1=59, actions__criteria__value2=int(data['gender']))
 
         # Froob flag
-
         if data.get('froob') is not None:
-            items = items.exclude(actions__criteria__value1=54, actions__criteria__value2__gte=201)
+            items = items.filter(actions__criteria__value1=54, actions__criteria__value2__lte=200)
+            # items = items.exclude(actions__criteria__value1=54, actions__criteria__value2__gte=201)
             items = items.exclude(actions__criteria__value1=389)
 
         # None Flags
