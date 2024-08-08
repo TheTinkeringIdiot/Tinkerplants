@@ -581,6 +581,7 @@ def calculate_burst(attack_time, rech_time, burst_cycle):
     skill -= 1 # get the minimum skill required, not the top of the range
     skill *= 25
     skill += 1
+    skill = round(skill)
     cycle = (skill, cap)
     return cycle
 
