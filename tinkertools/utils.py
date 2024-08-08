@@ -1881,7 +1881,7 @@ SPELL_FORMATS = {
     53166 : 'Generate name',
     53167 : 'Summon level {Level} pet for {Lifetime}s',
     53173 : 'Deploy to land control area',
-    53175 : 'Modify {Stat} | {Amount}',
+    53175 : 'Modify {Stat} | {Amount}',  # ScalingModify
     53177 : 'Reduce strain {NanoStrain} by {Duration}s',
     53178 : 'Disable defensive shield',
     53181 : 'Summon pets',

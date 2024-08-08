@@ -289,7 +289,7 @@ def calculate_dps(weapon, stats):
             if fa_cycle is None: 
                 fa_cycle = 1000
 
-            cycle_time = ((weapon.rech_time / 100) * 40) + (fa_cycle / 100) - (stats['Full auto'] / 25) + round((weapon.atk_time / 100) - 1)
+            cycle_time = ((weapon.rech_time / 100) * 40) + (fa_cycle / 100) - (stats['Full auto'] / 25) + (weapon.atk_time / 100)
             if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             # num_rounds = 5 + (stats['Full auto'] / 100)
