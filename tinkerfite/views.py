@@ -261,7 +261,7 @@ def calculate_dps(weapon, stats):
     for special in weapon.props:
         if special == "Fling Shot":
             cycle_cap = math.floor(6 + (weapon.atk_time / 100))
-            cycle_time = 16 * (weapon.atk_time / 100) - stats['Fling shot'] / 100
+            cycle_time = math.floor(16 * (weapon.atk_time / 100) - stats['Fling shot'] / 100)
             if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             num_attacks = math.floor(sample_len / cycle_time)
@@ -275,7 +275,7 @@ def calculate_dps(weapon, stats):
             if burst_cycle is None:
                 burst_cycle = 0
 
-            cycle_time = (weapon.rech_time / 100) * 20 + (burst_cycle / 100) - (stats['Burst'] / 25)
+            cycle_time = math.floor((weapon.rech_time / 100) * 20 + (burst_cycle / 100) - (stats['Burst'] / 25))
             if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             num_attacks = math.floor(sample_len / cycle_time)
@@ -289,7 +289,7 @@ def calculate_dps(weapon, stats):
             if fa_cycle is None: 
                 fa_cycle = 1000
 
-            cycle_time = ((weapon.rech_time / 100) * 40) + (fa_cycle / 100) - (stats['Full auto'] / 25) + (weapon.atk_time / 100)
+            cycle_time = math.floor(((weapon.rech_time / 100) * 40) + (fa_cycle / 100) - (stats['Full auto'] / 25) + (weapon.atk_time / 100))
             if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             # num_rounds = 5 + (stats['Full auto'] / 100)
@@ -323,7 +323,7 @@ def calculate_dps(weapon, stats):
 
         elif special == 'Fast attack':
             cycle_cap = math.floor(6 + (weapon.atk_time / 100))
-            cycle_time = (weapon.atk_time / 100) * 15 - stats['Fast attack'] / 100
+            cycle_time = math.floor((weapon.atk_time / 100) * 15 - stats['Fast attack'] / 100)
             if cycle_time < cycle_cap: cycle_time = cycle_cap
 
             num_attacks = math.floor(sample_len / cycle_time)
