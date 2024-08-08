@@ -595,12 +595,12 @@ def calculate_full_auto(attack_time, rech_time, fa_cycle):
 
 def calculate_aimed_shot(rech_time):
     cap = math.floor(10 + (rech_time / 100))
-    skill = round(((rech_time / 100) * 40 - cap) * 100 / 3)
+    skill = round(((rech_time / 100) * 40 - cap - 1) * 100 / 3)
     cycle = (skill, cap)
     return cycle
 
 def calculate_fast_attack(attack_time):
     cap = math.floor(5 + (attack_time / 100))
-    skill = round(((attack_time / 100) * 15 - cap) * 100) + 1
+    skill = round(((attack_time / 100) * 16 - cap - 1) * 100) + 1
     cycle = (skill, cap)
     return cycle
