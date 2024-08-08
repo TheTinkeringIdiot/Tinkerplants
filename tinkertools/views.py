@@ -567,14 +567,20 @@ def item(request, id, ql=0):
         return render(request, 'tinkertools/item_not_found.html')
 
 def calculate_fling(attack_time):
-    cap = math.floor(6 + (attack_time / 100))
-    skill = round((16 * (attack_time / 100) - cap) * 100)
+    cap = math.floor(5 + (attack_time / 100))
+    skill = round((16 * (attack_time / 100) - 5) * 100) + 1
     cycle = (skill, cap)
     return cycle
 
 def calculate_burst(attack_time, rech_time, burst_cycle):
     cap = math.floor(8 + (attack_time / 100))
-    skill = round(((rech_time / 100) * 20 + (burst_cycle / 100) - cap) * 25)
+    #skill = (((rech_time / 100) * 20 + (burst_cycle / 100) - 8) * 25) + 1
+    skill = (rech_time / 100) * 20
+    skill += (burst_cycle / 100)
+    skill -= 8
+    skill -= 1 # get the minimum skill required, not the top of the range
+    skill *= 25
+    skill += 1
     cycle = (skill, cap)
     return cycle
 
@@ -582,7 +588,7 @@ def calculate_full_auto(attack_time, rech_time, fa_cycle):
     cap = math.floor(10 + (attack_time / 100))
     if fa_cycle == 0:
         fa_cycle = 1000
-    skill = round(((rech_time / 100) * 40 + (fa_cycle / 100) - 11) * 25)
+    skill = round(((rech_time / 100) * 40 + (fa_cycle / 100) - 10) * 25) + 1
     cycle = (skill, cap)
     return cycle
 
@@ -593,7 +599,7 @@ def calculate_aimed_shot(rech_time):
     return cycle
 
 def calculate_fast_attack(attack_time):
-    cap = math.floor(6 + (attack_time / 100))
-    skill = round(((attack_time / 100) * 15 - cap) * 100)
+    cap = math.floor(5 + (attack_time / 100))
+    skill = round(((attack_time / 100) * 15 - cap) * 100) + 1
     cycle = (skill, cap)
     return cycle
