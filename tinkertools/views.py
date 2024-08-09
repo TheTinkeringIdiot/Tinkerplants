@@ -410,7 +410,7 @@ def item(request, id, ql=0):
                 data['NanoStrain_Value'] = stat.value
 
         else:
-            print(STAT[stat.stat])
+            #print(STAT[stat.stat])
             data[STAT[stat.stat]] = stat.value
 
     if data.get('Icon') is None:
@@ -589,7 +589,7 @@ def calculate_full_auto(attack_time, rech_time, fa_cycle):
     return cycle
 
 def calculate_aimed_shot(attack_time, rech_time):
-    cap = math.floor(10 + (rech_time / 100))
+    cap = math.floor(10 + (attack_time / 100))
     skill = math.ceil((((rech_time / 100) * 40) + (attack_time / 100) - 11 - 1) * 100 / 3) + 1
     cycle = (skill, cap)
     return cycle
