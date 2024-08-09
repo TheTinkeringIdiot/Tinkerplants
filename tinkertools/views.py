@@ -454,7 +454,7 @@ def item(request, id, ql=0):
             data['Specials']['FullAuto'] = calculate_full_auto(data['AttackDelay_Value'], data['RechargeDelay_Value'], 0)
 
     if data.get('Can') is not None and 'AimedShot' in data['Can']:
-        data['Specials']['AimedShot'] = calculate_aimed_shot(data['RechargeDelay_Value'])
+        data['Specials']['AimedShot'] = calculate_aimed_shot(data['AttackDelay_Value'], data['RechargeDelay_Value'])
     if data.get('Can') is not None and 'FastAttack' in data['Can']:
         data['Specials']['FastAttack'] = calculate_fast_attack(data['AttackDelay_Value'])
 
@@ -568,7 +568,7 @@ def item(request, id, ql=0):
 
 def calculate_fling(attack_time):
     cap = math.floor(5 + (attack_time / 100))
-    skill = round((16 * (attack_time / 100) - 5) * 100) + 1
+    skill = round((16 * (attack_time / 100) - 5 - 1) * 100) + 1
     cycle = (skill, cap)
     return cycle
 
@@ -587,14 +587,14 @@ def calculate_full_auto(attack_time, rech_time, fa_cycle):
     cycle = (skill, cap)
     return cycle
 
-def calculate_aimed_shot(rech_time):
+def calculate_aimed_shot(attack_time, rech_time):
     cap = math.floor(10 + (rech_time / 100))
-    skill = round(((rech_time / 100) * 40 - cap - 1) * 100 / 3)
+    skill = math.ceil((((rech_time / 100) * 40) + (attack_time / 100) - 11 - 1) * 100 / 3)
     cycle = (skill, cap)
     return cycle
 
 def calculate_fast_attack(attack_time):
     cap = math.floor(5 + (attack_time / 100))
-    skill = round(((attack_time / 100) * 16 - cap - 1) * 100) + 1
+    skill = round(((attack_time / 100) * 16 - 5 - 1) * 100) + 1
     cycle = (skill, cap)
     return cycle
