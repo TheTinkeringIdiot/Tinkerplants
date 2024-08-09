@@ -25,6 +25,19 @@
             {% if MaxBeneficialSkill %}<td class="text-end"><span class="fs-6">{{ MaxBeneficialSkill }}</span></td>
             {% else %}<td class="text-end"><span class="fs-6"> - </span></td>{% endif %}
         </tr>
+        {% if FullAutoRecharge %}
+        <tr>
+            <td>Full Auto</td>
+            <td class="text-end"><span class="fs-6">{{ FullAutoRecharge }}</span></td>
+        </tr>
+        {% endif %}
+        {% if BurstRecharge %}
+        <tr>
+            <td>Burst</td>
+            <td class="text-end"><span class="fs-6">{{ BurstRecharge }}</span></td>
+        </tr>
+        {% endif %}
+        
     </table>
 </div>
 {% endif %}
