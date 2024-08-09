@@ -589,7 +589,7 @@ def calculate_full_auto(attack_time, rech_time, fa_cycle):
     cap = math.floor(10 + (attack_time / 100))
     if fa_cycle == 0:
         fa_cycle = 1000
-    skill = round(((rech_time / 100) * 40 + (fa_cycle / 100) - 10) * 25) + 1
+    skill = math.floor((((rech_time / 100) * 40 + (fa_cycle / 100) - 11 - 1 + (attack_time / 100)) * 25)) + 1
     cycle = (skill, cap)
     return cycle
 
