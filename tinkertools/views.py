@@ -575,13 +575,7 @@ def calculate_fling(attack_time):
 def calculate_burst(attack_time, rech_time, burst_cycle):
     cap = math.floor(8 + (attack_time / 100))
     #skill = (((rech_time / 100) * 20 + (burst_cycle / 100) - 8) * 25) + 1
-    skill = (rech_time / 100) * 20
-    skill += (burst_cycle / 100)
-    skill -= 8
-    skill -= 1 # get the minimum skill required, not the top of the range
-    skill *= 25
-    skill += 1
-    skill = round(skill)
+    skill = math.floor((((rech_time / 100) * 20) + (burst_cycle / 100) - 9 - 1 + (attack_time / 100)) * 25) + 1
     cycle = (skill, cap)
     return cycle
 
