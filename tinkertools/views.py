@@ -439,12 +439,12 @@ def item(request, id, ql=0):
         data['Specials']['FlingShot'] = calculate_fling(data['AttackDelay_Value'])
 
     if data.get('Can') is not None and 'Burst' in data['Can']:
-        if data.get('Burst') is not None:
-            data['Specials']['Burst'] = calculate_burst(data['AttackDelay_Value'], data['RechargeDelay_Value'], 0)
-        elif data.get('BurstRecharge') is not None:
+        # if data.get('Burst') is not None: # This value can appear on a small number of items but it is not a valid BurstRecharge value
+        #     data['Specials']['Burst'] = calculate_burst(data['AttackDelay_Value'], data['RechargeDelay_Value'], 1000)
+        if data.get('BurstRecharge') is not None:
             data['Specials']['Burst'] = calculate_burst(data['AttackDelay_Value'], data['RechargeDelay_Value'], data['BurstRecharge'])
         else:
-            data['Specials']['Burst'] = calculate_burst(data['AttackDelay_Value'], data['RechargeDelay_Value'], 0)
+            data['Specials']['Burst'] = calculate_burst(data['AttackDelay_Value'], data['RechargeDelay_Value'], 1000)
 
     if data.get('Can') is not None and 'FullAuto' in data['Can']:
         if data.get('FullAuto') is not None:
