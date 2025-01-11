@@ -180,7 +180,7 @@ SYMBIANT_IDS = [219135, 235792, 235825, 235826, 235827, 235842, 235586, 235711, 
 236057, 235696, 235663, 235631, 235646, 235680, 235727, 235728, 235762, 235763, 235781, 235797, 235798, 235814, 235815, 235831, 235833, 236074, 236123, 236124, 236142, 
 236143, 236161, 236164, 236200, 236218, 236235, 236252, 236268, 236284, 235713, 235832, 219138, 235421, 235543, 236380, 235881, 236053, 235897, 235899, 235967, 235917, 
 235951, 235901, 235780, 235745, 235746, 236281, 236163, 236251, 236183, 235508, 236040, 235729, 236487, 235932, 235645, 236091, 235847, 235444, 235865, 235831, 235846, 
-235508, 235934, 235967, 235536, 236376, 236304, 236496, 236482, 235994, 236013, 235813, 236230, 236283, 235848]
+235508, 235934, 235967, 235536, 236376, 236304, 236496, 236482, 235994, 236013, 235813, 236230, 236283, 235848, 235788]
 
 NONUPLOAD_NANOS = ['26310', '30742', '31405', '31556', '32019', '82837', '85050', '85061', '85063', '85068', '85069', '85071', '85090', '85091', '85092', 
                    '85093', '85094', '144617', '144620', '162357', '204199', '207284', '217672', '217674', '217676', '217678', '218166', '225281', '258222', 
@@ -584,6 +584,7 @@ def parse_nukes(in_name, crystals):
     root = tree.getroot()
 
     nukes = {}
+    aou_nanos = []
 
     for item in root.findall('item'):
         aoid = item.get('aoid')
@@ -686,6 +687,7 @@ def parse_nanos(in_name, crystals, csv_nanos):
     root = tree.getroot()
 
     nanos = {}
+    aou_nanos = []
 
     for item in root.findall('item'):
         aoid = item.get('aoid')
@@ -749,6 +751,14 @@ def parse_nanos(in_name, crystals, csv_nanos):
             nano['location'] = csv_nanos[aoid]['location']
             nano['strain_name'] = csv_nanos[aoid]['strain_name']
             nanos[aoid] = nano
+            aou_nanos.append((aoid, nano['name'], nano['ql'], icon, 1))
+
+        # else:
+        #     skillmap = item.find('skillmap')
+        #     if skillmap is not None and skillmap.get('type') == 'attack':
+        #         for skill in skillmap:
+        #             if skill.get('name') == 'Martial arts':
+        #                 print(f'{aoid},  //{nano["name"]}')
 
     return nanos, aou_nanos
 
