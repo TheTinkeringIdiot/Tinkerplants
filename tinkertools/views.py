@@ -60,7 +60,7 @@ def search(request):
         else:
             q &= Q(name__icontains=word)
 
-    results = Item.objects.filter(q).all()
+    results = Item.objects.filter(q).all()[:10000]
     # results = Item.objects.filter(name__icontains=query).all()
     # results = Item.objects.annotate(rank=SearchRank(SearchVector('name', 'description'), SearchQuery(query))).filter(rank__gte=0.01).order_by('-rank').all()
     # results = Item.objects.filter(name__search=query).all()
@@ -231,6 +231,7 @@ def adv_search(request):
             modStats.append(161)
 
         data = dict(data.lists())
+        
         for i in range(len(data['func_select'])):
             if data['value'][i] == '': continue
 
@@ -267,6 +268,9 @@ def adv_search(request):
                 results['ModStats'] = [STAT[stat]]
             else:
                 results['ModStats'].append(STAT[stat])
+
+
+        items = items[:5000] # Limit to 10k items, this is a safety net
 
         results['Items'] = []
         for item in items:
