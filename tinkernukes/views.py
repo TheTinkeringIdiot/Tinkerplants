@@ -189,6 +189,9 @@ def get_nano_list(stats):
         if stats['target_ac'] > 0:
             ac_reduce = round(stats['target_ac'] / 10)
 
+
+        # if 'Self Illumination' in db_nano.name:
+        #     breakpoint()
         if db_nano.nt_dot: # DoT lines don't benefit from damage increase
             dmg_multiplier = 1
         else:
