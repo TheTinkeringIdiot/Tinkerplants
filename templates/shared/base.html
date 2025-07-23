@@ -1,0 +1,135 @@
+{% load static %}
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="light dark">
+        
+        {% block meta_description %}
+        <meta name="description" content="TinkerTools - Complete Anarchy Online Character Planning Suite with six specialized tools for equipment optimization and character planning">
+        {% endblock meta_description %}
+        
+        <meta name="keywords" content="anarchy online implant designer nuke table weapon help tool utility tinkertools">
+
+        {% block title %}
+        <title>TinkerTools - Anarchy Online Character Planning Suite</title>
+        {% endblock title %}
+        
+        {% block favicon %}
+        <link rel="shortcut icon" type="image/png" href="https://cdn.tinkeringidiot.com/static/image/tools_favicon.ico"/>
+        {% endblock favicon %}
+        
+        <!-- Core Stylesheets -->
+        <link rel="stylesheet" type="text/css" href="https://cdn.tinkeringidiot.com/static/css/bootstrap-night.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.tinkeringidiot.com/static/css/tinkertools.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.tinkeringidiot.com/static/css/datatables.min.css">
+        
+        <!-- FontAwesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        
+        <!-- Core JavaScript -->
+        <script src="https://cdn.tinkeringidiot.com/static/js/bootstrap.min.js"></script>
+        <script src="https://cdn.tinkeringidiot.com/static/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.tinkeringidiot.com/static/js/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.tinkeringidiot.com/static/js/datatables.min.js"></script>
+        
+        {% block extra_css %}{% endblock extra_css %}
+        {% block extra_js_head %}{% endblock extra_js_head %}
+    </head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-41ZK5KTPF7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-41ZK5KTPF7');
+    </script>
+
+    <body>
+        {% block navbar %}
+        <!-- Unified Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" href="/">
+                    <i class="fas fa-tools me-2"></i>TinkerTools
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown">
+                                Tools
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/"><i class="fas fa-database me-2"></i>TinkerItems</a></li>
+                                <li><a class="dropdown-item" href="/tinkerplants/"><i class="fas fa-brain me-2"></i>TinkerPlants</a></li>
+                                <li><a class="dropdown-item" href="/tinkernanos/"><i class="fas fa-microchip me-2"></i>TinkerNanos</a></li>
+                                <li><a class="dropdown-item" href="/tinkernukes/"><i class="fas fa-explosion me-2"></i>TinkerNukes</a></li>
+                                <li><a class="dropdown-item" href="/tinkerfite/"><i class="fas fa-sword me-2"></i>TinkerFite</a></li>
+                                <li><a class="dropdown-item" href="/tinkerpocket/"><i class="fas fa-spider me-2"></i>TinkerPocket</a></li>
+                            </ul>
+                        </li>
+                        
+                        {% block nav_extra %}{% endblock nav_extra %}
+                    </ul>
+                    
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <span class="navbar-text">
+                                <small class="text-muted me-2">Current time on Rubi-Ka:</small>
+                                <span id="rk-clock"></span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        {% endblock navbar %}
+        
+        {% block content %}{% endblock content %}
+        
+        {% block footer %}
+        <!-- Shared Footer -->
+        <footer class="bg-dark text-light py-4 mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <small class="text-muted">
+                            Data current as of March 2024 AO client<br>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        {% endblock footer %}
+        
+        <!-- Common JavaScript -->
+        <script type="text/javascript">
+            // RK Clock functionality
+            function updateRKClock() {
+                var rk_date = new Date();
+                rk_date.setFullYear(rk_date.getFullYear() + 27474);
+                var timeString = rk_date.toUTCString().slice(0, -4);
+                
+                var clockNav = document.getElementById('rk-clock');
+                if (clockNav) clockNav.textContent = timeString;
+            }
+            
+            // Update immediately and then every second
+            updateRKClock();
+            setInterval(updateRKClock, 1000);
+        </script>
+        
+        {% block extra_js %}{% endblock extra_js %}
+    </body>
+</html>

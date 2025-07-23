@@ -10,7 +10,7 @@ from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 import math, re
 
 def index(request):
-    return render(request, 'tinkertools/index.html')
+    return render(request, 'tinkertools/index_new.html')
 
 def strain(request, id):
     data = {}
