@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinkerPlants Profile Integration Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">
+                    <i class="fas fa-brain text-primary me-2"></i>
+                    TinkerPlants Profile Integration Demo
+                </h1>
+                
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-info-circle me-2"></i>Integration Summary</h5>
+                    <p>The TinkerPlants application has been successfully integrated with the TinkerProfiles system. This integration provides:</p>
+                </div>
+
+                <!-- Features Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-user-cog me-2"></i>Profile Integration Features</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>Auto-population:</strong> Character attributes from active profile</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>Build Management:</strong> Save and load implant configurations</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>Profile Switching:</strong> Automatic data updates when changing profiles</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>Persistent Storage:</strong> Builds stored per profile in LocalStorage</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>Backward Compatibility:</strong> Works with or without profiles</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Implementation Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-code text-info me-2"></i><strong>Template Update:</strong> Updated base template to use shared/base.html</li>
+                                    <li class="mb-2"><i class="fas fa-code text-info me-2"></i><strong>UI Enhancement:</strong> Added profile management section to Settings tab</li>
+                                    <li class="mb-2"><i class="fas fa-code text-info me-2"></i><strong>JavaScript Integration:</strong> Complete rewrite with profile event handlers</li>
+                                    <li class="mb-2"><i class="fas fa-code text-info me-2"></i><strong>Data Structure:</strong> Uses tinkerPlants app data section</li>
+                                    <li class="mb-2"><i class="fas fa-code text-info me-2"></i><strong>Event System:</strong> Listens for profileChanged events</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="fas fa-book me-2"></i>How to Use the Integration</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>1. Profile Setup</h6>
+                                <ol>
+                                    <li>Create a new profile using the dropdown in the navbar</li>
+                                    <li>Enter character information (name, profession, level, attributes)</li>
+                                    <li>Save the profile</li>
+                                </ol>
+
+                                <h6>2. Enable Integration</h6>
+                                <ol>
+                                    <li>Go to the Settings tab in TinkerPlants</li>
+                                    <li>Check "Auto-populate from Active Profile"</li>
+                                    <li>The app will now use profile data automatically</li>
+                                </ol>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>3. Build Management</h6>
+                                <ol>
+                                    <li>Design your implant build</li>
+                                    <li>Enter a build name and click "Save Build"</li>
+                                    <li>Use "Load Saved Build" dropdown to restore builds</li>
+                                </ol>
+
+                                <h6>4. Profile Switching</h6>
+                                <ol>
+                                    <li>Switch profiles using the navbar dropdown</li>
+                                    <li>TinkerPlants will automatically update</li>
+                                    <li>Each profile maintains separate builds</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Implementation -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="fas fa-terminal me-2"></i>Technical Implementation</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Data Structure</h6>
+                                <pre class="bg-light p-3 rounded"><code>{
+  tinkerPlants: {
+    currentBuild: {
+      name: "Build Name",
+      timestamp: "2025-01-25T00:00:00Z",
+      implants: { /* implant data */ },
+      attributePreferences: { /* preferences */ }
+    },
+    savedBuilds: [
+      { /* build objects */ }
+    ],
+    useProfileData: true
+  }
+}</code></pre>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Event Handling</h6>
+                                <pre class="bg-light p-3 rounded"><code>// Listen for profile changes
+document.addEventListener('profileChanged', handleProfileChange);
+
+// Auto-save builds
+function saveCurrentBuildToProfile() {
+  if (profileIntegrationEnabled) {
+    // Update profile data
+  }
+}
+
+// Load profile data
+function loadProfileData() {
+  const appData = TinkerToolsUtils.getAppData('tinkerPlants');
+  // Apply data to UI
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Files Modified -->
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="fas fa-file-code me-2"></i>Files Modified</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Template Files</h6>
+                                <ul>
+                                    <li><code>tinkerplants/templates/tinkerplants/base.html</code> - Updated to extend shared base</li>
+                                    <li><code>tinkerplants/templates/tinkerplants/index.html</code> - Added profile integration UI</li>
+                                    <li><code>tinkerplants/templates/tinkerplants/index_script.html</code> - Complete JavaScript rewrite</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Integration Components</h6>
+                                <ul>
+                                    <li><code>templates/shared/base.html</code> - Shared base template with profiles</li>
+                                    <li><code>static/js/tinker-profiles.js</code> - Core profile API</li>
+                                    <li><code>static/js/tinker-profiles-ui.js</code> - Profile UI components</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Demo Links -->
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-rocket me-2"></i>Try the Integration</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>The TinkerPlants application is now running with full profile integration. You can test it by:</p>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                            <a href="/tinkerplants/" class="btn btn-primary btn-lg" target="_blank">
+                                <i class="fas fa-brain me-2"></i>Open TinkerPlants
+                            </a>
+                            <a href="/test_integration.html" class="btn btn-outline-secondary btn-lg" target="_blank">
+                                <i class="fas fa-vial me-2"></i>View Test Page
+                            </a>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Make sure the Django development server is running to test the integration.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -34,6 +34,82 @@
         <script src="https://cdn.tinkeringidiot.com/static/js/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.tinkeringidiot.com/static/js/datatables.min.js"></script>
         
+        <!-- TinkerProfiles System -->
+        <script src="{% static 'js/tinker-profiles.js' %}"></script>
+        <script src="{% static 'js/tinker-profiles-ui.js' %}"></script>
+        
+        <!-- TinkerProfiles Custom Styles -->
+        <style>
+            /* Profile selector integration */
+            .profile-selector .dropdown-toggle {
+                border-color: rgba(255, 255, 255, 0.25);
+                color: rgba(255, 255, 255, 0.75);
+            }
+            
+            .profile-selector .dropdown-toggle:hover,
+            .profile-selector .dropdown-toggle:focus {
+                border-color: rgba(255, 255, 255, 0.5);
+                color: white;
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+            
+            .profile-selector .dropdown-menu {
+                min-width: 280px;
+            }
+            
+            .profile-selector .dropdown-item {
+                padding: 0.5rem 1rem;
+            }
+            
+            .profile-selector .dropdown-item:hover {
+                background-color: var(--bs-primary);
+                color: white;
+            }
+            
+            .profile-selector .dropdown-item.active {
+                background-color: var(--bs-primary);
+                color: white;
+                font-weight: 500;
+            }
+            
+            /* Profile modal enhancements */
+            .modal-header .fas {
+                color: var(--bs-primary);
+            }
+            
+            .accordion-button:not(.collapsed) {
+                background-color: var(--bs-primary);
+                color: white;
+            }
+            
+            /* Notification positioning */
+            #tinker-notifications {
+                z-index: 1060;
+            }
+            
+            /* Management table improvements */
+            #profiles-table .btn-group .btn {
+                padding: 0.25rem 0.5rem;
+            }
+            
+            #profiles-table .table-primary {
+                --bs-table-accent-bg: rgba(13, 110, 253, 0.1);
+            }
+            
+            /* Form validation styling */
+            .was-validated .form-control:valid,
+            .form-control.is-valid {
+                border-color: #198754;
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='m2.3 6.73.5-.5 3.27-3.27a.75.75 0 0 1 1.06 1.06l-3.8 3.8a.75.75 0 0 1-1.06 0l-1.27-1.27a.75.75 0 0 1 1.06-1.06L2.3 6.73z'/%3e%3c/svg%3e");
+            }
+            
+            .was-validated .form-control:invalid,
+            .form-control.is-invalid {
+                border-color: #dc3545;
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 5.8 4.4 4.4M5.8 10.2l4.4-4.4'/%3e%3c/svg%3e");
+            }
+        </style>
+        
         {% block extra_css %}{% endblock extra_css %}
         {% block extra_js_head %}{% endblock extra_js_head %}
     </head>
@@ -81,6 +157,7 @@
                     </ul>
                     
                     <ul class="navbar-nav">
+                        <!-- TinkerProfiles selector will be injected here by JavaScript -->
                         <li class="nav-item">
                             <span class="navbar-text">
                                 <small class="text-muted me-2">Current time on Rubi-Ka:</small>
@@ -128,6 +205,88 @@
             // Update immediately and then every second
             updateRKClock();
             setInterval(updateRKClock, 1000);
+            
+            // Initialize TinkerProfiles system
+            document.addEventListener('DOMContentLoaded', function() {
+                // TinkerProfiles and TinkerProfilesUI will auto-initialize
+                console.log('TinkerTools base template loaded with TinkerProfiles support');
+            });
+            
+            // Handle profile changes across applications
+            window.addEventListener('tinkerProfileChanged', function(event) {
+                const profile = event.detail.profile;
+                
+                // Dispatch custom event for individual applications to handle
+                const appEvent = new CustomEvent('profileChanged', {
+                    detail: {
+                        profile: profile,
+                        characterData: profile.character,
+                        attributes: profile.attributes,
+                        appData: profile.appData
+                    }
+                });
+                
+                // Log profile change for debugging
+                console.log('Profile changed:', profile.character.name, profile.character.profession);
+                
+                // Dispatch to document for applications to listen
+                document.dispatchEvent(appEvent);
+                
+                // Show brief notification
+                if (window.TinkerProfilesUI && window.TinkerProfilesUI.getInstance) {
+                    const ui = window.TinkerProfilesUI.getInstance();
+                    if (ui.showNotification) {
+                        ui.showNotification('info',
+                            `Switched to ${profile.character.name} (${profile.character.profession})`,
+                            3000
+                        );
+                    }
+                }
+            });
+            
+            // Global utility functions for applications
+            window.TinkerToolsUtils = {
+                // Get current active profile
+                getActiveProfile: function() {
+                    return window.TinkerProfiles ? window.TinkerProfiles.getActiveProfile() : null;
+                },
+                
+                // Get app data for current profile
+                getAppData: function(appName) {
+                    const profile = this.getActiveProfile();
+                    return profile && profile.appData && profile.appData[appName] ? profile.appData[appName] : null;
+                },
+                
+                // Update app data for current profile
+                updateAppData: function(appName, data) {
+                    const profile = this.getActiveProfile();
+                    if (profile && window.TinkerProfiles) {
+                        try {
+                            window.TinkerProfiles.updateAppData(profile.meta.profileId, appName, data);
+                            return true;
+                        } catch (error) {
+                            console.error('Failed to update app data:', error);
+                            return false;
+                        }
+                    }
+                    return false;
+                },
+                
+                // Merge app data for current profile
+                mergeAppData: function(appName, updates) {
+                    const profile = this.getActiveProfile();
+                    if (profile && window.TinkerProfiles) {
+                        try {
+                            window.TinkerProfiles.mergeAppData(profile.meta.profileId, appName, updates);
+                            return true;
+                        } catch (error) {
+                            console.error('Failed to merge app data:', error);
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+            };
         </script>
         
         {% block extra_js %}{% endblock extra_js %}

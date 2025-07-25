@@ -1,33 +1,37 @@
-{% load static %}
-<!doctype html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="color-scheme" content="light dark">
-        <meta name="description" content="Tinkerplants is a player utility for sci-fi MMORPG Anarchy Online to help with designing and understanding implants and their requirements">
-        <meta name="keywords" content="anarchy online implant designer help tool utility">
-        <title>TinkerPlants</title>
-        <link rel="shortcut icon" type="image/png" href="https://cdn.tinkeringidiot.com/static/image/plants_favicon.ico"/>
-        <link rel="stylesheet" href="https://cdn.tinkeringidiot.com/static/css/bootstrap-night.min.css">
-        <script src="https://cdn.tinkeringidiot.com/static/js/bootstrap.min.js"></script>
-        <script src="https://cdn.tinkeringidiot.com/static/js/bootstrap.bundle.min.js"></script>
-    </head>
+{% extends "shared/base.html" %}
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-41ZK5KTPF7"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+{% block extra_css %}
+<style>
+    /* TinkerPlants specific styles */
+    .implant-slot-indicator {
+        font-size: 0.8em;
+        color: #6c757d;
+    }
+    
+    .attribute-requirement {
+        font-weight: bold;
+        color: var(--bs-warning);
+    }
+    
+    .profile-data-indicator {
+        color: var(--bs-success);
+        font-size: 0.9em;
+    }
+    
+    .manual-data-indicator {
+        color: var(--bs-secondary);
+        font-size: 0.9em;
+    }
+    
+    .build-save-controls {
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+        border-radius: 0.375rem;
+    }
+</style>
+{% endblock extra_css %}
 
-  gtag('config', 'G-41ZK5KTPF7');
-</script>
-
-
-    <body>
-        {% block content %}
-        {% endblock content %}
-    </body>
-
-</html>
+{% block page_title %}TinkerPlants{% endblock page_title %}
+{% block page_icon %}fa-brain{% endblock page_icon %}
+{% block page_description %}Design and understand implants and their requirements{% endblock page_description %}

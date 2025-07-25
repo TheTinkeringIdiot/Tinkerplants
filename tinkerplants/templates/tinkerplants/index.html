@@ -976,80 +976,115 @@
         <div class="tab-pane border border-top-0 rounded-bottom fade" id="settings">
             <div class="container" id="settings-container">
                 <div class="row" id="spacer_row">&nbsp</div>
+                
+                <!-- Profile Integration Section -->
                 <div class="row">
-                    <div class="col col-md-4">
-                        <span class="fw-bold">Attribute Preference</span>
-                    </div>
-                </div>
-                <div class="row" id="spacer_row">&nbsp</div>
-                <div class="row">
-                    <div class="col col-md-4">
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <span>Agility</span>
+                    <div class="col-12">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-user me-2"></i>Profile Integration</h5>
                             </div>
-                            <div class="col col-md-6">
-                                <input type="checkbox" id="attrib-agi">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="use-profile-data">
+                                            <label class="form-check-label" for="use-profile-data">
+                                                <strong>Auto-populate from Active Profile</strong>
+                                                <small class="d-block text-muted">Use character attributes from the selected profile</small>
+                                            </label>
+                                        </div>
+                                        <div id="profile-status" class="small text-muted mb-3">
+                                            No active profile selected
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="build-save-controls">
+                                            <h6>Build Management</h6>
+                                            <div class="input-group mb-2">
+                                                <input type="text" class="form-control" id="build-name" placeholder="Build name">
+                                                <button class="btn btn-outline-primary" type="button" id="save-build-btn">
+                                                    <i class="fas fa-save me-1"></i>Save Build
+                                                </button>
+                                            </div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="load-build-dropdown" data-bs-toggle="dropdown">
+                                                    <i class="fas fa-folder-open me-1"></i>Load Saved Build
+                                                </button>
+                                                <ul class="dropdown-menu w-100" id="saved-builds-menu">
+                                                    <li><span class="dropdown-item-text text-muted">No saved builds</span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Attribute Preferences Section -->
                 <div class="row">
-                    <div class="col col-md-4">
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <span>Intelligence</span>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-sliders-h me-2"></i>Attribute Preferences</h5>
                             </div>
-                            <div class="col col-md-6">
-                                <input type="checkbox" id="attrib-int">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-4">
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <span>Psychic</span>
-                            </div>
-                            <div class="col col-md-6">
-                                <input type="checkbox" id="attrib-psy">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-4">
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <span>Sense</span>
-                            </div>
-                            <div class="col col-md-6">
-                                <input type="checkbox" id="attrib-sen">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-4">
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <span>Stamina</span>
-                            </div>
-                            <div class="col col-md-6">
-                                <input type="checkbox" id="attrib-sta">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-4">
-                        <div class="row">
-                            <div class="col col-md-4">
-                                <span>Strength</span>
-                            </div>
-                            <div class="col col-md-6">
-                                <input type="checkbox" id="attrib-str">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <span>Agility</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="checkbox" class="form-check-input" id="attrib-agi">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <span>Intelligence</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="checkbox" class="form-check-input" id="attrib-int">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <span>Psychic</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="checkbox" class="form-check-input" id="attrib-psy">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <span>Sense</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="checkbox" class="form-check-input" id="attrib-sen">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <span>Stamina</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="checkbox" class="form-check-input" id="attrib-sta">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <span>Strength</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="checkbox" class="form-check-input" id="attrib-str">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

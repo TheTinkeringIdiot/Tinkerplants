@@ -1,4 +1,5 @@
 <script type="text/javascript">
+    // TinkerPlants Profile Integration
     var attribs = {
         'Strength' : 'STR',
         'Stamina' : 'STA',
@@ -6,10 +7,80 @@
         'Agility' : 'AGI',
         'Intelligence' : 'INT',
         'Psychic' : 'PSY'
+    };
+
+    // Profile integration state
+    let profileIntegrationEnabled = false;
+    let currentProfileData = null;
+    let isUpdatingFromProfile = false;
+
+    // Initialize TinkerPlants functionality
+    window.addEventListener('load', function () {
+        initializeTinkerPlants();
+        initializeProfileIntegration();
+        loadInitialData();
+    });
+
+    function initializeTinkerPlants() {
+        // Event listeners for implant changes
+        var selectElements = Array.from(document.getElementsByTagName('select'));
+        selectElements.forEach(function(elem) {
+            if (elem.id != 'cluster-lookup') {
+                elem.addEventListener('change', update_imps);
+            }
+        });
+
+        // Event listeners for quality level changes
+        var qlElements = Array.from(document.querySelectorAll("input[type='number'][id$=ql]"));
+        qlElements.forEach(function(elem) {
+            elem.addEventListener('change', update_ql);
+        });
+
+        // Event listeners for attribute preferences
+        var attribElements = Array.from(document.querySelectorAll("input[type='checkbox'][id^=attrib]"));
+        attribElements.forEach(function(elem) {
+            elem.addEventListener('change', update_attrib_prefs);
+        });
+
+        // Other event listeners
+        document.getElementById('update-all').addEventListener('change', update_all_ql);
+        document.getElementById('cluster-lookup').addEventListener('change', lookup_cluster);
+        document.getElementById('btn-reset').addEventListener('click', reset_all);
+        
+        // Legacy file upload (keeping for backward compatibility)
+        if (document.getElementById('upload-button')) {
+            document.getElementById('upload-button').addEventListener('click', upload_file);
+        }
+        if (document.getElementById('load-dropdown')) {
+            document.getElementById('load-dropdown').addEventListener('click', function(evt) {
+                document.getElementById('load-dropdown-menu').classList.toggle('show');
+            });
+        }
     }
 
-    window.addEventListener('load', function () {
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    function initializeProfileIntegration() {
+        // Profile integration toggle
+        const useProfileDataCheckbox = document.getElementById('use-profile-data');
+        if (useProfileDataCheckbox) {
+            useProfileDataCheckbox.addEventListener('change', toggleProfileIntegration);
+        }
+
+        // Build management
+        const saveBuildBtn = document.getElementById('save-build-btn');
+        if (saveBuildBtn) {
+            saveBuildBtn.addEventListener('click', saveBuild);
+        }
+
+        // Listen for profile changes
+        document.addEventListener('profileChanged', handleProfileChange);
+
+        // Update profile status
+        updateProfileStatus();
+        updateSavedBuilds();
+    }
+
+    function loadInitialData() {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         fetch('update_display', {
             method: 'post',
             body: JSON.stringify({}),
@@ -20,46 +91,367 @@
             }
         }).then(response => response.json())
         .then(data => {
-            update_data(data)
-        })
-    })
+            update_data(data);
+            loadProfileData(); // Load any existing profile data after initial load
+        });
+    }
 
-    document.getElementById('load-dropdown').addEventListener('click', function(evt) {
-        document.getElementById('load-dropdown-menu').classList.toggle('show')
-    })
-
-    document.getElementById('upload-button').addEventListener('click', upload_file)
-
-    var selectElements = Array.from(document.getElementsByTagName('select'))
-    selectElements.forEach(function(elem) {
-        if (elem.id != 'cluster-lookup') {
-            elem.addEventListener('change', update_imps);
+    function toggleProfileIntegration() {
+        const useProfileData = document.getElementById('use-profile-data').checked;
+        profileIntegrationEnabled = useProfileData;
+        
+        if (useProfileData) {
+            loadProfileData();
+        } else {
+            currentProfileData = null;
         }
-    })
+        
+        updateProfileStatus();
+        saveProfileIntegrationSettings();
+    }
 
-    var qlElements = Array.from(document.querySelectorAll("input[type='number'][id$=ql]"))
-    qlElements.forEach(function(elem) {
-        elem.addEventListener('change', update_ql);
-    })
+    function handleProfileChange(event) {
+        console.log('TinkerPlants: Profile changed', event.detail);
+        currentProfileData = event.detail;
+        updateProfileStatus();
+        updateSavedBuilds();
+        
+        if (profileIntegrationEnabled) {
+            loadProfileData();
+        }
+    }
 
-    var attribElements = Array.from(document.querySelectorAll("input[type='checkbox'][id^=attrib]"))
-    attribElements.forEach(function(elem) {
-        elem.addEventListener('change', update_attrib_prefs);
-    })
+    function loadProfileData() {
+        if (!window.TinkerToolsUtils) {
+            console.log('TinkerPlants: TinkerToolsUtils not available');
+            return;
+        }
 
-    document.getElementById('update-all').addEventListener('change', update_all_ql)
+        const profile = window.TinkerToolsUtils.getActiveProfile();
+        if (!profile) {
+            console.log('TinkerPlants: No active profile');
+            return;
+        }
 
-    document.getElementById('cluster-lookup').addEventListener('change', lookup_cluster)
+        currentProfileData = profile;
+        
+        // Get TinkerPlants app data
+        const appData = window.TinkerToolsUtils.getAppData('tinkerPlants') || {};
+        
+        // Load saved build if one exists
+        if (appData.currentBuild) {
+            loadBuildFromData(appData.currentBuild);
+        }
+        
+        // Load attribute preferences if they exist
+        if (appData.attributePreferences) {
+            loadAttributePreferences(appData.attributePreferences);
+        }
+        
+        // Load profile integration setting
+        if (appData.useProfileData !== undefined) {
+            profileIntegrationEnabled = appData.useProfileData;
+            document.getElementById('use-profile-data').checked = profileIntegrationEnabled;
+        }
+        
+        updateProfileStatus();
+    }
 
-    document.getElementById('btn-reset').addEventListener('click', reset_all)
+    function loadBuildFromData(buildData) {
+        isUpdatingFromProfile = true;
+        
+        // Update all implant slots
+        for (const slot in buildData.implants) {
+            const implant = buildData.implants[slot];
+            
+            // Update select elements
+            const shinySelect = document.getElementById(slot + '-Shiny');
+            if (shinySelect && implant.Shiny) {
+                shinySelect.value = implant.Shiny;
+            }
+            
+            const brightSelect = document.getElementById(slot + '-Bright');
+            if (brightSelect && implant.Bright) {
+                brightSelect.value = implant.Bright;
+            }
+            
+            const fadedSelect = document.getElementById(slot + '-Faded');
+            if (fadedSelect && implant.Faded) {
+                fadedSelect.value = implant.Faded;
+            }
+            
+            const qlInput = document.getElementById(slot + '-ql');
+            if (qlInput && implant.ql) {
+                qlInput.value = implant.ql;
+            }
+        }
+        
+        // Update attribute preferences if included
+        if (buildData.attributePreferences) {
+            loadAttributePreferences(buildData.attributePreferences);
+        }
+        
+        // Trigger update to recalculate everything
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        fetch('update_display', {
+            method: 'post',
+            body: JSON.stringify({}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            update_data(data);
+            isUpdatingFromProfile = false;
+        });
+    }
 
+    function loadAttributePreferences(preferences) {
+        document.getElementById('attrib-agi').checked = preferences.Agility || false;
+        document.getElementById('attrib-int').checked = preferences.Intelligence || false;
+        document.getElementById('attrib-psy').checked = preferences.Psychic || false;
+        document.getElementById('attrib-sen').checked = preferences.Sense || false;
+        document.getElementById('attrib-sta').checked = preferences.Stamina || false;
+        document.getElementById('attrib-str').checked = preferences.Strength || false;
+    }
+
+    function saveBuild() {
+        if (!window.TinkerToolsUtils) {
+            showNotification('Profile system not available', 'warning');
+            return;
+        }
+
+        const profile = window.TinkerToolsUtils.getActiveProfile();
+        if (!profile) {
+            showNotification('No active profile selected', 'warning');
+            return;
+        }
+
+        const buildName = document.getElementById('build-name').value.trim();
+        if (!buildName) {
+            showNotification('Please enter a build name', 'warning');
+            return;
+        }
+
+        // Get current build data from session
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        fetch('update_display', {
+            method: 'post',
+            body: JSON.stringify({}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            const buildData = {
+                name: buildName,
+                timestamp: new Date().toISOString(),
+                implants: data.implants,
+                attributePreferences: data.attrib_prefs
+            };
+
+            // Get existing app data
+            const appData = window.TinkerToolsUtils.getAppData('tinkerPlants') || {};
+            
+            // Initialize saved builds array if it doesn't exist
+            if (!appData.savedBuilds) {
+                appData.savedBuilds = [];
+            }
+
+            // Check if build name already exists
+            const existingIndex = appData.savedBuilds.findIndex(build => build.name === buildName);
+            if (existingIndex !== -1) {
+                if (!confirm(`A build named "${buildName}" already exists. Overwrite it?`)) {
+                    return;
+                }
+                appData.savedBuilds[existingIndex] = buildData;
+            } else {
+                appData.savedBuilds.push(buildData);
+            }
+
+            // Save current build as active
+            appData.currentBuild = buildData;
+            appData.useProfileData = profileIntegrationEnabled;
+
+            // Update app data
+            window.TinkerToolsUtils.updateAppData('tinkerPlants', appData);
+
+            showNotification(`Build "${buildName}" saved successfully`, 'success');
+            document.getElementById('build-name').value = '';
+            updateSavedBuilds();
+        });
+    }
+
+    function loadBuild(buildName) {
+        if (!window.TinkerToolsUtils) {
+            showNotification('Profile system not available', 'warning');
+            return;
+        }
+
+        const appData = window.TinkerToolsUtils.getAppData('tinkerPlants') || {};
+        const savedBuild = appData.savedBuilds?.find(build => build.name === buildName);
+        
+        if (!savedBuild) {
+            showNotification('Build not found', 'error');
+            return;
+        }
+
+        loadBuildFromData(savedBuild);
+        
+        // Update current build in profile
+        appData.currentBuild = savedBuild;
+        window.TinkerToolsUtils.updateAppData('tinkerPlants', appData);
+        
+        showNotification(`Build "${buildName}" loaded successfully`, 'success');
+    }
+
+    function deleteBuild(buildName) {
+        if (!window.TinkerToolsUtils) {
+            showNotification('Profile system not available', 'warning');
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to delete the build "${buildName}"?`)) {
+            return;
+        }
+
+        const appData = window.TinkerToolsUtils.getAppData('tinkerPlants') || {};
+        if (appData.savedBuilds) {
+            appData.savedBuilds = appData.savedBuilds.filter(build => build.name !== buildName);
+            window.TinkerToolsUtils.updateAppData('tinkerPlants', appData);
+        }
+
+        showNotification(`Build "${buildName}" deleted`, 'success');
+        updateSavedBuilds();
+    }
+
+    function updateSavedBuilds() {
+        const savedBuildsMenu = document.getElementById('saved-builds-menu');
+        if (!savedBuildsMenu) return;
+
+        // Clear existing items
+        savedBuildsMenu.innerHTML = '';
+
+        if (!window.TinkerToolsUtils) {
+            savedBuildsMenu.innerHTML = '<li><span class="dropdown-item-text text-muted">Profile system not available</span></li>';
+            return;
+        }
+
+        const appData = window.TinkerToolsUtils.getAppData('tinkerPlants') || {};
+        const savedBuilds = appData.savedBuilds || [];
+
+        if (savedBuilds.length === 0) {
+            savedBuildsMenu.innerHTML = '<li><span class="dropdown-item-text text-muted">No saved builds</span></li>';
+            return;
+        }
+
+        savedBuilds.forEach(build => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div class="dropdown-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${build.name}</strong>
+                        <small class="d-block text-muted">${new Date(build.timestamp).toLocaleDateString()}</small>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary btn-sm" onclick="loadBuild('${build.name}')">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteBuild('${build.name}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            savedBuildsMenu.appendChild(li);
+        });
+    }
+
+    function updateProfileStatus() {
+        const profileStatus = document.getElementById('profile-status');
+        if (!profileStatus) return;
+
+        if (!window.TinkerToolsUtils) {
+            profileStatus.innerHTML = '<span class="text-warning">Profile system not available</span>';
+            return;
+        }
+
+        const profile = window.TinkerToolsUtils.getActiveProfile();
+        if (!profile) {
+            profileStatus.innerHTML = '<span class="text-muted">No active profile selected</span>';
+            return;
+        }
+
+        const character = profile.character || {};
+        profileStatus.innerHTML = `
+            <span class="text-success">
+                <i class="fas fa-check-circle me-1"></i>
+                Active: ${character.name || 'Unknown'} (${character.profession || 'Unknown'}, Level ${character.level || '?'})
+            </span>
+        `;
+    }
+
+    function saveProfileIntegrationSettings() {
+        if (!window.TinkerToolsUtils) return;
+
+        const appData = window.TinkerToolsUtils.getAppData('tinkerPlants') || {};
+        appData.useProfileData = profileIntegrationEnabled;
+        window.TinkerToolsUtils.updateAppData('tinkerPlants', appData);
+    }
+
+    function saveCurrentBuildToProfile() {
+        if (!window.TinkerToolsUtils || !profileIntegrationEnabled || isUpdatingFromProfile) return;
+
+        const profile = window.TinkerToolsUtils.getActiveProfile();
+        if (!profile) return;
+
+        // Get current session data
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        fetch('update_display', {
+            method: 'post',
+            body: JSON.stringify({}),
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => response.json())
+        .then(data => {
+            const appData = window.TinkerToolsUtils.getAppData('tinkerPlants') || {};
+            
+            appData.currentBuild = {
+                name: 'Auto-saved',
+                timestamp: new Date().toISOString(),
+                implants: data.implants,
+                attributePreferences: data.attrib_prefs
+            };
+            
+            window.TinkerToolsUtils.updateAppData('tinkerPlants', appData);
+        });
+    }
+
+    function showNotification(message, type = 'info') {
+        if (window.TinkerNotifications) {
+            window.TinkerNotifications.show(message, type);
+        } else {
+            alert(message); // Fallback
+        }
+    }
+
+    // Legacy functions with profile integration
     function upload_file() {
-        document.getElementById('load-dropdown-menu').classList.toggle('show')
-        var input_file = document.getElementById('upload-file')
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        if (document.getElementById('load-dropdown-menu')) {
+            document.getElementById('load-dropdown-menu').classList.toggle('show');
+        }
+        var input_file = document.getElementById('upload-file');
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        var fd = new FormData()
-        fd.append('upload_file', input_file.files[0])
+        var fd = new FormData();
+        fd.append('upload_file', input_file.files[0]);
 
         fetch('load_profile', {
             method: 'POST',
@@ -70,15 +462,16 @@
         })
         .then(res => res.json())
         .then(data => {
-            update_data(data)
-        })
+            update_data(data);
+            saveCurrentBuildToProfile();
+        });
     }
 
     function update_imps(evt) {
-        id = evt.srcElement.id
-        val = evt.srcElement.value
+        id = evt.srcElement.id;
+        val = evt.srcElement.value;
 
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         
         fetch('update_imps', {
             method: 'post',
@@ -90,18 +483,19 @@
             }
         }).then(response => response.json())
         .then(data => {
-            update_data(data)
-        })
+            update_data(data);
+            saveCurrentBuildToProfile();
+        });
     }
 
     function update_ql(evt) {
-        id = evt.srcElement.id
-        val = evt.srcElement.value
+        id = evt.srcElement.id;
+        val = evt.srcElement.value;
 
         if (val < 1) { val = 1; }
         if (val > 300) { val = 300; }
 
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         fetch('update_ql', {
             method: 'post',
@@ -113,17 +507,18 @@
             }
         }).then(response => response.json())
         .then(data => {
-            update_data(data)
-        })
+            update_data(data);
+            saveCurrentBuildToProfile();
+        });
     }
 
     function update_all_ql(evt) {
-        val = evt.srcElement.value
+        val = evt.srcElement.value;
 
         if (val < 1) { val = 1; }
         if (val > 300) { val = 300; }
 
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         fetch('update_all_ql', {
             method: 'post',
@@ -135,12 +530,13 @@
             }
         }).then(response => response.json())
         .then(data => {
-            update_data(data)
-        })
+            update_data(data);
+            saveCurrentBuildToProfile();
+        });
     }
 
     function reset_all(evt) {
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         fetch('reset_all', {
             method: 'post',
@@ -151,12 +547,13 @@
             }
         }).then(response => response.json())
         .then(data => {
-            update_data(data)
-        })
+            update_data(data);
+            saveCurrentBuildToProfile();
+        });
     }
 
     function update_attrib_prefs(evt) {
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         var prefs = {
             'Agility' : document.getElementById('attrib-agi').checked,
@@ -165,7 +562,7 @@
             'Sense' : document.getElementById('attrib-sen').checked,
             'Stamina' : document.getElementById('attrib-sta').checked,
             'Strength' : document.getElementById('attrib-str').checked,
-        }
+        };
 
         fetch('update_attrib_prefs', {
             method: 'post',
@@ -177,14 +574,15 @@
             }
         }).then(response => response.json())
         .then(data => {
-            update_data(data)
-        })
+            update_data(data);
+            saveCurrentBuildToProfile();
+        });
     }
 
     function lookup_cluster(evt) {
-        val = evt.srcElement.value
+        val = evt.srcElement.value;
 
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         fetch('lookup_cluster', {
             method: 'post',
@@ -196,27 +594,28 @@
             }
         }).then(response => response.json())
         .then(data => {
-            highlight_slots(data)
-        })
+            highlight_slots(data);
+            saveCurrentBuildToProfile();
+        });
     }
 
     function highlight_slots(data) {
-        selects = Array.from(document.getElementsByTagName('select'))
+        selects = Array.from(document.getElementsByTagName('select'));
         selects.forEach(function(elem) {
-            elem.classList.remove('btn-success')
-        })
+            elem.classList.remove('btn-success');
+        });
 
-        locations = JSON.parse(data.found)
+        locations = JSON.parse(data.found);
         for (let loc in locations) {
-            document.getElementById(locations[loc]).classList.toggle('btn-success')
+            document.getElementById(locations[loc]).classList.toggle('btn-success');
         }
 
-        update_data(data)
+        update_data(data);
     }
 
     function clear_table(tbl) {
         while(tbl.lastChild) {
-            tbl.removeChild(tbl.lastChild)
+            tbl.removeChild(tbl.lastChild);
         }
     }
 
@@ -225,181 +624,180 @@
             document.location = data.next;
         }
 
-        results = document.getElementById('result-table')
-        clear_table(results)
+        results = document.getElementById('result-table');
+        clear_table(results);
 
-        result_totals_table = document.getElementById('result-totals-table')
-        clear_table(result_totals_table)
+        result_totals_table = document.getElementById('result-totals-table');
+        clear_table(result_totals_table);
 
-        construct = document.getElementById('construct-table')
-        clear_table(construct)
+        construct = document.getElementById('construct-table');
+        clear_table(construct);
 
-        shopping = document.getElementById('shopping-table')
-        clear_table(shopping)
+        shopping = document.getElementById('shopping-table');
+        clear_table(shopping);
 
-        shop_implants = Array()
-        shop_shiny = Array()
-        shop_bright = Array()
-        shop_faded = Array()
+        shop_implants = Array();
+        shop_shiny = Array();
+        shop_bright = Array();
+        shop_faded = Array();
 
-        result_totals = {}
+        result_totals = {};
 
         for (let slot in data.implants) {
-            implant = data.implants[slot]
+            implant = data.implants[slot];
 
             //Update the build tab
-            var shiny_id = slot + '-Shiny'
-            var shiny_elem = document.getElementById(shiny_id)
-            shiny_elem.value = implant.Shiny
+            var shiny_id = slot + '-Shiny';
+            var shiny_elem = document.getElementById(shiny_id);
+            shiny_elem.value = implant.Shiny;
 
-            var bright_id = slot + '-Bright'
-            var bright_elem = document.getElementById(bright_id)
-            bright_elem.value = implant.Bright
+            var bright_id = slot + '-Bright';
+            var bright_elem = document.getElementById(bright_id);
+            bright_elem.value = implant.Bright;
 
-            var faded_id = slot + '-Faded'
-            var faded_elem = document.getElementById(faded_id)
-            faded_elem.value = implant.Faded
+            var faded_id = slot + '-Faded';
+            var faded_elem = document.getElementById(faded_id);
+            faded_elem.value = implant.Faded;
 
-            var ql_id = slot + '-ql'
-            var ql_elem = document.getElementById(ql_id)
-            ql_elem.value = implant.ql
+            var ql_id = slot + '-ql';
+            var ql_elem = document.getElementById(ql_id);
+            ql_elem.value = implant.ql;
 
-            var attrib_req = document.getElementById(slot + '-attrib')
+            var attrib_req = document.getElementById(slot + '-attrib');
             if(implant.attrib_name == '') {
-                attrib_req.textContent = ''
+                attrib_req.textContent = '';
             }
             else {
-                attrib_req.textContent = attribs[`${implant.attrib_name}`]
+                attrib_req.textContent = attribs[`${implant.attrib_name}`];
             }
             
             //Update the results tab
             if( ! (implant.Shiny == 'Empty' && implant.Bright == 'Empty' && implant.Faded == 'Empty')) {
-                shop_implants.push(slot)
+                shop_implants.push(slot);
                 if(implant.Shiny != 'Empty') {
-                    shop_shiny.push(implant.Shiny)
+                    shop_shiny.push(implant.Shiny);
                 }
                 if(implant.Bright != 'Empty') {
-                    shop_bright.push(implant.Bright)
+                    shop_bright.push(implant.Bright);
                 }
                 if(implant.Faded != 'Empty') {
-                    shop_faded.push(implant.Faded)
+                    shop_faded.push(implant.Faded);
                 }
 
+                imp_row = document.createElement('tr');
 
-                imp_row = document.createElement('tr')
+                name_col = document.createElement('td');
+                name_p = document.createElement('span');
+                name_p.className = 'fw-bold';
+                name_p.textContent = slot;
 
-                name_col = document.createElement('td')
-                name_p = document.createElement('span')
-                name_p.className = 'fw-bold'
-                name_p.textContent = slot
-
-                name_col.appendChild(name_p)
-                imp_row.appendChild(name_col)
+                name_col.appendChild(name_p);
+                imp_row.appendChild(name_col);
 
                 //add this row to the construction table too
 
-                con_imp_row = document.createElement('tr')
-                con_imp_row.addEventListener('click', construct_imp)
-                con_name_col = document.createElement('td')
-                con_name_col.textContent = slot
-                con_imp_row.appendChild(con_name_col)
-                construct.appendChild(con_imp_row)
+                con_imp_row = document.createElement('tr');
+                con_imp_row.addEventListener('click', construct_imp);
+                con_name_col = document.createElement('td');
+                con_name_col.textContent = slot;
+                con_imp_row.appendChild(con_name_col);
+                construct.appendChild(con_imp_row);
 
-                ql_col = document.createElement('td')
-                ql_p = document.createElement('span')
-                ql_p.textContent = implant.ql
-                ql_col.appendChild(ql_p)
-                imp_row.appendChild(ql_col)
+                ql_col = document.createElement('td');
+                ql_p = document.createElement('span');
+                ql_p.textContent = implant.ql;
+                ql_col.appendChild(ql_p);
+                imp_row.appendChild(ql_col);
 
-                bene_col = document.createElement('td')
-                bene_list = document.createElement('ul')
-                bene_list.classList.add('list-unstyled')
+                bene_col = document.createElement('td');
+                bene_list = document.createElement('ul');
+                bene_list.classList.add('list-unstyled');
 
                 if(implant.Shiny != 'Empty') {
-                    bene_shiny_p = document.createElement('li')
-                    bene_shiny_p.textContent = `${implant.Shiny}: ${implant.shiny_benefit}`
-                    bene_list.appendChild(bene_shiny_p)
+                    bene_shiny_p = document.createElement('li');
+                    bene_shiny_p.textContent = `${implant.Shiny}: ${implant.shiny_benefit}`;
+                    bene_list.appendChild(bene_shiny_p);
 
                     //add shiny benefit to result_totals
                     if(!(implant.Shiny in result_totals)) {
-                        result_totals[implant.Shiny] = implant.shiny_benefit
+                        result_totals[implant.Shiny] = implant.shiny_benefit;
                     }
                     else {
-                        result_totals[implant.Shiny] += implant.shiny_benefit
+                        result_totals[implant.Shiny] += implant.shiny_benefit;
                     }
                 }
 
                 if(implant.Bright != 'Empty') {
-                    bene_bright_p = document.createElement('li')
-                    bene_bright_p.textContent = `${implant.Bright}: ${implant.bright_benefit}`
-                    bene_list.appendChild(bene_bright_p)
+                    bene_bright_p = document.createElement('li');
+                    bene_bright_p.textContent = `${implant.Bright}: ${implant.bright_benefit}`;
+                    bene_list.appendChild(bene_bright_p);
 
                     //add bright benefit to result_totals
                     if(!(implant.Bright in result_totals)) {
-                        result_totals[implant.Bright] = implant.bright_benefit
+                        result_totals[implant.Bright] = implant.bright_benefit;
                     }
                     else {
-                        result_totals[implant.Bright] += implant.bright_benefit
+                        result_totals[implant.Bright] += implant.bright_benefit;
                     }
                 }
 
                 if(implant.Faded != 'Empty') {
-                    bene_faded_p = document.createElement('li')
-                    bene_faded_p.textContent = `${implant.Faded}: ${implant.faded_benefit}`
-                    bene_list.appendChild(bene_faded_p)
+                    bene_faded_p = document.createElement('li');
+                    bene_faded_p.textContent = `${implant.Faded}: ${implant.faded_benefit}`;
+                    bene_list.appendChild(bene_faded_p);
 
                     //add faded benefit to result_totals
                     if(!(implant.Faded in result_totals)) {
-                        result_totals[implant.Faded] = implant.faded_benefit
+                        result_totals[implant.Faded] = implant.faded_benefit;
                     }
                     else {
-                        result_totals[implant.Faded] += implant.faded_benefit
+                        result_totals[implant.Faded] += implant.faded_benefit;
                     }
                 }
-                bene_col.appendChild(bene_list)
-                imp_row.appendChild(bene_col)
+                bene_col.appendChild(bene_list);
+                imp_row.appendChild(bene_col);
 
-                equip_col = document.createElement('td')
+                equip_col = document.createElement('td');
 
-                equip_list = document.createElement('ul')
-                equip_list.classList.add('list-unstyled')
+                equip_list = document.createElement('ul');
+                equip_list.classList.add('list-unstyled');
 
-                equip_treat = document.createElement('li')
-                equip_treat.textContent = `Treatment: ${implant.treatment_value}`
-                equip_list.appendChild(equip_treat)
-                equip_attrib = document.createElement('li')
-                equip_attrib.textContent = `${implant.attrib_name}: ${implant.attrib_value}`
-                equip_list.appendChild(equip_attrib)
+                equip_treat = document.createElement('li');
+                equip_treat.textContent = `Treatment: ${implant.treatment_value}`;
+                equip_list.appendChild(equip_treat);
+                equip_attrib = document.createElement('li');
+                equip_attrib.textContent = `${implant.attrib_name}: ${implant.attrib_value}`;
+                equip_list.appendChild(equip_attrib);
 
                 if(implant.tl != 1) {
-                    equip_tl = document.createElement('li')
-                    equip_tl.textContent = `Title level: ${implant.tl}`
-                    equip_list.appendChild(equip_tl)
+                    equip_tl = document.createElement('li');
+                    equip_tl.textContent = `Title level: ${implant.tl}`;
+                    equip_list.appendChild(equip_tl);
                 }
                 
-                equip_col.appendChild(equip_list)
-                imp_row.appendChild(equip_col)
+                equip_col.appendChild(equip_list);
+                imp_row.appendChild(equip_col);
 
-                build_col = document.createElement('td')
+                build_col = document.createElement('td');
 
-                build_list = document.createElement('ul')
-                build_list.classList.add('list-unstyled')
+                build_list = document.createElement('ul');
+                build_list.classList.add('list-unstyled');
 
-                build_np = document.createElement('li')
-                build_np.textContent = `Nanoprogramming: ${implant.np_req}`
-                build_list.appendChild(build_np)
+                build_np = document.createElement('li');
+                build_np.textContent = `Nanoprogramming: ${implant.np_req}`;
+                build_list.appendChild(build_np);
 
-                var jobe_reqs = implant.jobe_reqs
+                var jobe_reqs = implant.jobe_reqs;
                 if(Object.keys(jobe_reqs).length > 0) {
                     for(key in jobe_reqs) {
-                        build_jobe = document.createElement('li')
-                        build_jobe.textContent = `${key}: ${jobe_reqs[key]}`
-                        build_list.appendChild(build_jobe)
+                        build_jobe = document.createElement('li');
+                        build_jobe.textContent = `${key}: ${jobe_reqs[key]}`;
+                        build_list.appendChild(build_jobe);
                     }
                 }
-                build_col.appendChild(build_list)
-                imp_row.appendChild(build_col)
-                results.appendChild(imp_row)
+                build_col.appendChild(build_list);
+                imp_row.appendChild(build_col);
+                results.appendChild(imp_row);
             }
         }
 
@@ -407,120 +805,120 @@
         sorted_results = Object.keys(result_totals)
             .sort()
             .reduce((accumulator, key) => {
-                accumulator[key] = result_totals[key]
-                return accumulator
-            }, {})
+                accumulator[key] = result_totals[key];
+                return accumulator;
+            }, {});
 
         idx = 0;
         result_row = null;
         for(item in sorted_results) {
             if(idx % 5 == 0) {
-                result_row = document.createElement('tr')
-                result_totals_table.appendChild(result_row)
+                result_row = document.createElement('tr');
+                result_totals_table.appendChild(result_row);
             }
-            entry = document.createElement('td')
-            entry.textContent = `${item}: ${sorted_results[item]}`
-            result_row.appendChild(entry)
-            idx += 1
+            entry = document.createElement('td');
+            entry.textContent = `${item}: ${sorted_results[item]}`;
+            result_row.appendChild(entry);
+            idx += 1;
         }
 
         // Populate the shopping list
-        shop_implants.sort((a, b) => a.localeCompare(b))
-        shop_shiny.sort((a, b) => a.localeCompare(b))
-        shop_bright.sort((a, b) => a.localeCompare(b))
-        shop_faded.sort((a, b) => a.localeCompare(b))
+        shop_implants.sort((a, b) => a.localeCompare(b));
+        shop_shiny.sort((a, b) => a.localeCompare(b));
+        shop_bright.sort((a, b) => a.localeCompare(b));
+        shop_faded.sort((a, b) => a.localeCompare(b));
         for(const [idx, val] of shop_implants.entries()) {
-            shop_row = document.createElement('tr')
+            shop_row = document.createElement('tr');
 
-            imp_td = document.createElement('td')
-            check = document.createElement('input')
-            check.type = 'checkbox'
-            imp_td.appendChild(check)
-            lbl = document.createElement('label')
-            lbl.appendChild(document.createTextNode(`\u00A0${val}`))
-            imp_td.appendChild(lbl)
-            shop_row.appendChild(imp_td)
+            imp_td = document.createElement('td');
+            check = document.createElement('input');
+            check.type = 'checkbox';
+            imp_td.appendChild(check);
+            lbl = document.createElement('label');
+            lbl.appendChild(document.createTextNode(`\u00A0${val}`));
+            imp_td.appendChild(lbl);
+            shop_row.appendChild(imp_td);
 
-            shiny_td = document.createElement('td')
-            cluster = shop_shiny[idx]
+            shiny_td = document.createElement('td');
+            cluster = shop_shiny[idx];
             if(typeof cluster !== 'undefined') {
-                check = document.createElement('input')
-                check.type = 'checkbox'
-                shiny_td.appendChild(check)
-                lbl = document.createElement('label')
-                lbl.appendChild(document.createTextNode(`\u00A0${cluster}`))
-                shiny_td.appendChild(lbl)
+                check = document.createElement('input');
+                check.type = 'checkbox';
+                shiny_td.appendChild(check);
+                lbl = document.createElement('label');
+                lbl.appendChild(document.createTextNode(`\u00A0${cluster}`));
+                shiny_td.appendChild(lbl);
             }
-            shop_row.appendChild(shiny_td)
+            shop_row.appendChild(shiny_td);
 
-            bright_td = document.createElement('td')
-            cluster = shop_bright[idx]
+            bright_td = document.createElement('td');
+            cluster = shop_bright[idx];
             if(typeof cluster !== 'undefined') {
-                check = document.createElement('input')
-                check.type = 'checkbox'
-                bright_td.appendChild(check)
-                lbl = document.createElement('label')
-                lbl.appendChild(document.createTextNode(`\u00A0${cluster}`))
-                bright_td.appendChild(lbl)
+                check = document.createElement('input');
+                check.type = 'checkbox';
+                bright_td.appendChild(check);
+                lbl = document.createElement('label');
+                lbl.appendChild(document.createTextNode(`\u00A0${cluster}`));
+                bright_td.appendChild(lbl);
             }
-            shop_row.appendChild(bright_td)
+            shop_row.appendChild(bright_td);
 
-            faded_td = document.createElement('td')
-            cluster = shop_faded[idx]
+            faded_td = document.createElement('td');
+            cluster = shop_faded[idx];
             if(typeof cluster !== 'undefined') {
-                check = document.createElement('input')
-                check.type = 'checkbox'
-                faded_td.appendChild(check)
-                lbl = document.createElement('label')
-                lbl.appendChild(document.createTextNode(`\u00A0${cluster}`))
-                faded_td.appendChild(lbl)
+                check = document.createElement('input');
+                check.type = 'checkbox';
+                faded_td.appendChild(check);
+                lbl = document.createElement('label');
+                lbl.appendChild(document.createTextNode(`\u00A0${cluster}`));
+                faded_td.appendChild(lbl);
             }
-            shop_row.appendChild(faded_td)
+            shop_row.appendChild(faded_td);
 
-            shopping.appendChild(shop_row)
+            shopping.appendChild(shop_row);
         }
 
         // Update the Settings tab
         for (let attrib in data.attrib_prefs) {
             if(attrib == 'Agility') {
-                document.getElementById('attrib-agi').checked = data.attrib_prefs[attrib]
+                document.getElementById('attrib-agi').checked = data.attrib_prefs[attrib];
             }
             if(attrib == 'Intelligence') {
-                document.getElementById('attrib-int').checked = data.attrib_prefs[attrib]
+                document.getElementById('attrib-int').checked = data.attrib_prefs[attrib];
             }
             if(attrib == 'Psychic') {
-                document.getElementById('attrib-psy').checked = data.attrib_prefs[attrib]
+                document.getElementById('attrib-psy').checked = data.attrib_prefs[attrib];
             }
             if(attrib == 'Sense') {
-                document.getElementById('attrib-sen').checked = data.attrib_prefs[attrib]
+                document.getElementById('attrib-sen').checked = data.attrib_prefs[attrib];
             }
             if(attrib == 'Stamina') {
-                document.getElementById('attrib-sta').checked = data.attrib_prefs[attrib]
+                document.getElementById('attrib-sta').checked = data.attrib_prefs[attrib];
             }
             if(attrib == 'Strength') {
-                document.getElementById('attrib-str').checked = data.attrib_prefs[attrib]
+                document.getElementById('attrib-str').checked = data.attrib_prefs[attrib];
             }
         }
     }
 
     function construct_imp(evt) {
-        tbl = document.getElementById('construct-table')
-        elem = evt.srcElement
-        row = elem.parentElement
+        tbl = document.getElementById('construct-table');
+        elem = evt.srcElement;
+        row = elem.parentElement;
 
         for(var i = 0; i < tbl.rows.length; i++) {
-            tbl.rows[i].style.backgroundColor = ''
+            tbl.rows[i].style.backgroundColor = '';
         }
-        row.style.backgroundColor = 'teal'
+        row.style.backgroundColor = 'teal';
 
-        slot = elem.textContent
-        np_skill = document.getElementById('np-skill').value
-        be_skill = document.getElementById('be-skill').value
-        psy_skill = document.getElementById('psy-skill').value
-        qft_skill = document.getElementById('qft-skill').value
-        pt_skill = document.getElementById('pt-skill').value
-        ws_skill = document.getElementById('ws-skill').value
-        cl_skill = document.getElementById('cl-skill').value
+        slot = elem.textContent;
+        np_skill = document.getElementById('np-skill').value;
+        be_skill = document.getElementById('be-skill').value;
+        psy_skill = document.getElementById('psy-skill').value;
+        qft_skill = document.getElementById('qft-skill').value;
+        pt_skill = document.getElementById('pt-skill').value;
+        ws_skill = document.getElementById('ws-skill').value;
+        cl_skill = document.getElementById('cl-skill').value;
 
         skills = {
             'Nanoprogramming' : np_skill,
@@ -530,9 +928,9 @@
             'Pharma Tech' : pt_skill,
             'Weaponsmithing' : ws_skill,
             'Computer Literacy' : cl_skill
-        }
+        };
 
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         
         fetch('construct_imp', {
             method: 'post',
@@ -544,31 +942,35 @@
             }
         }).then(response => response.json())
         .then(data => {
-            update_basic_steps(JSON.parse(data.basic_steps))
-            update_ft_steps(JSON.parse(data.ft_steps))
-        })
+            update_basic_steps(JSON.parse(data.basic_steps));
+            update_ft_steps(JSON.parse(data.ft_steps));
+        });
     }
 
     function update_basic_steps(data) {
-        basic_steps = document.getElementById('basic-steps')
-        basic_steps.innerHTML = ''
+        basic_steps = document.getElementById('basic-steps');
+        basic_steps.innerHTML = '';
 
         for(idx in data) {
-            new_li = document.createElement('li')
-            new_li.textContent = data[idx]
-            basic_steps.appendChild(new_li)
+            new_li = document.createElement('li');
+            new_li.textContent = data[idx];
+            basic_steps.appendChild(new_li);
         }
     }
 
     function update_ft_steps(data) {
-        ft_steps = document.getElementById('ft-steps')
-        ft_steps.innerHTML = ''
+        ft_steps = document.getElementById('ft-steps');
+        ft_steps.innerHTML = '';
 
         for(idx in data) {
-            new_li = document.createElement('li')
-            new_li.textContent = data[idx]
-            ft_steps.appendChild(new_li)
+            new_li = document.createElement('li');
+            new_li.textContent = data[idx];
+            ft_steps.appendChild(new_li);
         }
     }
+
+    // Make functions available globally for HTML onclick handlers
+    window.loadBuild = loadBuild;
+    window.deleteBuild = deleteBuild;
 
 </script>
